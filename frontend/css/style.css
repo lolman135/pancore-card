@@ -316,46 +316,114 @@ body.menu-open .mnav { display: flex; }
 
 /* ---------- карта світу ---------- */
 .wm-wrap {
-  position: relative; padding: 18px 18px 14px; overflow: hidden;
+  position: relative; padding: 18px 18px 16px; overflow: hidden;
   border: 1px solid var(--line); border-radius: var(--r);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 60%);
 }
-.wm-host { width: 100%; min-height: 120px; }
+.wm-host { position: relative; width: 100%; min-height: 120px; }
 .wm { width: 100%; height: auto; display: block; overflow: visible; }
-.wm__dots { fill: none; stroke: rgba(214, 219, 227, 0.26); stroke-width: 2.6; stroke-linecap: round; }
+.wm__dots { fill: none; stroke: rgba(214, 219, 227, 0.2); stroke-width: 2.6; stroke-linecap: round; }
+.wm--crop .wm__dots { stroke-width: 1.4; }
+/* країни-учасниці яскравіше за решту світу */
+.wm__hi path { fill: none; stroke-width: 2.8; stroke-linecap: round; }
+.wm--crop .wm__hi path { stroke-width: 1.8; }
+.wm__hi--pl { stroke: var(--accent); }
+.wm__hi--ua, .wm__hi--tr { stroke: rgba(255, 255, 255, 0.85); }
+.wm__hi--cn { stroke: rgba(214, 219, 227, 0.62); }
+.wm__route { transition: opacity 0.35s; }
 .wm__base { fill: none; stroke-width: 1.1; stroke-linecap: round; opacity: 0.32; }
 .wm__flow { fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-dasharray: 5 9; opacity: 0; transition: opacity 0.6s; }
+.wm__hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
 .is-visible .wm__flow { opacity: 0.95; animation: wm-flow 1.1s linear infinite; }
 .wm__flow.is-static { stroke-dasharray: none; animation: none; opacity: 0.9; }
 .wm__pkt { opacity: 0; }
 .is-visible .wm__pkt { opacity: 1; }
+/* колір «пакета» = колір дуги */
 .wm__route--in .wm__base, .wm__route--in .wm__flow { stroke: var(--accent); }
-.wm__route--in .wm__pkt { fill: #fff; }
+.wm__route--in .wm__pkt { fill: var(--accent); }
 .wm__route--out .wm__base, .wm__route--out .wm__flow { stroke: #fff; }
-.wm__route--out .wm__pkt { fill: var(--accent); }
-.wm__route--world .wm__base, .wm__route--world .wm__flow { stroke: var(--text-3); }
-.wm__route--world .wm__flow { opacity: 0.55; stroke-width: 1.2; }
-.is-visible .wm__route--world .wm__flow { opacity: 0.55; }
-.wm__route--world .wm__pkt { fill: var(--text-2); r: 2.4; }
+.wm__route--out .wm__pkt { fill: #fff; }
+/* фільтр: обрана група лишається, інші гаснуть; наведення підсвічує групу */
+.wm-wrap[data-kind="in"] .wm__route--out, .wm-wrap[data-kind="out"] .wm__route--in { opacity: 0.12; }
+.wm-wrap[data-hover="in"] .wm__route--out, .wm-wrap[data-hover="out"] .wm__route--in { opacity: 0.25; }
 .wm__dot { fill: #fff; }
 .wm__node--eu .wm__dot { fill: var(--accent); }
 .wm__pulse { fill: none; stroke: var(--accent); stroke-width: 1.1; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.wm__node--ua .wm__pulse, .wm__node--tr .wm__pulse, .wm__node--w1 .wm__pulse { stroke: #fff; }
+.wm__node--ua .wm__pulse, .wm__node--tr .wm__pulse { stroke: #fff; }
 .is-visible .wm__pulse { animation: wm-pulse 2.8s ease-out infinite; animation-delay: calc(var(--i) * 0.4s); }
-.wm__label {
-  font-family: var(--f-mono); font-size: 12.5px; letter-spacing: 0.14em; fill: var(--text-2);
-  paint-order: stroke; stroke: rgba(7, 8, 11, 0.9); stroke-width: 4px; stroke-linejoin: round;
-}
 @keyframes wm-flow { to { stroke-dashoffset: -14; } }
 @keyframes wm-pulse { 0% { transform: scale(0.25); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
-.wm-legend {
-  display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px;
-  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3);
+/* підписи поверх карти */
+.wm__labels { position: absolute; inset: 0; pointer-events: none; }
+.wm__lbl {
+  position: absolute; white-space: nowrap; padding: 4px 8px; border-radius: 6px;
+  background: rgba(7, 8, 11, 0.8); border: 1px solid var(--line);
+  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text);
+  transform: translate(14px, calc(-50% + var(--dy, 0px)));
 }
-.wm-legend li { display: inline-flex; align-items: center; gap: 9px; }
+.wm__lbl::before { content: ""; position: absolute; top: 50%; left: -14px; width: 14px; height: 1px; background: var(--line-2); }
+.wm__lbl--l { transform: translate(calc(-100% - 14px), calc(-50% + var(--dy, 0px))); }
+.wm__lbl--l::before { left: auto; right: -14px; }
+.wm__lbl--b { transform: translate(-50%, 14px); }
+.wm__lbl--b::before { left: 50%; top: -14px; width: 1px; height: 14px; }
+.wm__lbl--eu { border-color: rgba(255, 61, 79, 0.55); }
+/* цифри над картою, легенда-вкладки, картки маршрутів, абзац-історія */
+.wm-stats { display: flex; flex-wrap: wrap; gap: 14px 36px; margin-bottom: 18px; }
+.wm-stat b { display: block; font-family: var(--f-display); font-size: clamp(22px, 2.4vw, 30px); font-weight: 500; line-height: 1.1; }
+.wm-stat span { display: block; margin-top: 4px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
+.wm-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.wm-legend button {
+  display: inline-flex; align-items: center; gap: 9px; padding: 8px 13px; border-radius: var(--pill);
+  border: 1px solid var(--line); font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3);
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.wm-legend button:hover { color: var(--text); border-color: var(--line-2); }
+.wm-legend button.is-on { color: var(--text); border-color: var(--line-2); background: var(--panel-2); }
 .wm-legend i { width: 20px; height: 2px; border-radius: 2px; background: var(--accent); }
 .wm-legend__out { background: #fff !important; }
-.wm-legend__world { background: var(--text-3) !important; }
+.wm-legend__all { background: linear-gradient(90deg, var(--accent), #fff) !important; }
+.wm-routes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+.wm-route { display: block; width: 100%; padding: 14px 16px; text-align: left; border: 1px solid var(--line); border-radius: var(--r-s); background: var(--panel); transition: border-color 0.25s, background 0.25s; }
+.wm-route:hover { border-color: var(--line-2); }
+.wm-route .k { display: block; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+.wm-route--out .k { color: var(--text-2); }
+.wm-route b { display: block; margin-top: 6px; font-size: 14.5px; }
+.wm-route small { display: block; margin-top: 4px; font-size: 13px; color: var(--text-2); line-height: 1.5; }
+.wm-wrap[data-kind="in"] .wm-route--in, .wm-wrap[data-kind="out"] .wm-route--out { border-color: rgba(255, 61, 79, 0.5); background: var(--panel-2); }
+.wm-story { margin-top: 18px; max-width: 72ch; font-size: 15px; line-height: 1.6; color: var(--text-2); }
+@media (max-width: 880px) { .wm-routes { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .wm-wrap { padding: 10px 10px 14px; }
+  .wm__lbl { font-size: 10px; padding: 3px 6px; letter-spacing: 0.1em; }
+  .wm-legend { gap: 6px; }
+  .wm-legend button { padding: 7px 10px; font-size: 10px; }
+}
+
+/* ---------- пошук у шапці, перемикач мови, плаваюча панель запиту ---------- */
+.hsearch { position: relative; display: flex; align-items: center; }
+.hsearch input {
+  width: 190px; padding: 9px 14px 9px 34px; border-radius: var(--pill);
+  border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04); color: var(--text);
+  font: inherit; font-size: 13px; outline: none; transition: width 0.3s var(--ease), border-color 0.2s, box-shadow 0.2s;
+}
+.hsearch input::placeholder { color: var(--text-3); }
+.hsearch input:focus { width: 260px; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.hsearch svg { position: absolute; left: 12px; width: 15px; height: 15px; color: var(--text-3); pointer-events: none; }
+.lang { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.14em; padding: 9px 11px; border-radius: var(--pill); border: 1px solid var(--line); color: var(--text-2); transition: border-color 0.2s, color 0.2s; }
+.lang:hover { border-color: var(--line-2); color: #fff; }
+.fab-bar { display: none; }
+@media (max-width: 1100px) { .hsearch { display: none; } }
+@media (max-width: 880px) {
+  .fab-bar {
+    position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 45;
+    display: flex; gap: 8px; padding: 8px; border-radius: var(--pill);
+    background: rgba(12, 14, 19, 0.92); border: 1px solid var(--line-2); backdrop-filter: blur(10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  }
+  .fab-bar .btn { flex: 1; }
+  body.menu-open .fab-bar { display: none; }
+  .foot { padding-bottom: 100px; }
+}
 
 /* ---------- характеристики (моно-таблиця) ---------- */
 .specs { display: grid; gap: 0; border-top: 1px solid var(--line); margin-top: 28px; }

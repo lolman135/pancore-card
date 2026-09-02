@@ -4,19 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PANCORE — виробництво та компоненти для безпілотних систем</title>
-<meta name="description" content="PANCORE — виробничо-інженерна компанія в ЄС (Польща): оптоволоконні системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих для БпЛА.">
+<meta name="description" content="PANCORE — виробничо-інженерна компанія в ЄС: оптоволоконні системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих для БпЛА.">
 <meta name="theme-color" content="#07080b">
 <!-- База API. Порожньо = той самий origin (бекенд роздає фронт або стоїть за одним проксі).
      Окремий домен API: content="https://api.pancore.example" -->
 <meta name="api-base" content="">
+<!-- Прев’ю посилання у Telegram / WhatsApp / LinkedIn. og:image має бути абсолютним:
+     після переїзду на власний домен замінити адресу. -->
 <meta property="og:title" content="PANCORE — виробництво та компоненти для безпілотних систем">
-<meta property="og:description" content="Оптоволокно G.657.A2 у польовому корпусі, карбон, полімерне лиття, електроніка. Виробництво в Польщі, ЄС.">
+<meta property="og:description" content="Безшпульний звій оптоволокна G.657.A2, пропелери 10″/15″, карбон, електроніка. Виробництво в ЄС, постачання в Україну.">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:image" content="https://lolman135.github.io/pancore-card/frontend/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=20260902c">
 <style>
   /* головна: збільшені віджети в герої */
   .hero__side { gap: 14px; margin-top: 52px; }
@@ -64,6 +71,10 @@
         <a href="catalog.html" data-nav="catalog">Асортимент</a>
       </nav>
       <div class="head__cta">
+        <form class="hsearch" action="catalog.html" method="get" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input name="q" type="search" placeholder="Пошук у каталозі" aria-label="Пошук у каталозі" autocomplete="off">
+        </form>
         <a class="btn btn--primary btn--sm" href="#contact">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
@@ -74,7 +85,7 @@
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
     <a href="#contact" data-nav="contact">Зв’язатися</a>
-    <p class="mnav__foot">PANCORE · MADE IN POLAND · EU</p>
+    <p class="mnav__foot">PANCORE · MADE IN EU</p>
   </nav>
 
   <main>
@@ -84,7 +95,7 @@
       <div class="wrap hero__in">
         <div class="hero__grid">
           <div>
-            <p class="eyebrow rise">Виробництво · Польща, ЄС</p>
+            <p class="eyebrow rise">Виробництво · Європейський Союз</p>
             <h1 class="h-display h1 hero__title rise" data-delay="1">
               <b>Виробництво</b>
               <b>та компоненти</b>
@@ -93,7 +104,7 @@
             <p class="lead hero__lead rise" data-delay="2">
               PANCORE — виробничо-інженерна компанія в Європейському Союзі: оптоволоконні
               системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих
-              для БпЛА — з власним контролем якості та повним пакетом документів.
+              для БпЛА з власним контролем якості.
             </p>
             <div class="hero__cta rise" data-delay="3">
               <a class="btn btn--primary" href="catalog.html">Асортимент</a>
@@ -117,7 +128,7 @@
           <p class="eyebrow rise">Про компанію</p>
           <h2 class="h-display h2 rise" data-delay="1">Повний цикл: від сировини до готового виробу</h2>
           <p class="lead rise" data-delay="2">
-            Ми запускаємо власні виробничі лінії у Підкарпатті (Польща) і поєднуємо їх із мережею
+            Ми запускаємо власні виробничі лінії в Європейському Союзі і поєднуємо їх із мережею
             перевірених виробників компонентів. Замовник отримує одного постачальника, єдину
             відповідальність за якість і документи, готові до митного оформлення та технічного приймання.
           </p>
@@ -142,7 +153,7 @@
           <a class="btn btn--ghost rise" data-delay="2" href="production.html">Про виробництво</a>
         </div>
         <div class="dirs">
-          <a class="card card--link rise" href="production.html#fiber">
+          <a class="card card--link rise" href="production.html#coil">
             <span class="card__code">01</span>
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><circle cx="20" cy="20" r="6"/><path d="M26 20a6 6 0 0 1-6 6"/><path d="M20 7V3M33 20h4"/><path d="M20 33c0 3 2 4 5 4"/></svg></span>
             <h3 class="h3">Оптоволоконні системи</h3>
@@ -179,7 +190,7 @@
       <div class="wrap split">
         <div>
           <p class="eyebrow rise">Виробництво</p>
-          <h2 class="h-display h2 rise" data-delay="1">Власні лінії у Польщі</h2>
+          <h2 class="h-display h2 rise" data-delay="1">Власні лінії в ЄС</h2>
           <p class="lead rise" data-delay="2">
             Перемотування та стабілізація оптоволокна, 3D-друк корпусів, лиття під тиском,
             обробка композитів. Кожна партія проходить вимірювання — довжина, маса, загасання —
@@ -188,7 +199,7 @@
           <a class="btn btn--primary rise" data-delay="3" href="production.html">Про виробництво</a>
         </div>
         <div class="proc rise" data-delay="2">
-          <a class="proc__row" href="production.html#fiber"><span class="proc__n">01</span><span><b>Оптоволокно</b><small>перемотування, стабілізація, польовий корпус, OTDR-контроль</small></span></a>
+          <a class="proc__row" href="production.html#coil"><span class="proc__n">01</span><span><b>Оптоволокно</b><small>перемотування, стабілізація, польовий корпус, OTDR-контроль</small></span></a>
           <a class="proc__row" href="production.html#composites"><span class="proc__n">02</span><span><b>Композити</b><small>розкрій, намотування, обмотка з ЧПУ, термообробка, шліфування</small></span></a>
           <a class="proc__row" href="production.html#injection"><span class="proc__n">03</span><span><b>Полімерне лиття</b><small>термопластавтомати 3200 / 3800 kN, роботизоване знімання</small></span></a>
           <a class="proc__row" href="production.html#smt"><span class="proc__n">04</span><span><b>Електроніка</b><small>лінія SMT: друк пасти, SPI, монтаж, пайка, AOI</small></span></a>
@@ -204,11 +215,11 @@
           <h2 class="h-display h2 rise" data-delay="1">Зроблено так, щоб не було питань</h2>
         </div>
         <div class="grid grid--3">
-          <article class="card card--num rise"><span class="card__n">01</span><h3 class="h3">Виробництво в ЄС</h3><p>Продукція Made in Poland: сертифікат походження, EUR.1 для України, декларація виробника.</p></article>
+          <article class="card card--num rise"><span class="card__n">01</span><h3 class="h3">Виробництво в ЄС</h3><p>Продукція Made in EU: сертифікат походження, EUR.1 для України, декларація виробника.</p></article>
           <article class="card card--num rise" data-delay="1"><span class="card__n">02</span><h3 class="h3">Контроль кожної партії</h3><p>Рефлектометрія OTDR, зважування, вимірювання розмірів. Протокол на кожен звій, кожну партію виробів.</p></article>
           <article class="card card--num rise" data-delay="2"><span class="card__n">03</span><h3 class="h3">Документи без сюрпризів</h3><p>TDS, протоколи випробувань, паспорти виробів, інструкції — комплект, який проходить митницю і технічне приймання.</p></article>
           <article class="card card--num rise" data-delay="3"><span class="card__n">04</span><h3 class="h3">Один контракт</h3><p>Власні вироби та компоненти 20 категорій постачаються під одним договором з єдиною відповідальністю.</p></article>
-          <article class="card card--num rise" data-delay="4"><span class="card__n">05</span><h3 class="h3">Склад у ЄС</h3><p>Виробництво та склад у Підкарпатті: швидкі партії, консолідація вантажів, доставка по Європі та в Україну.</p></article>
+          <article class="card card--num rise" data-delay="4"><span class="card__n">05</span><h3 class="h3">Склад у ЄС</h3><p>Виробництво та склад в Європейському Союзі: швидкі партії, консолідація вантажів, доставка по Європі та в Україну.</p></article>
           <article class="card card--num rise" data-delay="5"><span class="card__n">06</span><h3 class="h3">Інженерна адаптація</h3><p>Довжина звою, геометрія та крок пропелера, компонування рами — під платформу замовника, а не навпаки.</p></article>
         </div>
       </div>
@@ -219,16 +230,27 @@
       <div class="wrap">
         <div class="sec__head">
           <p class="eyebrow rise">Географія</p>
-          <h2 class="h-display h2 rise" data-delay="1">Виробництво в ЄС, постачання по світу</h2>
-          <p class="lead rise" data-delay="2">Компоненти та сировина з Китаю приходять на наш майданчик у Польщі. Готові вироби й комплекти відвантажуємо в Україну, Туреччину та замовникам в інших країнах світу.</p>
+          <h2 class="h-display h2 rise" data-delay="1">Сировина зі сходу, продукція з ЄС</h2>
+          <p class="lead rise" data-delay="2">Компоненти та сировина з Китаю надходять на наш виробничий майданчик у Європейському Союзі. Готові вироби й комплекти відвантажуємо в Україну та Туреччину.</p>
         </div>
-        <div class="wm-wrap rise" data-delay="2">
+        <div class="wm-stats rise" data-delay="2">
+          <div class="wm-stat"><b>3</b><span>напрями поставок</span></div>
+          <div class="wm-stat"><b>2 000 м²</b><span>виробнича площадка в ЄС</span></div>
+          <div class="wm-stat"><b>5–60 км</b><span>лінійка звоїв на відвантаження</span></div>
+        </div>
+        <div class="wm-wrap rise" data-delay="2" data-kind="all">
           <div id="worldmap" class="wm-host"></div>
-          <ul class="wm-legend">
-            <li><i class="wm-legend__in"></i>Компоненти та сировина → ЄС</li>
-            <li><i class="wm-legend__out"></i>Готова продукція → Україна, Туреччина</li>
-            <li><i class="wm-legend__world"></i>Інші замовники у світі</li>
-          </ul>
+          <div class="wm-legend" role="tablist" aria-label="Групи маршрутів">
+            <button type="button" role="tab" data-kind-btn="all" class="is-on" aria-selected="true"><i class="wm-legend__all"></i>Усі маршрути</button>
+            <button type="button" role="tab" data-kind-btn="in" aria-selected="false"><i></i>Компоненти та сировина → ЄС</button>
+            <button type="button" role="tab" data-kind-btn="out" aria-selected="false"><i class="wm-legend__out"></i>Готова продукція → Україна, Туреччина</button>
+          </div>
+          <div class="wm-routes">
+            <button type="button" class="wm-route wm-route--in" data-kind-btn="in"><span class="k">Китай → ЄС</span><b>Оптоволокно, гранулят, клей, обладнання</b><small>Одномодове волокно G.657.A2, армовані поліаміди, термопластавтомати та лінії для композитів.</small></button>
+            <button type="button" class="wm-route wm-route--out" data-kind-btn="out"><span class="k">ЄС → Україна</span><b>Звої, пропелери, карбон, комплекти</b><small>Готова продукція з сертифікатом походження ЄС і EUR.1, консолідовані партії зі складу в ЄС.</small></button>
+            <button type="button" class="wm-route wm-route--out" data-kind-btn="out"><span class="k">ЄС → Туреччина</span><b>Звої та компоненти для платформ</b><small>Оптоволоконні лінії й комплектуючі під платформи замовника, документи для технічного приймання.</small></button>
+          </div>
+          <p class="wm-story">На майданчику в ЄС ми перемотуємо та стабілізуємо волокно, ллємо пропелери й корпуси, збираємо комплекти і перевіряємо кожну партію. Тому на виході — продукція європейського походження з повним набором документів для митниці та приймання.</p>
         </div>
       </div>
     </section>
@@ -259,8 +281,9 @@
           </div>
           <div class="contact__lines rise" data-delay="3">
             <div><small>Пошта</small><a href="mailto:info@pancore.tech">info@pancore.tech</a></div>
-            <div><small>Виробництво та склад</small><span>Європейський Союз, Польша</span></div>
-            <div><small>Мови спілкування</small><span>UA · EN · PL</span></div>
+            <div><small>Telegram</small><a href="https://t.me/pancore_tech" target="_blank" rel="noopener">Написати в Telegram</a></div>
+            <div><small>Виробництво та склад</small><span>Європейський Союз</span></div>
+            <div><small>Мови спілкування</small><span>UA · EN</span></div>
           </div>
         </div>
         <form class="form rise" data-delay="2" data-lead>
@@ -282,12 +305,17 @@
 
   <footer class="foot">
     <div class="wrap">
-      <div class="foot__bottom"><span>© 2026 PANCORE</span><span>MADE IN POLAND · EU</span></div>
+      <div class="foot__bottom"><span>© 2026 PANCORE · виробництво та склад у ЄС</span><span>MADE IN EU</span></div>
     </div>
   </footer>
 
 </div>
 
-<script type="module" src="js/site.js"></script>
+<div class="fab-bar" aria-label="Швидкий зв’язок">
+  <a class="btn btn--primary btn--sm" href="#contact">Зв’язатися</a>
+  <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_tech" target="_blank" rel="noopener">Telegram</a>
+</div>
+
+<script type="module" src="js/site.js?v=20260902c"></script>
 </body>
 </html>

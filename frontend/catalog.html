@@ -13,8 +13,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/pages.css">
+<link rel="stylesheet" href="css/style.css?v=20260902c">
+<link rel="stylesheet" href="css/pages.css?v=20260902c">
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
 <body data-page="catalog">
@@ -56,7 +56,7 @@
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
     <a href="#request" data-nav="contact">Зв’язатися</a>
-    <p class="mnav__foot">PANCORE · MADE IN POLAND · EU</p>
+    <p class="mnav__foot">PANCORE · MADE IN EU</p>
   </nav>
 
   <main>
@@ -103,6 +103,7 @@
           </div>
           <div class="contact__lines rise" data-delay="3">
             <div><small>Пошта</small><a href="mailto:info@pancore.tech">info@pancore.tech</a></div>
+            <div><small>Telegram</small><a href="https://t.me/pancore_tech" target="_blank" rel="noopener">Написати в Telegram</a></div>
             <div><small>Відповідь</small><span>протягом робочого дня</span></div>
           </div>
         </div>
@@ -125,15 +126,19 @@
 
   <footer class="foot">
     <div class="wrap">
-      <div class="foot__bottom"><span>© 2026 PANCORE</span><span>MADE IN POLAND · EU</span></div>
+      <div class="foot__bottom"><span>© 2026 PANCORE · виробництво та склад у ЄС</span><span>MADE IN EU</span></div>
     </div>
   </footer>
 
 </div>
 
+<div class="fab-bar" aria-label="Швидкий зв’язок">
+  <a class="btn btn--primary btn--sm" href="#request">Запит</a>
+  <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_tech" target="_blank" rel="noopener">Telegram</a>
+</div>
 <div class="cmp-bar" id="cmp-bar" hidden></div>
 <div class="drawer" id="drawer" hidden></div>
 
-<script type="module" src="js/catalog.js"></script>
+<script type="module" src="js/catalog.js?v=20260902c"></script>
 </body>
 </html>

@@ -283,6 +283,7 @@ function openItem(id) {
       <div class="drawer__foot">
         <button class="btn btn--primary btn--sm" type="button" data-req="${id}">Запит на позицію</button>
         <button class="btn btn--ghost btn--sm" type="button" data-copy="${id}">Скопіювати</button>
+        <button class="btn btn--ghost btn--sm" type="button" data-print>PDF</button>
         <button class="btn btn--ghost btn--sm" type="button" data-cmp="${id}">${state.compare.has(id) ? 'У порівнянні ✓' : 'Порівняти'}</button>
         <span class="drawer__ok" id="dr-ok"></span>
       </div>
@@ -300,6 +301,12 @@ function closeDrawer() {
 }
 drawer.addEventListener('click', async (e) => {
   if (e.target.closest('[data-close]')) { closeDrawer(); return; }
+  if (e.target.closest('[data-print]')) {
+    // PDF = друк у файл: у @media print видно лише панель специфікації (pages.css, body.is-printing)
+    document.body.classList.add('is-printing');
+    window.print();
+    return;
+  }
   const req = e.target.closest('[data-req]');
   if (req) { const id = Number(req.dataset.req); closeDrawer(); requestItem(id); return; }
   const cmp = e.target.closest('[data-cmp]');
@@ -360,7 +367,11 @@ function openCompare() {
   history.replaceState(null, '', `${location.pathname}${location.search}#compare`);
 }
 
-/* ---------- старт: категорія або позиція з хеша ---------- */
+addEventListener('afterprint', () => document.body.classList.remove('is-printing'));
+
+/* ---------- старт: пошук із шапки (?q=), категорія або позиція з хеша ---------- */
+const qp = (new URLSearchParams(location.search).get('q') || '').trim();
+if (qp) { search.value = qp; state.q = norm(qp); }
 const h = location.hash.slice(1);
 const m = /^item-(\d+)$/.exec(h);
 if (h && catName[h]) { state.cat = h; openCats.add(h); }
