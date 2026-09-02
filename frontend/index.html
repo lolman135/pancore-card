@@ -17,6 +17,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<style>
+  /* головна: збільшені віджети в герої */
+  .hero__side { gap: 14px; margin-top: 52px; }
+  .hero__side .tag {
+    gap: 14px; padding: 20px 26px; border-radius: 16px;
+    font-size: 14px; letter-spacing: 0.1em;
+  }
+  .hero__side .tag::before { width: 9px; height: 9px; box-shadow: 0 0 14px var(--accent); }
+  @media (max-width: 600px) { .hero__side .tag { width: 100%; padding: 18px 20px; font-size: 13px; } }
+</style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
 <body data-page="home">
@@ -52,7 +62,6 @@
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
         <a href="catalog.html" data-nav="catalog">Асортимент</a>
-        <a href="index.html#contact" data-nav="contact">Контакти</a>
       </nav>
       <div class="head__cta">
         <a class="btn btn--primary btn--sm" href="#contact">Запит</a>
@@ -64,7 +73,7 @@
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
-    <a href="#contact" data-nav="contact">Контакти</a>
+    <a href="#contact" data-nav="contact">Запит</a>
     <p class="mnav__foot">PANCORE · MADE IN POLAND · EU</p>
   </nav>
 
@@ -87,7 +96,7 @@
               для БпЛА — з власним контролем якості та повним пакетом документів.
             </p>
             <div class="hero__cta rise" data-delay="3">
-              <a class="btn btn--primary" href="catalog.html">Асортимент <span class="arr">→</span></a>
+              <a class="btn btn--primary" href="catalog.html">Асортимент</a>
               <a class="btn btn--ghost" href="production.html">Виробництво</a>
             </div>
           </div>
@@ -138,28 +147,28 @@
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><circle cx="20" cy="20" r="6"/><path d="M26 20a6 6 0 0 1-6 6"/><path d="M20 7V3M33 20h4"/><path d="M20 33c0 3 2 4 5 4"/></svg></span>
             <h3 class="h3">Оптоволоконні системи</h3>
             <p>Безшпульні звої G.657.A2 від 5 до 60 км у польовому корпусі, бортові та наземні оптичні термінали. Канал, невидимий для радіорозвідки та РЕБ.</p>
-            <span class="card__go">Докладніше →</span>
+            <span class="card__go">Докладніше</span>
           </a>
           <a class="card card--link rise" data-delay="1" href="production.html#composites">
             <span class="card__code">02</span>
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M6 14l14-7 14 7-14 7z"/><path d="M6 20l14 7 14-7"/><path d="M6 26l14 7 14-7"/></svg></span>
             <h3 class="h3">Композитні матеріали</h3>
             <p>Карбонові листи 2–8 мм, труби та рами БпЛА. Власна лінія: розкрій, намотування, обмотка з ЧПУ, термообробка, шліфування.</p>
-            <span class="card__go">Докладніше →</span>
+            <span class="card__go">Докладніше</span>
           </a>
           <a class="card card--link rise" data-delay="2" href="production.html#injection">
             <span class="card__code">03</span>
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M7 11h26v7H7z"/><path d="M11 18v10h18V18"/><path d="M20 28v7M20 4v7"/><path d="M15 32h10"/></svg></span>
             <h3 class="h3">Полімерне лиття</h3>
             <p>Пропелери 10″ та 15″, корпуси й деталі з армованих поліамідів на термопластавтоматах 3200 / 3800 kN із роботизованим зніманням.</p>
-            <span class="card__go">Докладніше →</span>
+            <span class="card__go">Докладніше</span>
           </a>
           <a class="card card--link rise" data-delay="3" href="catalog.html">
             <span class="card__code">04</span>
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="11" y="11" width="18" height="18" rx="2"/><rect x="16" y="16" width="8" height="8"/><path d="M15 11V6M20 11V6M25 11V6M15 34v-5M20 34v-5M25 34v-5M11 15H6M11 20H6M11 25H6M34 15h-5M34 20h-5M34 25h-5"/></svg></span>
             <h3 class="h3">Електроніка та компоненти</h3>
             <p>Двигуни, регулятори, польотні контролери, відеозв’язок, камери й тепловізори, автопілоти — 20 категорій під один контракт.</p>
-            <span class="card__go">До асортименту →</span>
+            <span class="card__go">До асортименту</span>
           </a>
         </div>
       </div>
@@ -176,13 +185,13 @@
             обробка композитів. Кожна партія проходить вимірювання — довжина, маса, загасання —
             і фіксується у протоколі якості.
           </p>
-          <a class="btn btn--primary rise" data-delay="3" href="production.html">Про виробництво <span class="arr">→</span></a>
+          <a class="btn btn--primary rise" data-delay="3" href="production.html">Про виробництво</a>
         </div>
         <div class="proc rise" data-delay="2">
-          <a class="proc__row" href="production.html#fiber"><span class="proc__n">01</span><span><b>Оптоволокно</b><small>перемотування, стабілізація, польовий корпус, OTDR-контроль</small></span><span class="proc__go">→</span></a>
-          <a class="proc__row" href="production.html#composites"><span class="proc__n">02</span><span><b>Композити</b><small>розкрій, намотування, обмотка з ЧПУ, термообробка, шліфування</small></span><span class="proc__go">→</span></a>
-          <a class="proc__row" href="production.html#injection"><span class="proc__n">03</span><span><b>Полімерне лиття</b><small>термопластавтомати 3200 / 3800 kN, роботизоване знімання</small></span><span class="proc__go">→</span></a>
-          <a class="proc__row" href="production.html#smt"><span class="proc__n">04</span><span><b>Електроніка</b><small>лінія SMT: друк пасти, SPI, монтаж, пайка, AOI</small></span><span class="proc__go">→</span></a>
+          <a class="proc__row" href="production.html#fiber"><span class="proc__n">01</span><span><b>Оптоволокно</b><small>перемотування, стабілізація, польовий корпус, OTDR-контроль</small></span></a>
+          <a class="proc__row" href="production.html#composites"><span class="proc__n">02</span><span><b>Композити</b><small>розкрій, намотування, обмотка з ЧПУ, термообробка, шліфування</small></span></a>
+          <a class="proc__row" href="production.html#injection"><span class="proc__n">03</span><span><b>Полімерне лиття</b><small>термопластавтомати 3200 / 3800 kN, роботизоване знімання</small></span></a>
+          <a class="proc__row" href="production.html#smt"><span class="proc__n">04</span><span><b>Електроніка</b><small>лінія SMT: друк пасти, SPI, монтаж, пайка, AOI</small></span></a>
         </div>
       </div>
     </section>
@@ -233,7 +242,7 @@
             <h2 class="h-display h2 rise" data-delay="1">163 позиції у 20 категоріях</h2>
             <p class="lead rise" data-delay="2">Власні вироби та компоненти перевірених виробників: від оптоволокна і карбону до двигунів, камер і автопілотів. Документація — на кожну позицію з позначкою, решта надається за запитом.</p>
           </div>
-          <a class="btn btn--primary rise" data-delay="2" href="catalog.html">Відкрити асортимент <span class="arr">→</span></a>
+          <a class="btn btn--primary rise" data-delay="2" href="catalog.html">Відкрити асортимент</a>
         </div>
         <div class="chips rise" id="cat-chips" data-delay="1"></div>
       </div>
