@@ -1,7 +1,7 @@
 /* ============================================================
    PANCORE — сторінка «Виробництво»
    ескізи виробів · паспорт звою (повзунок довжини) · графік OTDR ·
-   перемикач пропелерів · підсвітка навігації по досьє
+   пропелери 10″/15″ (креслення, матеріал) · точки-навігація по блоках
    ============================================================ */
 
 import { reducedMotion } from './site.js';
@@ -109,36 +109,78 @@ if (otdr) {
   draw(cur);
 }
 
-/* ---------- пропелери: 10″ / 15″ ---------- */
+/* ---------- пропелери 10″ / 15″: розміри з обміру зразків 02.09.2026, два матеріали ---------- */
 const PROPS = {
-  10: { pitch: '5.0', a75: '12,0°', tip: '9,0°', d: '254 мм', force: '3 200 kN', item: 902 },
-  15: { pitch: '10', a75: '15,8°', tip: '12,0°', d: '381 мм', force: '3 800 kN', item: 903 },
+  10: {
+    name: '10 × 5,0 × 3', d: '10″ · 254 мм', pitch: '5,0″ · 127 мм', ang: '12,0° на 0,75R · 9,0° на кінці лопаті',
+    hub: 'Ø20 · посадка Ø6 · 3 × Ø2 на Ø15', chord: 'макс. 25 мм на r ≈ 43 мм · 16,5 мм на 0,75R',
+    chords: ['24', '23', '16,5', '8'], force: '3 200 kN · Haitian MA3200', item: 902,
+  },
+  15: {
+    name: '15 × 10 × 3', d: '15″ · 381 мм', pitch: '10″ · 254 мм', ang: '15,8° на 0,75R · 12,0° на кінці лопаті',
+    hub: 'Ø25 · посадка Ø6 · 3 × Ø2 на Ø15', chord: 'макс. 25,5 мм на r ≈ 76 мм · 16,5 мм на 0,75R',
+    chords: ['22,5', '24,5', '16,5', '8,5'], force: '3 800 kN · Haitian MA3800', item: 903,
+  },
+};
+const MATS = {
+  ppa: [
+    ['Склад', 'PPA + 30 % скловолокно + 10 % вуглецеве волокно'],
+    ['Жорсткість', 'максимальна — вуглецеве волокно тримає геометрію лопаті на високих обертах'],
+    ['Вологопоглинання', 'мінімальне — крок і баланс стабільні у дощ та спеку'],
+    ['Теплостійкість', 'найвища серед поліамідних компаундів'],
+    ['Призначення', 'важкі платформи, довгі місії, гарячий клімат'],
+  ],
+  pa6: [
+    ['Склад', 'PA6 + 40 % скловолокно (PA6-GF40)'],
+    ['Жорсткість', 'висока — перевірений серійний компаунд'],
+    ['Вологопоглинання', 'помірне'],
+    ['Теплостійкість', 'стандартна для поліаміду 6'],
+    ['Призначення', 'серійні платформи, оптимальна ціна'],
+  ],
 };
 const propBox = document.getElementById('prop-box');
 if (propBox) {
+  const q = (s) => propBox.querySelector(s);
   const set = (inch) => {
     const p = PROPS[inch];
-    propBox.querySelector('[data-sketch="prop"]').innerHTML = propSketch(inch, p.pitch);
-    propBox.querySelector('[data-p="d"]').textContent = `${inch}″ · ${p.d}`;
-    propBox.querySelector('[data-p="pitch"]').textContent = `${p.pitch}″`;
-    propBox.querySelector('[data-p="a75"]').textContent = p.a75;
-    propBox.querySelector('[data-p="tip"]').textContent = p.tip;
-    propBox.querySelector('[data-p="force"]').textContent = p.force;
-    propBox.querySelector('[data-p="link"]').href = `catalog.html#item-${p.item}`;
+    q('[data-sketch="prop"]').innerHTML = propSketch(inch);
+    q('[data-p="title"]').textContent = `Пропелер PANCORE ${p.name}`;
+    ['d', 'pitch', 'ang', 'hub', 'chord', 'force'].forEach((k) => { q(`[data-p="${k}"]`).textContent = p[k]; });
+    propBox.querySelectorAll('[data-c]').forEach((td, i) => { td.textContent = p.chords[i]; });
+    q('[data-p="link"]').href = `catalog.html#item-${p.item}`;
     propBox.querySelectorAll('.toggle button').forEach((b) => b.classList.toggle('is-on', Number(b.dataset.inch) === inch));
   };
-  propBox.querySelector('.toggle').addEventListener('click', (e) => { const b = e.target.closest('[data-inch]'); if (b) set(Number(b.dataset.inch)); });
-  set(10);
+  const setMat = (key) => {
+    q('[data-p="mat"]').innerHTML = MATS[key].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+    propBox.querySelectorAll('.mat__opt').forEach((b) => { const on = b.dataset.mat === key; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
+  };
+  q('.toggle').addEventListener('click', (e) => { const b = e.target.closest('[data-inch]'); if (b) set(Number(b.dataset.inch)); });
+  q('.mat').addEventListener('click', (e) => { const b = e.target.closest('[data-mat]'); if (b) setMat(b.dataset.mat); });
+  set(10); setMat('ppa');
 }
 
-/* ---------- навігація по досьє: підсвітка поточного розділу ---------- */
-const dosNav = document.querySelector('.dos-nav');
-if (dosNav && 'IntersectionObserver' in window) {
-  const links = [...dosNav.querySelectorAll('a[href^="#"]')];
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((en) => { if (en.isIntersecting) links.forEach((a) => a.classList.toggle('is-on', a.getAttribute('href') === '#' + en.target.id)); });
-  }, { rootMargin: '-40% 0px -55% 0px' });
-  links.forEach((a) => { const s = document.querySelector(a.getAttribute('href')); s && io.observe(s); });
+/* ---------- точки-навігація праворуч: який блок зараз перед очима ---------- */
+const dots = document.getElementById('dots');
+const blocks = [...document.querySelectorAll('section[data-dot]')];
+if (dots && blocks.length) {
+  dots.innerHTML = blocks.map((s, i) => `<a href="#${s.id}" aria-label="${s.dataset.dot}"><span>${String(i + 1).padStart(2, '0')} · ${s.dataset.dot}</span><i></i></a>`).join('');
+  const links = [...dots.children];
+  let cur = -1, flashT = 0, ticking = false;
+  const top = (el) => el.getBoundingClientRect().top + scrollY;
+  const update = () => {
+    ticking = false;
+    const line = scrollY + innerHeight * 0.42;
+    let i = -1;
+    blocks.forEach((s, k) => { if (top(s) <= line) i = k; });
+    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) i = blocks.length - 1;
+    if (i === cur) return;
+    cur = i;
+    links.forEach((a, k) => { a.classList.toggle('is-on', k === i); a.classList.remove('is-flash'); });
+    if (i >= 0) { links[i].classList.add('is-flash'); clearTimeout(flashT); flashT = setTimeout(() => links[i].classList.remove('is-flash'), 1600); }
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener('resize', update);
+  update();
 }
 
 /* ---------- плавний скрол по якорях ---------- */

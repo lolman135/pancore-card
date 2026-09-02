@@ -90,19 +90,92 @@ export function groundSketch() {
   <text x="34" y="180">2 × відео · тренер DSC · 112 г</text>`);
 }
 
-/** Пропелер — вигляд зверху, три лопаті, діаметр і крок. */
-export function propSketch(inch = 10, pitch = '5.0') {
-  const blade = 'M0,0 C 18,-28 36,-64 30,-96 C 27,-108 12,-112 5,-106 C -6,-88 -9,-44 0,0 Z';
-  return wrap(`Пропелер ${inch}″`, `
-  <g transform="translate(115,104)">
-    <circle class="hair" r="98"/><circle class="dim" r="73"/>
-    <g class="ln fillDim"><path d="${blade}"/><path d="${blade}" transform="rotate(120)"/><path d="${blade}" transform="rotate(240)"/></g>
-    <circle class="ln2 fillDim" r="14"/><circle class="ln" r="4"/>
-    <line class="hair" x1="-112" y1="0" x2="112" y2="0"/><line class="hair" x1="0" y1="-112" x2="0" y2="112"/>
-    <line class="dim" x1="73" y1="0" x2="98" y2="0"/><text x="84" y="-6" text-anchor="middle">0.75R</text>
-  </g>
-  <line class="dim" x1="17" y1="196" x2="213" y2="196" marker-end="url(#sk-ar)"/>
-  <text x="115" y="192" text-anchor="middle">Ø ${inch}″ · крок ${pitch}″ · 3 лопаті</text>`);
+/* ---------- пропелери: креслення за обміром серійних зразків (02.09.2026) ----------
+   Планформа лопаті знята з фото зразків на лінійці (координати кромок у мм,
+   вісь лопаті вгору); ступиця, посадка та отвори — з фото ступиці.
+   Кут β на 0,75R і на кінці лопаті рахується з кроку: β = arctg(P / 2πr). */
+const PROP_GEO = {
+  10: {
+    D: 254, P: 5, hub: 20, bore: 6, pcd: 15, hole: 2, c75: 16.5,
+    LE: [[-7.9, -8.7], [-11.8, -21.6], [-12.8, -35.2], [-12.4, -49.9], [-11.7, -63.2], [-10.3, -76.5], [-9.2, -89.7], [-8.3, -103.7], [-7.3, -116.7], [-7, -123.2]],
+    TE: [[6.8, -9.5], [9.9, -22.5], [11.5, -35.7], [12, -50], [11.2, -63.3], [10.1, -76.5], [8.2, -89.8], [6.3, -103.8], [3.8, -116.8], [0.2, -123.4]],
+    tip: [-3.5, -127],
+  },
+  15: {
+    D: 381, P: 10, hub: 25, bore: 6, pcd: 15, hole: 2, c75: 16.5,
+    LE: [[-3.4, -16.3], [-6.2, -35.3], [-9.5, -54.3], [-11.5, -74.6], [-12, -93.9], [-12.3, -113.3], [-12.2, -132.6], [-12, -152], [-12.6, -171.2], [-11.8, -181.5]],
+    TE: [[10.1, -13.2], [13, -33.4], [14, -53.3], [13.9, -74.2], [12.3, -93.9], [9.7, -113.6], [6.5, -133], [3.5, -152.5], [-0.8, -171.7], [-5.2, -181.8]],
+    tip: [-8.9, -190.3],
+  },
+};
+const f1 = (n) => String(Math.round(n * 10) / 10);
+const uk = (n, d = 1) => n.toFixed(d).replace('.', ',');
+/* ламана → гладка крива (Catmull-Rom → кубічні Безьє) */
+function crPath(pts) {
+  let d = '';
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    d += ` C${f1(p1[0] + (p2[0] - p0[0]) / 6)},${f1(p1[1] + (p2[1] - p0[1]) / 6)} ${f1(p2[0] - (p3[0] - p1[0]) / 6)},${f1(p2[1] - (p3[1] - p1[1]) / 6)} ${f1(p2[0])},${f1(p2[1])}`;
+  }
+  return d;
+}
+function bladePath(g, k) {
+  const sc = (pts) => pts.map(([x, y]) => [x * k, y * k]);
+  const le = sc(g.LE), te = sc(g.TE).reverse(), tip = [g.tip[0] * k, g.tip[1] * k];
+  return `M${f1(le[0][0])},${f1(le[0][1])}${crPath(le)} Q${f1(tip[0])},${f1(tip[1])} ${f1(te[0][0])},${f1(te[0][1])}${crPath(te)} Z`;
+}
+const PA = '<marker id="pa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L7,4 L0,7 Z" fill="rgba(255,61,79,0.85)"/></marker>';
+
+/** Пропелер 10″ / 15″ — планформа (вигляд зверху) + ступиця + переріз лопаті на 0,75R. Два SVG: поруч на десктопі, один під одним на телефоні. */
+export function propSketch(inch = 10) {
+  const g = PROP_GEO[inch] || PROP_GEO[10];
+  const R = 132, k = R / (g.D / 2), P = g.P * 25.4;
+  const beta = (r) => (Math.atan(P / (2 * Math.PI * r)) * 180) / Math.PI;
+  const b75 = beta((0.75 * g.D) / 2), btip = beta(g.D / 2);
+  const blade = bladePath(g, k);
+  const hubR = (g.hub / 2) * k, pcdR = (g.pcd / 2) * k, boreR = (g.bore / 2) * k, holeR = Math.max(1.1, (g.hole / 2) * k);
+  const holesAt = (rr, hr) => [-90, 30, 150].map((a) => { const t = (a * Math.PI) / 180; return `<circle class="ln" cx="${f1(rr * Math.cos(t))}" cy="${f1(rr * Math.sin(t))}" r="${f1(hr)}"/>`; }).join('');
+  const r75 = 0.75 * R;
+  const plan = `<svg class="sketch sketch--prop" viewBox="0 0 300 330" role="img" aria-label="Пропелер ${inch}″ — вигляд зверху"><defs>${PA}</defs>
+    <g transform="translate(150,150)">
+      <circle class="hair" r="${R}"/><circle class="dim" r="${f1(r75)}"/>
+      <line class="hair" x1="-${R + 8}" x2="${R + 8}" y1="0" y2="0"/><line class="hair" y1="-${R + 8}" y2="${R + 8}" x1="0" x2="0"/>
+      <g class="ln fillDim"><path d="${blade}"/><path d="${blade}" transform="rotate(120)"/><path d="${blade}" transform="rotate(240)"/></g>
+      <circle class="ln2 fillDim" r="${f1(hubR)}"/><circle class="dim" r="${f1(pcdR)}"/><circle class="ln" r="${f1(boreR)}"/>${holesAt(pcdR, holeR)}
+      <line class="dimL" x1="-30" x2="30" y1="-${f1(r75)}" y2="-${f1(r75)}"/>
+      <text x="-38" y="-${f1(r75 - 3)}" text-anchor="end">A</text><text x="38" y="-${f1(r75 - 3)}">A</text>
+      <text x="${f1(r75 * 0.72 + 6)}" y="-${f1(r75 * 0.72 + 2)}">0,75R</text>
+      <line class="hair" x1="-${R}" x2="-${R}" y1="0" y2="150"/><line class="hair" x1="${R}" x2="${R}" y1="0" y2="150"/>
+      <line class="dimL" x1="-${R}" x2="${R}" y1="145" y2="145" marker-start="url(#pa)" marker-end="url(#pa)"/>
+      <text class="big" x="0" y="164" text-anchor="middle">Ø${g.D}</text>
+      <text x="0" y="176" text-anchor="middle">${inch}″ · 3 лопаті · крок ${uk(g.P, g.P % 1 ? 1 : 0)}″</text>
+    </g></svg>`;
+  const kh = 30 / (g.hub / 2), ks = 3.2, c = g.c75 * ks;
+  const arc = (rr) => `M${f1(rr)},0 A${f1(rr)} ${f1(rr)} 0 0 0 ${f1(rr * Math.cos((b75 * Math.PI) / 180))},${f1(-rr * Math.sin((b75 * Math.PI) / 180))}`;
+  const det = `<svg class="sketch sketch--prop" viewBox="0 0 230 330" role="img" aria-label="Ступиця та переріз лопаті пропелера ${inch}″"><defs>${PA}</defs>
+    <g transform="translate(108,92)">
+      <text class="t" x="0" y="-64" text-anchor="middle">СТУПИЦЯ · ВИГЛЯД ЗВЕРХУ</text>
+      <line class="hair" x1="-46" x2="46" y1="0" y2="0"/><line class="hair" y1="-46" y2="46" x1="0" x2="0"/>
+      <circle class="ln2 fillDim" r="30"/><circle class="dim" r="${f1((g.pcd / 2) * kh)}"/><circle class="ln" r="${f1((g.bore / 2) * kh)}"/>${holesAt((g.pcd / 2) * kh, (g.hole / 2) * kh)}
+      <line class="hair" x1="0" x2="60" y1="-30" y2="-30"/><line class="hair" x1="0" x2="60" y1="30" y2="30"/>
+      <line class="dimL" x1="56" x2="56" y1="-30" y2="30" marker-start="url(#pa)" marker-end="url(#pa)"/>
+      <text x="62" y="3">Ø${g.hub}</text>
+      <line class="hair" x1="-4" y1="-4" x2="-48" y2="-48"/><text x="-50" y="-52" text-anchor="end">Ø${g.bore} посадка</text>
+      <text x="0" y="52" text-anchor="middle">3 × Ø${g.hole} на Ø${g.pcd}</text>
+    </g>
+    <g transform="translate(108,238)">
+      <text class="t" x="0" y="-62" text-anchor="middle">ПЕРЕРІЗ A–A · r = 0,75R = ${Math.round((0.75 * g.D) / 2)} мм</text>
+      <line class="dim" x1="-94" x2="94" y1="0" y2="0"/><text x="-94" y="17">площина обертання</text>
+      <g transform="rotate(-${f1(b75)})">
+        <line class="dim" x1="${f1(-c / 2 - 12)}" x2="${f1(c / 2 + 12)}" y1="0" y2="0"/>
+        <path class="ln2 fillDim" d="M${f1(-c / 2)},0 C${f1(-c / 2 + c * 0.1)},${f1(-c * 0.16)} ${f1(c / 2 - c * 0.25)},${f1(-c * 0.13)} ${f1(c / 2)},0 C${f1(c / 2 - c * 0.3)},${f1(c * 0.05)} ${f1(-c / 2 + c * 0.2)},${f1(c * 0.06)} ${f1(-c / 2)},0 Z"/>
+      </g>
+      <path class="dimL" d="${arc(44)}" marker-end="url(#pa)"/>
+      <text x="50" y="-8">β = ${uk(b75)}°</text>
+      <text x="0" y="36" text-anchor="middle">хорда ${uk(g.c75)} мм · β = arctg(P / 2πr)</text>
+      <text x="0" y="50" text-anchor="middle">на кінці лопаті ${uk(btip)}° · P = ${Math.round(P)} мм</text>
+    </g></svg>`;
+  return `<div class="propsk">${plan}${det}</div>`;
 }
 
 /** Карбоновий лист — у перспективі, з шарами та товщиною. */

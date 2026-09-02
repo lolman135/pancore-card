@@ -34,6 +34,7 @@ const CMP_MAX = 3;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const pad = (id) => `#${String(id).padStart(3, '0')}`;
 const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg>';
+const CHEV_DOWN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>';
 const X = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" width="14" height="14"><path d="M3 3l10 10M13 3L3 13"/></svg>';
 
 /* ---------- ключові параметри на картці: які підписи головні для категорії ---------- */
@@ -84,6 +85,9 @@ function tokens(it, kind) {
 
 /* ---------- стан ---------- */
 const state = { cat: 'all', q: '', brand: '', s: '', band: '', expanded: new Set(), compare: new Set(), openId: null };
+/* на телефоні (без бічної навігації) категорії — згорнуті вкладки; власне виробництво відкрите одразу */
+const mobileMQ = matchMedia('(max-width: 1100px)');
+const openCats = new Set(['own']);
 
 /* ---------- бічна навігація та чипи ---------- */
 function renderNav() {
@@ -94,6 +98,7 @@ function renderNav() {
 }
 function setCat(id) {
   state.cat = id; state.brand = ''; state.s = ''; state.band = '';
+  if (id !== 'all') openCats.add(id);
   history.replaceState(null, '', location.pathname + location.search + (id === 'all' ? '' : `#${id}`));
   renderNav(); renderFilters(); render();
   const on = chipsHost.querySelector('.is-on');
@@ -152,7 +157,7 @@ function summary(cat, items) {
   const brands = [...new Set(items.map((it) => it.brand).filter(Boolean))];
   const parts = [];
   const pats = KEY[cat];
-  if (pats) {
+  if (pats && cat !== 'own') {   // у власних виробах різні головні параметри (км і дюйми) — діапазон не має сенсу
     const found = items.map((it) => { const sp = SPEC[it.id]; return sp && sp.specs.find((x) => pats[0].test(x.k)); }).filter(Boolean);
     const nums = found.map((s) => parseFloat((s.v.match(/\d+(?:[.,]\d+)?/) || [''])[0].replace(',', '.'))).filter((n) => !Number.isNaN(n));
     if (nums.length >= 3 && Math.min(...nums) !== Math.max(...nums)) {
@@ -204,20 +209,33 @@ function render() {
     const all = groups.get(c.id);
     const show = single || state.expanded.has(c.id) ? all : all.slice(0, LIMIT);
     const rest = all.length - show.length;
+    // десктоп: завжди розгорнуто; телефон: вкладка відкрита, якщо обрана категорія, пошук або її розгорнули
+    const isOpen = !mobileMQ.matches || single || openCats.has(c.id);
     return `
-    <section class="cat-group ${c.id === 'own' ? 'cat-group--own' : ''} rise" id="${c.id}">
+    <section class="cat-group ${c.id === 'own' ? 'cat-group--own' : ''} ${isOpen ? 'is-open' : ''} rise" id="${c.id}">
       <div class="cat-group__head">
-        <h2 class="h-display">${c.name}</h2><span class="cnt">${all.length} поз.</span>
+        <h2 class="h-display"><button type="button" class="cat-group__btn" aria-expanded="${isOpen}" aria-controls="cat-${c.id}">${c.name}<span class="cnt">${all.length} поз.</span><span class="cat-group__chev" aria-hidden="true">${CHEV_DOWN}</span></button></h2>
         <p class="cat-sum">${summary(c.id, all)}</p>
       </div>
-      <div class="items">${show.map(itemCard).join('')}</div>
-      ${rest > 0 ? `<button class="more" type="button" data-more="${c.id}">Показати ще ${rest}</button>` : ''}
+      <div class="cat-group__body" id="cat-${c.id}"><div>
+        <div class="items">${show.map(itemCard).join('')}</div>
+        ${rest > 0 ? `<button class="more" type="button" data-more="${c.id}">Показати ще ${rest}</button>` : ''}
+      </div></div>
     </section>`;
   }).join('');
   observeRise(host);
 }
+mobileMQ.addEventListener('change', render);
 
 host.addEventListener('click', (e) => {
+  const tab = e.target.closest('.cat-group__btn');
+  if (tab) {
+    if (!mobileMQ.matches) return;
+    const g = tab.closest('.cat-group'); const on = !g.classList.contains('is-open');
+    g.classList.toggle('is-open', on); tab.setAttribute('aria-expanded', String(on));
+    if (on) openCats.add(g.id); else openCats.delete(g.id);
+    return;
+  }
   const more = e.target.closest('[data-more]');
   if (more) { state.expanded.add(more.dataset.more); render(); return; }
   const cat = e.target.closest('[data-cat]');
@@ -345,6 +363,6 @@ function openCompare() {
 /* ---------- старт: категорія або позиція з хеша ---------- */
 const h = location.hash.slice(1);
 const m = /^item-(\d+)$/.exec(h);
-if (h && catName[h]) state.cat = h;
+if (h && catName[h]) { state.cat = h; openCats.add(h); }
 renderNav(); renderFilters(); render(); renderBar();
 if (m && byId[Number(m[1])]) openItem(Number(m[1]));

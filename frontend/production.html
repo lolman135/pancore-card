@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Виробництво — PANCORE</title>
-<meta name="description" content="Власне виробництво PANCORE у Польщі: безшпульний звій оптоволокна G.657.A2 у польовому корпусі, композити, полімерне лиття, SMT. Паспорт виробу, OTDR-контроль, документи для замовника.">
+<meta name="description" content="Власне виробництво PANCORE у Польщі: безшпульний звій оптоволокна G.657.A2 у польовому корпусі, пропелери 10″ і 15″ литтям під тиском, композити, SMT. Паспорт виробу, OTDR-контроль, креслення, документи для замовника.">
 <meta name="theme-color" content="#07080b">
 <!-- База API. Порожньо = той самий origin (бекенд роздає фронт або стоїть за одним проксі).
      Окремий домен API: content="https://api.pancore.example" -->
@@ -59,6 +59,9 @@
     <p class="mnav__foot">PANCORE · MADE IN POLAND · EU</p>
   </nav>
 
+  <!-- точки-навігація по блоках сторінки (наповнює production.js) -->
+  <nav class="dots" id="dots" aria-label="Розділи сторінки"></nav>
+
   <main>
 
     <!-- ════════ СМУГА-ГЕРОЙ ════════ -->
@@ -78,21 +81,27 @@
       </div>
     </section>
 
-    <!-- ════════ ПЛИТКИ ЛІНІЙ ════════ -->
-    <section class="sec sec--tight">
-      <div class="wrap tiles">
-        <a class="tile rise" href="#coil"><span class="tile__st is-live">працює</span><h3>Оптоволокно</h3><span class="tile__v">5–60<small>км · звій</small></span><span class="tile__go">→</span></a>
-        <a class="tile rise" data-delay="1" href="#composites"><span class="tile__st is-soon">запуск 2026</span><h3>Композити</h3><span class="tile__v">23<small>одиниці обладнання</small></span><span class="tile__go">→</span></a>
-        <a class="tile rise" data-delay="2" href="#injection"><span class="tile__st is-live">працює</span><h3>Полімерне лиття</h3><span class="tile__v">3 800<small>kN</small></span><span class="tile__go">→</span></a>
-        <a class="tile rise" data-delay="3" href="#smt"><span class="tile__st">проєкт</span><h3>Електроніка · SMT</h3><span class="tile__v">2 000<small>м² площадки</small></span><span class="tile__go">→</span></a>
+    <!-- ════════ 01 ЛІНІЇ ════════ -->
+    <section class="sec sec--tight blk" id="lines" data-dot="Лінії">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">01 · Виробничі лінії</p>
+          <h2 class="h-display h2 rise" data-delay="1">Чотири лінії на одній площадці</h2>
+        </div>
+        <div class="tiles">
+          <a class="tile rise" href="#coil"><span class="tile__st is-live">працює</span><h3>Оптоволокно</h3><span class="tile__v">5–60<small>км · звій</small></span><span class="tile__go">→</span></a>
+          <a class="tile rise" data-delay="1" href="#composites"><span class="tile__st is-soon">запуск 2026</span><h3>Композити</h3><span class="tile__v">23<small>одиниці обладнання</small></span><span class="tile__go">→</span></a>
+          <a class="tile rise" data-delay="2" href="#injection"><span class="tile__st is-live">працює</span><h3>Полімерне лиття</h3><span class="tile__v">3 800<small>kN</small></span><span class="tile__go">→</span></a>
+          <a class="tile rise" data-delay="3" href="#smt"><span class="tile__st">проєкт</span><h3>Електроніка · SMT</h3><span class="tile__v">2 000<small>м² площадки</small></span><span class="tile__go">→</span></a>
+        </div>
       </div>
     </section>
 
-    <!-- ════════ ФЛАГМАН: БЕЗШПУЛЬНИЙ ЗВІЙ ════════ -->
-    <section class="sec sec--line feat" id="coil">
+    <!-- ════════ 02 ФЛАГМАН: БЕЗШПУЛЬНИЙ ЗВІЙ ════════ -->
+    <section class="sec sec--line blk feat" id="coil" data-dot="Звій">
       <div class="wrap">
-        <div class="sec__head">
-          <p class="eyebrow rise">Флагманський продукт · власне виробництво</p>
+        <div class="blk__head">
+          <p class="eyebrow rise">02 · Флагманський продукт · власне виробництво</p>
           <h2 class="h-display h2 rise" data-delay="1">Безшпульний звій оптоволокна G.657.A2</h2>
           <p class="lead rise" data-delay="2">Самонесуча прецизійна намотка без шпулі: менша маса, менший об’єм, реверсивне розгортання. Розроблено для тактичних волоконних ліній і мереж зв’язку, що розгортаються в польових умовах.</p>
           <div class="chips chips--tags rise" data-delay="3" style="margin-top:20px">
@@ -137,8 +146,17 @@
           <article class="rise" data-delay="1"><span class="n">05</span><h4>Реверсивна намотка</h4><p>Контрольоване розгортання та зворотне намотування — повторне використання лінії після передислокації.</p></article>
           <article class="rise" data-delay="2"><span class="n">06</span><h4>Багатоступеневий контроль</h4><p>Кожен звій після намотки: геометрія штангенциркулем, контроль маси, OTDR-рефлектометрія повної довжини.</p></article>
         </div>
+      </div>
+    </section>
 
-        <div class="rule rise" style="margin:56px 0 20px">Оптичні характеристики та контроль якості</div>
+    <!-- ════════ 03 ОПТИКА ТА OTDR ════════ -->
+    <section class="sec sec--line blk" id="optics" data-dot="Оптика · OTDR">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">03 · Оптичні характеристики та контроль якості</p>
+          <h2 class="h-display h2 rise" data-delay="1">Запас до ліміту ITU-T на обох довжинах хвилі</h2>
+          <p class="lead rise" data-delay="2">Кожен звій проходить OTDR-рефлектометрію повної довжини. Нижче — реальні рефлектограми зразків виробництва, не ілюстрації.</p>
+        </div>
         <div class="optics">
           <div class="rise">
             <dl class="kv" style="margin-top:0">
@@ -169,8 +187,17 @@
             <p class="otdr__fn"></p>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="rule rise" style="margin:56px 0 20px">Польовий корпус</div>
+    <!-- ════════ 04 ПОЛЬОВИЙ КОРПУС ════════ -->
+    <section class="sec sec--line blk" id="casing" data-dot="Корпус">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">04 · Польовий корпус</p>
+          <h2 class="h-display h2 rise" data-delay="1">Корпус, який відкривається без інструменту</h2>
+          <p class="lead rise" data-delay="2">PETG, 3D-друк; серійна версія — лиття під тиском на власних термопластавтоматах. Адаптація посадки під платформу замовника.</p>
+        </div>
         <div class="casing">
           <div class="rise">
             <div class="feats">
@@ -191,8 +218,17 @@
             <figure class="photo photo--wide" style="margin:0"><img src="assets/img/coil-cad.webp" alt="CAD-модель корпусу з ложементом трансивера" loading="lazy"><figcaption class="photo__cap">CAD · конструкція корпусу</figcaption></figure>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="rule rise" style="margin:56px 0 20px">Система в зборі · Sky + Ground station</div>
+    <!-- ════════ 05 СИСТЕМА SKY + GROUND ════════ -->
+    <section class="sec sec--line blk" id="system" data-dot="Система">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">05 · Система в зборі · Sky + Ground station</p>
+          <h2 class="h-display h2 rise" data-delay="1">Одне волокно, два кінці</h2>
+          <p class="lead rise" data-delay="2">Відео та керування одним волокном на відстань до 80 км в оптичному діапазоні 1310 / 1550 нм. Без радіосигнатури: нема що глушити чи пеленгувати.</p>
+        </div>
         <div class="sk sk--wide rise" data-sketch="link" aria-hidden="true" style="margin-bottom:14px"></div>
         <div class="sys">
           <article class="rise">
@@ -219,7 +255,6 @@
             </dl>
           </article>
         </div>
-        <p class="callout rise"><b>Одне волокно, два кінці:</b> відео + керування одним волокном · до 80 км · оптичний діапазон 1310 / 1550 нм · без радіосигнатури.</p>
 
         <div class="rule rise" style="margin:56px 0 20px">Застосування</div>
         <div class="apps">
@@ -231,197 +266,220 @@
           <article class="rise" data-delay="2"><span class="n">06</span><h4>Резервні лінії та передислокація</h4><p>Реверсивна намотка: згорнути лінію, перемістити, розгорнути знову.</p></article>
         </div>
         <div class="rise" style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
-          <a class="btn btn--primary" href="catalog.html#item-901">Специфікація в асортименті <span class="arr">→</span></a>
+          <a class="btn btn--primary" href="catalog.html#item-901">Специфікація звою в асортименті <span class="arr">→</span></a>
           <a class="btn btn--ghost" href="index.html#contact">Запит зразків та умов</a>
         </div>
       </div>
     </section>
 
-    <!-- ════════ ДОСЬЄ ЛІНІЙ ════════ -->
-    <section class="sec sec--line">
-      <div class="wrap dossier">
-        <nav class="dos-nav" aria-label="Лінії виробництва">
-          <a href="#fiber-line">Оптоволокно<small>лінія · працює</small></a>
-          <a href="#composites">Композити<small>запуск 2026</small></a>
-          <a href="#injection">Лиття<small>працює</small></a>
-          <a href="#smt">Електроніка<small>проєкт</small></a>
-          <a href="#docs">Документи<small>для замовника</small></a>
-        </nav>
+    <!-- ════════ 06 ОПТОВОЛОКОННА ЛІНІЯ ════════ -->
+    <section class="sec sec--line blk" id="fiber-line" data-dot="Лінія волокна">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">06 · Оптоволоконна лінія</p>
+          <h2 class="h-display h2 rise" data-delay="1">Від барабана до звою у корпусі</h2>
+          <p class="rise" data-delay="2"><span class="status">Лінія працює</span></p>
+        </div>
         <div class="dos">
-
-          <!-- 01 оптоволокно: процес і обладнання -->
-          <section id="fiber-line" class="dos__sec">
-            <p class="eyebrow rise">01 · Оптоволоконна лінія</p>
-            <h2 class="h-display h2 rise" data-delay="1">Від барабана до звою у корпусі</h2>
-            <div class="dos" style="margin-top:22px">
-              <div class="dos__block rise"><h4>Як</h4>
-                <div class="stages">
-                  <div class="stage"><b>Перемотування</b><span>з транспортних барабанів на оправку з контролем натягу та лічильником довжини</span></div>
-                  <div class="stage"><b>Стабілізація</b><span>просочення клеєм, сушіння — звій тримає форму без шпулі</span></div>
-                  <div class="stage"><b>Корпус</b><span>3D-друк PETG, монтаж трансивера, портів і патчкордів, маркування QR</span></div>
-                  <div class="stage"><b>Контроль</b><span>OTDR повної довжини, зважування, геометрія — протокол на кожен звій</span></div>
-                </div>
-              </div>
-              <div class="dos__block rise"><h4>Обладнання</h4>
-                <table class="eq">
-                  <thead><tr><th>Позиція</th><th>Параметри</th></tr></thead>
-                  <tbody>
-                    <tr><td>Намотувальні станції</td><td class="mono">власна конструкція · сервопривід · лічильник довжини · пневматичний притиск · огородження безпеки</td></tr>
-                    <tr><td>Оправки Ø53</td><td class="mono">єдиний посадковий сердечник для всієї лінійки 5–60 км</td></tr>
-                    <tr><td>3D-друк корпусів</td><td class="mono">PETG · кришка twist-lock · опція IP67</td></tr>
-                    <tr><td>Контроль</td><td class="mono">Auto OTDR до 60 км · ваги · штангенциркуль</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="dos__block rise"><h4>Що виробляємо</h4>
-                <div class="prods">
-                  <a class="prod" href="catalog.html#item-901"><div class="sk" data-sketch="coil" aria-hidden="true"></div><b>Безшпульний звій G.657.A2</b><p>5–60 км у польовому корпусі, з трансивером і патчкордами.</p><span class="go">Специфікація →</span></a>
-                  <a class="prod" href="catalog.html#optic"><div class="sk" data-sketch="sky" aria-hidden="true"></div><b>Sky + Ground station</b><p>Оптичний канал відео та керування до 80 км.</p><span class="go">Позиції →</span></a>
-                </div>
-              </div>
+          <div class="dos__block rise"><h4>Як</h4>
+            <div class="stages">
+              <div class="stage"><b>Перемотування</b><span>з транспортних барабанів на оправку з контролем натягу та лічильником довжини</span></div>
+              <div class="stage"><b>Стабілізація</b><span>просочення клеєм, сушіння — звій тримає форму без шпулі</span></div>
+              <div class="stage"><b>Корпус</b><span>3D-друк PETG, монтаж трансивера, портів і патчкордів, маркування QR</span></div>
+              <div class="stage"><b>Контроль</b><span>OTDR повної довжини, зважування, геометрія — протокол на кожен звій</span></div>
             </div>
-          </section>
-
-          <!-- 02 композити -->
-          <section id="composites" class="dos__sec" style="margin-top:56px">
-            <p class="eyebrow rise">02 · Композитні матеріали</p>
-            <h2 class="h-display h2 rise" data-delay="1">Карбон: листи, труби, рами</h2>
-            <p class="lead rise" data-delay="2">Лінія з 23 одиниць обладнання: розкрій тканини, намотування труб, обмотка стрічкою з ЧПУ, печі полімеризації, безцентрове шліфування та прес для плит 1400 × 1200 мм. Під власні рами БпЛА та на замовлення — за кресленням клієнта.</p>
-            <p class="rise" style="margin-top:14px"><span class="status">Лінія в стадії запуску · 2026</span></p>
-            <div class="dos" style="margin-top:22px">
-              <div class="dos__block rise"><h4>Що виробляємо</h4>
-                <div class="prods">
-                  <a class="prod" href="catalog.html#carbon"><div class="sk" data-sketch="sheet" aria-hidden="true"></div><b>Карбонові листи</b><p>600 × 500 мм · 2 / 3 / 5 / 6 / 7 / 8 мм; 1000 × 1000 мм · 3 / 7 мм.</p><span class="go">У каталозі →</span></a>
-                  <a class="prod" href="catalog.html#carbon"><div class="sk" data-sketch="tube" aria-hidden="true"></div><b>Карбонові труби</b><p>16 × 12 × 2000 мм, інші перерізи за запитом.</p><span class="go">У каталозі →</span></a>
-                  <a class="prod" href="catalog.html#frames"><div class="sk" data-sketch="sheet" aria-hidden="true"></div><b>Рами БпЛА 10″…18″</b><p>Карбонові пластини + 3D-друковані вузли, комплект кріплення.</p><span class="go">У каталозі →</span></a>
-                </div>
-              </div>
-              <div class="dos__block rise"><h4>Як</h4>
-                <div class="stages">
-                  <div class="stage"><b>Розкрій</b><span>автомат розкрою тканини 1,2 м</span></div>
-                  <div class="stage"><b>Викладка · намотування</b><span>трубонамотувальний 3-валковий 3,5 м</span></div>
-                  <div class="stage"><b>Обмотка стрічкою</b><span>ЧПУ · 1,8 / 3,5 м</span></div>
-                  <div class="stage"><b>Полімеризація</b><span>печі 1×1×2 та 1×1×3,8 м</span></div>
-                  <div class="stage"><b>Зняття оправок · різання</b><span>знімачі 0,8 / 2 / 3 м, відрізний 1,6 м</span></div>
-                  <div class="stage"><b>Шліфування · контроль</b><span>безцентрове MT1080A</span></div>
-                </div>
-              </div>
-              <div class="dos__block rise"><h4>Обладнання</h4>
-                <table class="eq">
-                  <thead><tr><th>Позиція</th><th>Параметри</th></tr></thead>
-                  <tbody>
-                    <tr><td>Розкрійний автомат тканини</td><td class="mono">ширина 1,2 м · 1800 × 2100 × 1540 мм</td></tr>
-                    <tr><td>Трубонамотувальний 3-валковий</td><td class="mono">довжина 3,5 м</td></tr>
-                    <tr><td>Станок обмотки стрічкою ЧПУ</td><td class="mono">1,8 м та 3,5 м</td></tr>
-                    <tr><td>Печі полімеризації</td><td class="mono">1 × 1 × 2 м · 1 × 1 × 3,8 м</td></tr>
-                    <tr><td>Прес для плит</td><td class="mono">плита 1400 × 1200 мм</td></tr>
-                    <tr><td>Безцентрово-шліфувальний</td><td class="mono">MT1080A</td></tr>
-                    <tr><td>Знімачі оправок · відрізний напівавтомат</td><td class="mono">0,8 / 2 / 3 м · 1,6 м</td></tr>
-                  </tbody>
-                </table>
-              </div>
+          </div>
+          <div class="dos__block rise"><h4>Обладнання</h4>
+            <table class="eq">
+              <thead><tr><th>Позиція</th><th>Параметри</th></tr></thead>
+              <tbody>
+                <tr><td>Намотувальні станції</td><td class="mono">власна конструкція · сервопривід · лічильник довжини · пневматичний притиск · огородження безпеки</td></tr>
+                <tr><td>Оправки Ø53</td><td class="mono">єдиний посадковий сердечник для всієї лінійки 5–60 км</td></tr>
+                <tr><td>3D-друк корпусів</td><td class="mono">PETG · кришка twist-lock · опція IP67</td></tr>
+                <tr><td>Контроль</td><td class="mono">Auto OTDR до 60 км · ваги · штангенциркуль</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="dos__block rise"><h4>Що виробляємо</h4>
+            <div class="prods">
+              <a class="prod" href="catalog.html#item-901"><div class="sk" data-sketch="coil" aria-hidden="true"></div><b>Безшпульний звій G.657.A2</b><p>5–60 км у польовому корпусі, з трансивером і патчкордами.</p><span class="go">Специфікація →</span></a>
+              <a class="prod" href="catalog.html#optic"><div class="sk" data-sketch="sky" aria-hidden="true"></div><b>Sky + Ground station</b><p>Оптичний канал відео та керування до 80 км.</p><span class="go">Позиції →</span></a>
             </div>
-          </section>
-
-          <!-- 03 лиття -->
-          <section id="injection" class="dos__sec" style="margin-top:56px">
-            <p class="eyebrow rise">03 · Полімерне лиття під тиском</p>
-            <h2 class="h-display h2 rise" data-delay="1">Пропелери та корпуси серійно</h2>
-            <p class="lead rise" data-delay="2">Два термопластавтомати Haitian MA3200 та MA3800 із 5-осьовими роботами знімання, сушарками гранул і термостатами форм. Перші вироби — пропелери 10″ та 15″ для важких FPV-платформ і корпуси звоїв оптоволокна.</p>
-            <div class="dos" style="margin-top:22px">
-              <div class="dos__block rise"><h4>Що виробляємо</h4>
-                <div class="prods prods--3" id="prop-box">
-                  <div class="prod" style="grid-row:span 1">
-                    <div class="toggle" role="group" aria-label="Розмір пропелера"><button type="button" data-inch="10" class="is-on">10″</button><button type="button" data-inch="15">15″</button></div>
-                    <div class="sk" data-sketch="prop" aria-hidden="true"></div>
-                  </div>
-                  <div class="prod">
-                    <b>Пропелер PANCORE, 3 лопаті</b>
-                    <dl class="kv">
-                      <div><dt>Діаметр</dt><dd data-p="d">10″ · 254 мм</dd></div>
-                      <div><dt>Крок</dt><dd data-p="pitch">5,0″</dd></div>
-                      <div><dt>Кут атаки 0,75R</dt><dd data-p="a75">12,0°</dd></div>
-                      <div><dt>Кут на кінці</dt><dd data-p="tip">9,0°</dd></div>
-                      <div><dt>Матеріал</dt><dd>армований поліамід · скло / вуглець</dd></div>
-                      <div><dt>Термопластавтомат</dt><dd data-p="force">3 200 kN</dd></div>
-                    </dl>
-                    <a class="go" data-p="link" href="catalog.html#item-902" style="margin-top:12px">Специфікація →</a>
-                  </div>
-                  <a class="prod" href="catalog.html#item-901"><div class="sk" data-sketch="casing" aria-hidden="true"></div><b>Корпуси звоїв</b><p>PETG, 3D-друк; серійна версія — лиття під тиском.</p><span class="go">Специфікація →</span></a>
-                </div>
-              </div>
-              <div class="dos__block rise"><h4>Як</h4>
-                <div class="stages">
-                  <div class="stage"><b>Сушіння гранул</b><span>сушарки WSDB, завантажувачі</span></div>
-                  <div class="stage"><b>Лиття</b><span>ТПА 3 200 / 3 800 kN, термостати форм, чиллер</span></div>
-                  <div class="stage"><b>Знімання</b><span>5-осьові роботи RBR1100 / RBR1300</span></div>
-                  <div class="stage"><b>Обрізання · балансування</b><span>дробарка для повернення ливників</span></div>
-                  <div class="stage"><b>Контроль</b><span>тяга, баланс, геометрія — протокол партії</span></div>
-                </div>
-              </div>
-              <div class="dos__block rise"><h4>Обладнання</h4>
-                <table class="eq">
-                  <thead><tr><th>Позиція</th><th>Параметри</th></tr></thead>
-                  <tbody>
-                    <tr><td>Термопластавтомат Haitian MA3200</td><td class="mono">зусилля змикання 3 200 kN · прес-форма пропелера 10″</td></tr>
-                    <tr><td>Термопластавтомат Haitian MA3800</td><td class="mono">зусилля змикання 3 800 kN · прес-форма пропелера 15″</td></tr>
-                    <tr><td>Роботи знімання</td><td class="mono">5-осьові, 2 шт</td></tr>
-                    <tr><td>Периферія</td><td class="mono">сушарки 2 шт · завантажувачі 2 шт · чиллер · термостати форм 2 шт · дробарка</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
-
-          <!-- 04 SMT -->
-          <section id="smt" class="dos__sec" style="margin-top:56px">
-            <p class="eyebrow rise">04 · Електроніка та SMT</p>
-            <h2 class="h-display h2 rise" data-delay="1">Наступний етап — власний монтаж плат</h2>
-            <p class="lead rise" data-delay="2">Лінія поверхневого монтажу на площадці понад 2000 м² у Підкарпатті: трафаретний друк пасти, SPI, встановлення компонентів, конвекційна пайка, AOI та рентген-контроль.</p>
-            <p class="rise" style="margin-top:14px"><span class="status">Проєкт у реалізації</span></p>
-            <div class="dos" style="margin-top:22px">
-              <div class="dos__block rise"><h4>Як</h4>
-                <div class="stages">
-                  <div class="stage"><b>Друк пасти</b><span>трафаретний принтер</span></div>
-                  <div class="stage"><b>SPI</b><span>3D-інспекція пасти</span></div>
-                  <div class="stage"><b>Установлення</b><span>високошвидкісний + багатофункціональний установники</span></div>
-                  <div class="stage"><b>Оплавлення</b><span>багатозонна конвекційна піч</span></div>
-                  <div class="stage"><b>AOI · X-Ray</b><span>оптична інспекція, рентген BGA</span></div>
-                </div>
-              </div>
-              <div class="dos__block rise"><h4>Що виробляємо</h4>
-                <div class="prods">
-                  <div class="prod"><div class="sk" data-sketch="smt" aria-hidden="true"></div><b>Монтаж плат для бортової електроніки</b><p>Компоненти від 0201 до QFP / BGA. Запуск після введення площадки.</p></div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- 05 документи -->
-          <section id="docs" class="dos__sec" style="margin-top:56px">
-            <p class="eyebrow rise">05 · Документи для замовника</p>
-            <h2 class="h-display h2 rise" data-delay="1">Кожна партія — з протоколом</h2>
-            <p class="lead rise" data-delay="2">Вимірювання виконуються на виробництві та фіксуються у журналі якості. Комплект проходить митницю і технічне приймання без додаткових запитів.</p>
-            <div class="docs rise" style="margin-top:22px">
-              <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>TDS</b><span>технічний паспорт виробу</span></div></div>
-              <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Протокол партії</b><span>OTDR для звоїв · тяга і геометрія для пропелерів</span></div></div>
-              <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Декларація виробника</b><span>відповідність заявленим характеристикам</span></div></div>
-              <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Походження</b><span>сертифікат Made in Poland · EUR.1 для України</span></div></div>
-              <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Маркування QR</b><span>унікальний код кожного звою — простежуваність партії</span></div></div>
-              <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Інструкція</b><span>розгортання, підключення, зворотна намотка</span></div></div>
-            </div>
-          </section>
-
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ════════ CTA ════════ -->
-    <section class="sec sec--tight">
+    <!-- ════════ 07 КОМПОЗИТИ ════════ -->
+    <section class="sec sec--line blk" id="composites" data-dot="Композити">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">07 · Композитні матеріали</p>
+          <h2 class="h-display h2 rise" data-delay="1">Карбон: листи, труби, рами</h2>
+          <p class="lead rise" data-delay="2">Лінія з 23 одиниць обладнання: розкрій тканини, намотування труб, обмотка стрічкою з ЧПУ, печі полімеризації, безцентрове шліфування та прес для плит 1400 × 1200 мм. Під власні рами БпЛА та на замовлення — за кресленням клієнта.</p>
+          <p class="rise" data-delay="3"><span class="status">Лінія в стадії запуску · 2026</span></p>
+        </div>
+        <div class="dos">
+          <div class="dos__block rise"><h4>Що виробляємо</h4>
+            <div class="prods">
+              <a class="prod" href="catalog.html#carbon"><div class="sk" data-sketch="sheet" aria-hidden="true"></div><b>Карбонові листи</b><p>600 × 500 мм · 2 / 3 / 5 / 6 / 7 / 8 мм; 1000 × 1000 мм · 3 / 7 мм.</p><span class="go">У каталозі →</span></a>
+              <a class="prod" href="catalog.html#carbon"><div class="sk" data-sketch="tube" aria-hidden="true"></div><b>Карбонові труби</b><p>16 × 12 × 2000 мм, інші перерізи за запитом.</p><span class="go">У каталозі →</span></a>
+              <a class="prod" href="catalog.html#frames"><div class="sk" data-sketch="sheet" aria-hidden="true"></div><b>Рами БпЛА 10″…18″</b><p>Карбонові пластини + 3D-друковані вузли, комплект кріплення.</p><span class="go">У каталозі →</span></a>
+            </div>
+          </div>
+          <div class="dos__block rise"><h4>Як</h4>
+            <div class="stages">
+              <div class="stage"><b>Розкрій</b><span>автомат розкрою тканини 1,2 м</span></div>
+              <div class="stage"><b>Викладка · намотування</b><span>трубонамотувальний 3-валковий 3,5 м</span></div>
+              <div class="stage"><b>Обмотка стрічкою</b><span>ЧПУ · 1,8 / 3,5 м</span></div>
+              <div class="stage"><b>Полімеризація</b><span>печі 1×1×2 та 1×1×3,8 м</span></div>
+              <div class="stage"><b>Зняття оправок · різання</b><span>знімачі 0,8 / 2 / 3 м, відрізний 1,6 м</span></div>
+              <div class="stage"><b>Шліфування · контроль</b><span>безцентрове MT1080A</span></div>
+            </div>
+          </div>
+          <div class="dos__block rise"><h4>Обладнання</h4>
+            <table class="eq">
+              <thead><tr><th>Позиція</th><th>Параметри</th></tr></thead>
+              <tbody>
+                <tr><td>Розкрійний автомат тканини</td><td class="mono">ширина 1,2 м · 1800 × 2100 × 1540 мм</td></tr>
+                <tr><td>Трубонамотувальний 3-валковий</td><td class="mono">довжина 3,5 м</td></tr>
+                <tr><td>Станок обмотки стрічкою ЧПУ</td><td class="mono">1,8 м та 3,5 м</td></tr>
+                <tr><td>Печі полімеризації</td><td class="mono">1 × 1 × 2 м · 1 × 1 × 3,8 м</td></tr>
+                <tr><td>Прес для плит</td><td class="mono">плита 1400 × 1200 мм</td></tr>
+                <tr><td>Безцентрово-шліфувальний</td><td class="mono">MT1080A</td></tr>
+                <tr><td>Знімачі оправок · відрізний напівавтомат</td><td class="mono">0,8 / 2 / 3 м · 1,6 м</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ 08 ЛИТТЯ · ПРОПЕЛЕРИ ════════ -->
+    <section class="sec sec--line blk" id="injection" data-dot="Лиття · пропелери">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">08 · Полімерне лиття під тиском</p>
+          <h2 class="h-display h2 rise" data-delay="1">Пропелери 10″ та 15″ — власні прес-форми</h2>
+          <p class="lead rise" data-delay="2">Два термопластавтомати Haitian MA3200 та MA3800 із 5-осьовими роботами знімання. Трилопатеві пропелери для важких FPV-платформ і VTOL у двох матеріалах; далі — корпуси звоїв оптоволокна.</p>
+          <p class="rise" data-delay="3"><span class="status">Лінія працює</span></p>
+        </div>
+
+        <div class="propdeck rise" id="prop-box">
+          <div class="propdeck__draw">
+            <div class="propdeck__bar">
+              <div class="toggle" role="group" aria-label="Розмір пропелера"><button type="button" data-inch="10" class="is-on">10 × 5,0 × 3</button><button type="button" data-inch="15">15 × 10 × 3</button></div>
+              <span class="propdeck__note">Розміри у мм · обмір серійних зразків</span>
+            </div>
+            <div class="sk sk--prop" data-sketch="prop" data-arg="10" aria-hidden="true"></div>
+          </div>
+          <div class="propdeck__spec">
+            <h3 data-p="title">Пропелер PANCORE 10 × 5,0 × 3</h3>
+            <dl class="kv">
+              <div><dt>Діаметр</dt><dd data-p="d"></dd></div>
+              <div><dt>Крок</dt><dd data-p="pitch"></dd></div>
+              <div><dt>Кут атаки</dt><dd data-p="ang"></dd></div>
+              <div><dt>Ступиця</dt><dd data-p="hub"></dd></div>
+              <div><dt>Хорда лопаті</dt><dd data-p="chord"></dd></div>
+              <div><dt>Термопластавтомат</dt><dd data-p="force"></dd></div>
+            </dl>
+            <table class="chords" aria-label="Хорда лопаті по радіусу">
+              <thead><tr><th>r / R</th><th>0,25</th><th>0,50</th><th>0,75</th><th>кінець</th></tr></thead>
+              <tbody><tr><th>хорда, мм</th><td data-c="0"></td><td data-c="1"></td><td data-c="2"></td><td data-c="3"></td></tr></tbody>
+            </table>
+            <div class="mat" role="group" aria-label="Матеріал">
+              <button type="button" class="mat__opt is-on" data-mat="ppa" aria-pressed="true"><b>PPA · GF30 · CF10</b><span>преміум</span></button>
+              <button type="button" class="mat__opt" data-mat="pa6" aria-pressed="false"><b>PA6 · GF40</b><span>стандарт</span></button>
+            </div>
+            <dl class="kv kv--mat" data-p="mat"></dl>
+            <a class="btn btn--ghost btn--sm" data-p="link" href="catalog.html#item-902">Специфікація в асортименті →</a>
+          </div>
+        </div>
+
+        <div class="rule rise" style="margin:48px 0 20px">Процес і обладнання</div>
+        <div class="dos">
+          <div class="dos__block rise"><h4>Як</h4>
+            <div class="stages">
+              <div class="stage"><b>Сушіння гранул</b><span>сушарки WSDB, завантажувачі</span></div>
+              <div class="stage"><b>Лиття</b><span>ТПА 3 200 / 3 800 kN, термостати форм, чиллер</span></div>
+              <div class="stage"><b>Знімання</b><span>5-осьові роботи RBR1100 / RBR1300</span></div>
+              <div class="stage"><b>Обрізання · балансування</b><span>дробарка для повернення ливників</span></div>
+              <div class="stage"><b>Контроль</b><span>тяга, баланс, геометрія — протокол партії</span></div>
+            </div>
+          </div>
+          <div class="dos__block rise"><h4>Обладнання</h4>
+            <table class="eq">
+              <thead><tr><th>Позиція</th><th>Параметри</th></tr></thead>
+              <tbody>
+                <tr><td>Термопластавтомат Haitian MA3200</td><td class="mono">зусилля змикання 3 200 kN · прес-форма пропелера 10″</td></tr>
+                <tr><td>Термопластавтомат Haitian MA3800</td><td class="mono">зусилля змикання 3 800 kN · прес-форма пропелера 15″</td></tr>
+                <tr><td>Роботи знімання</td><td class="mono">5-осьові, 2 шт</td></tr>
+                <tr><td>Периферія</td><td class="mono">сушарки 2 шт · завантажувачі 2 шт · чиллер · термостати форм 2 шт · дробарка</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="dos__block rise"><h4>Наступні вироби</h4>
+            <div class="prods">
+              <a class="prod" href="catalog.html#item-901"><div class="sk" data-sketch="casing" aria-hidden="true"></div><b>Корпуси звоїв</b><p>PETG, 3D-друк; серійна версія — лиття під тиском.</p><span class="go">Специфікація →</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ 09 SMT ════════ -->
+    <section class="sec sec--line blk" id="smt" data-dot="Електроніка">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">09 · Електроніка та SMT</p>
+          <h2 class="h-display h2 rise" data-delay="1">Наступний етап — власний монтаж плат</h2>
+          <p class="lead rise" data-delay="2">Лінія поверхневого монтажу на площадці понад 2000 м² у Підкарпатті: трафаретний друк пасти, SPI, встановлення компонентів, конвекційна пайка, AOI та рентген-контроль.</p>
+          <p class="rise" data-delay="3"><span class="status">Проєкт у реалізації</span></p>
+        </div>
+        <div class="dos">
+          <div class="dos__block rise"><h4>Як</h4>
+            <div class="stages">
+              <div class="stage"><b>Друк пасти</b><span>трафаретний принтер</span></div>
+              <div class="stage"><b>SPI</b><span>3D-інспекція пасти</span></div>
+              <div class="stage"><b>Установлення</b><span>високошвидкісний + багатофункціональний установники</span></div>
+              <div class="stage"><b>Оплавлення</b><span>багатозонна конвекційна піч</span></div>
+              <div class="stage"><b>AOI · X-Ray</b><span>оптична інспекція, рентген BGA</span></div>
+            </div>
+          </div>
+          <div class="dos__block rise"><h4>Що виробляємо</h4>
+            <div class="prods">
+              <div class="prod"><div class="sk" data-sketch="smt" aria-hidden="true"></div><b>Монтаж плат для бортової електроніки</b><p>Компоненти від 0201 до QFP / BGA. Запуск після введення площадки.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ 10 ДОКУМЕНТИ ════════ -->
+    <section class="sec sec--line blk" id="docs" data-dot="Документи">
+      <div class="wrap">
+        <div class="blk__head">
+          <p class="eyebrow rise">10 · Документи для замовника</p>
+          <h2 class="h-display h2 rise" data-delay="1">Кожна партія — з протоколом</h2>
+          <p class="lead rise" data-delay="2">Вимірювання виконуються на виробництві та фіксуються у журналі якості. Комплект проходить митницю і технічне приймання без додаткових запитів.</p>
+        </div>
+        <div class="docs rise">
+          <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>TDS</b><span>технічний паспорт виробу</span></div></div>
+          <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Протокол партії</b><span>OTDR для звоїв · тяга і геометрія для пропелерів</span></div></div>
+          <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Декларація виробника</b><span>відповідність заявленим характеристикам</span></div></div>
+          <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Походження</b><span>сертифікат Made in Poland · EUR.1 для України</span></div></div>
+          <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Маркування QR</b><span>унікальний код кожного звою — простежуваність партії</span></div></div>
+          <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Інструкція</b><span>розгортання, підключення, зворотна намотка</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ 11 ЗАПИТ ════════ -->
+    <section class="sec sec--tight blk" id="request" data-dot="Запит">
       <div class="wrap">
         <div class="cta rise">
           <div>
-            <p class="eyebrow">Запит</p>
+            <p class="eyebrow">11 · Запит</p>
             <h2 class="h-display h2">Потрібна специфікація під вашу платформу?</h2>
             <p class="lead">Довжина звою, геометрія пропелера, розкрій листів — підготуємо пропозицію протягом робочого дня.</p>
           </div>
