@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PANCORE — дроны и оборонное оборудование</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0508;
+    --red: #ff2e3f;
+    --red-dim: #8f2530;
+    --text: #f2e9ea;
+    --text-dim: #b39a9e;
+    --panel: rgba(20, 8, 12, 0.55);
+    --line: rgba(255, 46, 63, 0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Manrope", sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  #mesh {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    display: block;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  h1, h2, h3, .brand, .nav a, button {
+    font-family: "Chakra Petch", sans-serif;
+  }
+
+  /* ---------- шапка ---------- */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 26px 0;
+  }
+
+  .brand {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .brand em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .nav {
+    display: flex;
+    gap: 30px;
+  }
+  .nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+  }
+  .nav a:hover, .nav a:focus-visible { color: var(--red); }
+
+  /* ---------- герой ---------- */
+  .hero {
+    min-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0 80px;
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 8vw, 96px);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: 0.02em;
+    max-width: 15ch;
+    text-shadow: 0 0 40px rgba(255, 46, 63, 0.35);
+  }
+
+  .hero p {
+    margin-top: 26px;
+    max-width: 52ch;
+    color: var(--text-dim);
+    font-size: 19px;
+  }
+
+  .hero .cta {
+    margin-top: 42px;
+    display: inline-flex;
+    gap: 16px;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 30px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid var(--red);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .btn-solid {
+    background: var(--red);
+    color: #16040a;
+  }
+  .btn-solid:hover, .btn-solid:focus-visible {
+    box-shadow: 0 0 28px rgba(255, 46, 63, 0.55);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--red);
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible {
+    background: rgba(255, 46, 63, 0.12);
+  }
+
+  /* ---------- секции ---------- */
+  section { padding: 90px 0; }
+
+  section h2 {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 600;
+    margin-bottom: 40px;
+  }
+  section h2::after {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 2px;
+    margin-top: 14px;
+    background: var(--red);
+    box-shadow: 0 0 12px var(--red);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(6px);
+    padding: 30px 28px;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+  .card:hover {
+    border-color: var(--red);
+    transform: translateY(-3px);
+  }
+  .card h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .card p {
+    color: var(--text-dim);
+    font-size: 15.5px;
+  }
+
+  .about p {
+    max-width: 68ch;
+    color: var(--text-dim);
+    font-size: 18px;
+  }
+  .about p + p { margin-top: 18px; }
+  .about strong { color: var(--text); }
+
+  /* ---------- контакты ---------- */
+  .contact form {
+    max-width: 560px;
+    display: grid;
+    gap: 16px;
+  }
+  .contact label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dim);
+    display: grid;
+    gap: 8px;
+  }
+  .contact input, .contact textarea {
+    background: rgba(15, 6, 9, 0.7);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font: inherit;
+    padding: 13px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .contact input:focus, .contact textarea:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 14px rgba(255, 46, 63, 0.3);
+  }
+  .contact textarea { min-height: 130px; resize: vertical; }
+  .contact button { justify-self: start; }
+
+  #form-status {
+    font-size: 15px;
+    min-height: 22px;
+  }
+  #form-status.ok { color: #7ee29a; }
+  #form-status.err { color: var(--red); }
+
+  footer {
+    padding: 36px 0 44px;
+    border-top: 1px solid var(--line);
+    color: var(--text-dim);
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+
+  @media (max-width: 640px) {
+    .nav { display: none; }
+    section { padding: 64px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .card, .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="mesh" aria-hidden="true"></canvas>
+
+<div class="page">
+  <header>
+    <a class="brand" href="#">PAN<em>CORE</em></a>
+    <nav class="nav">
+      <a href="#solutions">Решения</a>
+      <a href="#about">О компании</a>
+      <a href="#contact">Связаться</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Дроны и оборонные системы нового поколения</h1>
+    <p>PANCORE разрабатывает и производит беспилотные комплексы, средства связи
+       и защитное оборудование для государственных заказчиков и промышленности.</p>
+    <div class="cta">
+      <a class="btn btn-solid" href="#contact">Обсудить проект</a>
+      <a class="btn btn-ghost" href="#solutions">Наши решения</a>
+    </div>
+  </section>
+
+  <section id="solutions">
+    <h2>Решения</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Разведывательные БПЛА</h3>
+        <p>Аппараты самолётного и мультироторного типа с продолжительностью полёта
+           до 12 часов, тепловизионными и оптическими модулями.</p>
+      </div>
+      <div class="card">
+        <h3>Ударные и грузовые платформы</h3>
+        <p>Тяжёлые платформы с полезной нагрузкой до 40 кг, модульная
+           архитектура под задачи заказчика.</p>
+      </div>
+      <div class="card">
+        <h3>Средства РЭБ и защита</h3>
+        <p>Детекторы дронов, комплексы подавления каналов управления
+           и навигации, защита объектов и колонн.</p>
+      </div>
+      <div class="card">
+        <h3>Наземные станции управления</h3>
+        <p>Защищённые каналы связи, ретрансляция, планирование миссий
+           и интеграция с существующими системами.</p>
+      </div>
+      <div class="card">
+        <h3>Обучение операторов</h3>
+        <p>Полный цикл подготовки: симуляторы, полевые занятия,
+           сопровождение эксплуатации.</p>
+      </div>
+      <div class="card">
+        <h3>Сервис и модернизация</h3>
+        <p>Ремонт, обновление ПО и аппаратной части, гарантийное
+           и постгарантийное обслуживание парка техники.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <h2>О компании</h2>
+    <p><strong>PANCORE</strong> — инженерная компания полного цикла: от НИОКР и
+       прототипирования до серийного производства и полевой поддержки.
+       Собственное производство, лётно-испытательная база и команда инженеров
+       с опытом в авиации, радиоэлектронике и системах управления.</p>
+    <p>Мы работаем по контрактам с госструктурами и промышленными заказчиками,
+       соблюдаем требования по защите информации и предоставляем полный пакет
+       конструкторской и эксплуатационной документации.</p>
+  </section>
+
+  <section id="contact" class="contact">
+    <h2>Связаться с нами</h2>
+    <form id="lead-form">
+      <label>Имя
+        <input name="name" type="text" required minlength="2" maxlength="120" autocomplete="name">
+      </label>
+      <label>Email
+        <input name="email" type="email" required autocomplete="email">
+      </label>
+      <label>Сообщение
+        <textarea name="message" required minlength="5" maxlength="2000"
+          placeholder="Кратко опишите задачу"></textarea>
+      </label>
+      <button class="btn btn-solid" type="submit">Отправить заявку</button>
+      <p id="form-status" role="status"></p>
+    </form>
+  </section>
+
+  <footer>
+    <span>© 2026 PANCORE</span>
+    <span>info@pancore.tech</span>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   Интерактивный plexus-фон по референсу:
+   два слоя красной сетки (верхний и нижний), тёмная полоса
+   посередине, узлы светятся и тянутся к курсору.
+   ============================================================ */
+(() => {
+  const canvas = document.getElementById("mesh");
+  const ctx = canvas.getContext("2d");
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let W, H, dpr, nodes = [], sparks = [];
+  const mouse = { x: -1e4, y: -1e4, active: false };
+
+  const RED = (a) => `rgba(255, 60, 72, ${a})`;
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    initNodes();
+  }
+
+  // Две горизонтальные полосы, как на референсе: сетка сверху и снизу
+  function bandY(band) {
+    return band === 0
+      ? H * (0.02 + Math.random() * 0.36)   // верхний слой
+      : H * (0.55 + Math.random() * 0.43);  // нижний слой
+  }
+
+  function initNodes() {
+    nodes = [];
+    const count = Math.min(150, Math.floor((W * H) / 11000));
+    for (let i = 0; i < count; i++) {
+      const band = i % 2;
+      nodes.push({
+        band,
+        x: Math.random() * W,
+        y: bandY(band),
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.18,
+        r: 0.8 + Math.random() * 1.8,
+        glow: Math.random() < 0.12 // часть узлов — яркие "звёзды"
+      });
+    }
+    // пылинки-искры на заднем плане
+    sparks = Array.from({ length: 40 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: 0.5 + Math.random() * 1.6,
+      a: 0.05 + Math.random() * 0.25,
+      s: 0.05 + Math.random() * 0.15
+    }));
+  }
+
+  const LINK = 150;        // дистанция соединения узлов
+  const MOUSE_R = 240;     // радиус влияния курсора
+  const PULL = 0.045;      // сила притяжения к курсору
+
+  function step() {
+    ctx.clearRect(0, 0, W, H);
+
+    // фон — лёгкая красная дымка по полосам
+    const fog = ctx.createLinearGradient(0, 0, 0, H);
+    fog.addColorStop(0, "rgba(120, 20, 30, 0.10)");
+    fog.addColorStop(0.45, "rgba(0, 0, 0, 0)");
+    fog.addColorStop(0.75, "rgba(120, 20, 30, 0.08)");
+    fog.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = fog;
+    ctx.fillRect(0, 0, W, H);
+
+    // пылинки
+    for (const s of sparks) {
+      s.y -= s.s;
+      if (s.y < -5) { s.y = H + 5; s.x = Math.random() * W; }
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 210, 214, ${s.a})`;
+      ctx.fill();
+    }
+
+    // движение узлов
+    for (const n of nodes) {
+      if (!reduceMotion) {
+        n.x += n.vx;
+        n.y += n.vy;
+      }
+
+      // притяжение к курсору
+      const dx = mouse.x - n.x, dy = mouse.y - n.y;
+      const md = Math.hypot(dx, dy);
+      if (mouse.active && md < MOUSE_R && md > 1) {
+        const f = (1 - md / MOUSE_R) * PULL;
+        n.x += dx * f;
+        n.y += dy * f;
+      }
+
+      // отражение от краёв и удержание в своей полосе
+      if (n.x < -20) n.x = W + 20;
+      if (n.x > W + 20) n.x = -20;
+      const top = n.band === 0 ? 0 : H * 0.52;
+      const bot = n.band === 0 ? H * 0.42 : H;
+      if (n.y < top || n.y > bot) n.vy *= -1;
+    }
+
+    // линии между узлами (только внутри своей полосы — сохраняет два слоя)
+    for (let i = 0; i < nodes.length; i++) {
+      const a = nodes[i];
+      for (let j = i + 1; j < nodes.length; j++) {
+        const b = nodes[j];
+        if (a.band !== b.band) continue;
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 > LINK * LINK) continue;
+        const d = Math.sqrt(d2);
+
+        // ближе к курсору — ярче
+        const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+        const mdist = Math.hypot(mouse.x - mx, mouse.y - my);
+        const boost = mouse.active && mdist < MOUSE_R
+          ? (1 - mdist / MOUSE_R) * 0.55 : 0;
+
+        const alpha = (1 - d / LINK) * 0.28 + boost;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = RED(alpha);
+        ctx.lineWidth = boost > 0.2 ? 1.4 : 0.9;
+        ctx.stroke();
+      }
+    }
+
+    // узлы
+    for (const n of nodes) {
+      const mdist = Math.hypot(mouse.x - n.x, mouse.y - n.y);
+      const near = mouse.active && mdist < MOUSE_R ? 1 - mdist / MOUSE_R : 0;
+      const r = n.r + near * 1.6;
+
+      if (n.glow || near > 0.4) {
+        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 7);
+        g.addColorStop(0, RED(0.8));
+        g.addColorStop(1, RED(0));
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r * 7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = n.glow ? "rgba(255, 230, 232, 0.95)" : RED(0.85 + near * 0.15);
+      ctx.fill();
+    }
+
+    // линии от курсора к ближайшим узлам
+    if (mouse.active) {
+      for (const n of nodes) {
+        const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
+        if (d < MOUSE_R * 0.7) {
+          ctx.beginPath();
+          ctx.moveTo(mouse.x, mouse.y);
+          ctx.lineTo(n.x, n.y);
+          ctx.strokeStyle = RED((1 - d / (MOUSE_R * 0.7)) * 0.4);
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  window.addEventListener("resize", resize);
+  window.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true;
+  });
+  window.addEventListener("mouseleave", () => { mouse.active = false; });
+  window.addEventListener("touchmove", (e) => {
+    const t = e.touches[0];
+    mouse.x = t.clientX; mouse.y = t.clientY; mouse.active = true;
+  }, { passive: true });
+  window.addEventListener("touchend", () => { mouse.active = false; });
+
+  resize();
+  requestAnimationFrame(step);
+})();
+
+/* ---------- отправка формы в FastAPI ---------- */
+const form = document.getElementById("lead-form");
+const status = document.getElementById("form-status");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  status.textContent = "Отправка…";
+  status.className = "";
+  const data = Object.fromEntries(new FormData(form));
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error();
+    status.textContent = "Заявка отправлена. Мы свяжемся с вами.";
+    status.className = "ok";
+    form.reset();
+  } catch {
+    status.textContent = "Не удалось отправить. Проверьте поля и попробуйте ещё раз.";
+    status.className = "err";
+  }
+});
+</script>
+</body>
+</html>
