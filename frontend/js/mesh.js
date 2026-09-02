@@ -280,13 +280,16 @@ export function createMesh(canvas, opts = {}) {
 
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+    // antialias вимкнено свідомо: ребра згладжуються в шейдері (fwidth), а MSAA на
+    // повноекранному адитивному полотні — найдорожча частина кадру
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
   } catch (e) {
     canvas.style.display = 'none';
-    return { setIntensity() {}, destroy() {}, ok: false };
+    return { setIntensity() {}, pause() {}, resume() {}, destroy() {}, ok: false };
   }
   const coarse = matchMedia('(pointer: coarse)').matches;
-  const dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1.25 : 1.75);
+  // роздільність рендера нижча за екранну — грані м'які, різниці не видно, а пікселів удвічі менше
+  let dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1 : 1.25);
   renderer.setPixelRatio(dpr);
   renderer.setClearColor(new THREE.Color(o.background), 1);
 
@@ -295,8 +298,8 @@ export function createMesh(canvas, opts = {}) {
   camera.position.set(0, -4.2, 9.2);
   camera.lookAt(0, 0.9, 0);
 
-  const cols = Math.round((coarse ? 26 : 44) * o.density) + 6;
-  const rows = Math.round((coarse ? 30 : 26) * o.density) + 6;
+  const cols = Math.round((coarse ? 22 : 36) * o.density) + 6;
+  const rows = Math.round((coarse ? 26 : 22) * o.density) + 6;
   const W = 30, H = 20;
 
   const uniforms = {
@@ -333,7 +336,7 @@ export function createMesh(canvas, opts = {}) {
   scene.add(facets, points);
 
   // задній шар: власні uniform-и (менша амплітуда, без курсору, без ребер)
-  const back = buildGeometry(Math.round(cols * 0.8), Math.round(rows * 0.8), W * 1.5, H * 1.5, 4242);
+  const back = buildGeometry(Math.round(cols * 0.6), Math.round(rows * 0.6), W * 1.5, H * 1.5, 4242);
   const backUniforms = Object.assign({}, uniforms, {
     uPointerK: { value: 0 },
     uEdge: { value: 0.22 },
@@ -396,12 +399,26 @@ export function createMesh(canvas, opts = {}) {
   renderer.render(scene, camera);
 
   // ---- цикл
-  let raf = 0, last = performance.now(), running = true, intensity = 1;
+  let raf = 0, last = performance.now(), running = true, intensity = 1, paused = false;
   const clock = { t: 0 };
+  // адаптивна якість: якщо кадр стабільно повільний — знижуємо роздільність рендера
+  let acc = 0, n = 0;
+  function adapt(dt) {
+    acc += dt; n++;
+    if (n < 90) return;
+    const avg = acc / n; acc = 0; n = 0;
+    if (avg > 0.024 && dpr > 0.75) {
+      dpr = Math.max(0.75, +(dpr - 0.25).toFixed(2));
+      renderer.setPixelRatio(dpr);
+      uniforms.uDpr.value = dpr;
+      resize();
+    }
+  }
   function frame(now) {
     if (!running) return;
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
+    if (!o.static) adapt(dt);
     clock.t += dt * (o.static ? 0 : 1);
     uniforms.uTime.value = clock.t;
 
@@ -418,11 +435,13 @@ export function createMesh(canvas, opts = {}) {
   }
   raf = requestAnimationFrame(frame);
 
+  function stop() { running = false; cancelAnimationFrame(raf); }
+  function start() {
+    if (running || o.static) return;
+    running = true; last = performance.now(); raf = requestAnimationFrame(frame);
+  }
   // пауза на прихованій вкладці
-  const onVis = () => {
-    if (document.hidden) { running = false; cancelAnimationFrame(raf); }
-    else if (!running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); }
-  };
+  const onVis = () => { if (document.hidden) stop(); else if (!paused) start(); };
   document.addEventListener('visibilitychange', onVis);
 
   return {
@@ -433,6 +452,8 @@ export function createMesh(canvas, opts = {}) {
       intensity = Math.max(0, Math.min(1, v));
       if (o.static) { uniforms.uFade.value = intensity; backUniforms.uFade.value = intensity; renderer.render(scene, camera); }
     },
+    pause() { if (!paused) { paused = true; stop(); } },
+    resume() { if (paused) { paused = false; if (!document.hidden) start(); } },
     render() { renderer.render(scene, camera); },
     destroy() {
       running = false; cancelAnimationFrame(raf); ro.disconnect();

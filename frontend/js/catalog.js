@@ -1,29 +1,28 @@
 /* ============================================================
    PANCORE — сторінка «Асортимент»
-   групування за категоріями · пошук · фільтр за категорією ·
-   перемикач «тільки з документацією» · запит на позицію
+   групування за категоріями · пошук (назва, бренд, характеристики) ·
+   фільтр за категорією · розгортання картки з тех.специфікацією ·
+   запит на позицію
    ============================================================ */
 
 import { prefillRequest, observeRise, reducedMotion } from './site.js';
 import { CATEGORIES, ITEMS } from './data/catalog.js';
+import { SPECS } from './data/specs.js';
 
 const host = document.getElementById('catalog');
 const chipsHost = document.getElementById('chips');
 const search = document.getElementById('q');
-const docToggle = document.getElementById('doc-only');
 const countEl = document.getElementById('count');
 
 const catName = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.name]));
 const counts = {};
 ITEMS.forEach((it) => { counts[it.cat] = (counts[it.cat] || 0) + 1; });
 
-const DOC = {
-  yes: { cls: 'badge--yes', text: 'Документація' },
-  analog: { cls: 'badge--analog', text: 'Док. аналога' },
-  no: { cls: '', text: 'За запитом' },
-};
+const state = { cat: 'all', q: '' };
+const open = new Set();   // id розгорнутих карток — переживає перерендер
 
-const state = { cat: 'all', q: '', docOnly: false };
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = (id) => `#${String(id).padStart(3, '0')}`;
 
 /* --- чипи категорій --- */
 function renderChips() {
@@ -43,42 +42,73 @@ chipsHost.addEventListener('click', (e) => {
   on && on.scrollIntoView({ inline: 'center', block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
 });
 
-/* --- пошук --- */
-const norm = (s) => s.toLowerCase().replace(/ё/g, 'е').replace(/[×x]/g, 'x').replace(/\s+/g, ' ');
+/* --- пошук: назва, бренд, категорія, значення характеристик --- */
+const norm = (s) => String(s).toLowerCase().replace(/ё/g, 'е').replace(/[×x]/g, 'x').replace(/\s+/g, ' ');
+const hayCache = new Map();
+function hay(it) {
+  if (!hayCache.has(it.id)) {
+    const sp = SPECS[it.id];
+    const extra = sp ? sp.specs.map((s) => `${s.k} ${s.v}`).join(' ') + ' ' + (sp.desc || '') : '';
+    hayCache.set(it.id, norm(`${it.name} ${it.brand} ${catName[it.cat]} ${extra}`));
+  }
+  return hayCache.get(it.id);
+}
 let t = 0;
 search.addEventListener('input', () => {
   clearTimeout(t);
   t = setTimeout(() => { state.q = norm(search.value.trim()); render(); }, 120);
 });
-docToggle.addEventListener('change', () => { state.docOnly = docToggle.checked; render(); });
 
-/* --- фільтрація --- */
 function filtered() {
   return ITEMS.filter((it) => {
     if (state.cat !== 'all' && it.cat !== state.cat) return false;
-    if (state.docOnly && it.doc === 'no') return false;
-    if (state.q) {
-      const hay = norm(`${it.name} ${it.brand} ${catName[it.cat]}`);
-      return state.q.split(' ').every((w) => hay.includes(w));
-    }
+    if (state.q) return state.q.split(' ').every((w) => hay(it).includes(w));
     return true;
   });
 }
 
-/* --- рендер --- */
+/* --- картка --- */
+const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>';
+
 function itemCard(it) {
-  const d = DOC[it.doc] || DOC.no;
+  const isOpen = open.has(it.id);
   return `
-    <article class="item" data-id="${it.id}">
-      <div class="item__top"><span>${catName[it.cat]}</span><span>#${String(it.id).padStart(3, '0')}</span></div>
-      <h3 class="item__name">${it.name}</h3>
-      <div class="item__foot">
-        <span class="badge ${d.cls}">${d.text}</span>
-        <button class="item__req" type="button" data-req="${it.id}">Запит →</button>
-      </div>
+    <article class="item ${isOpen ? 'is-open' : ''}" data-id="${it.id}">
+      <button class="item__head" type="button" aria-expanded="${isOpen}" aria-controls="spec-${it.id}">
+        <span>
+          <span class="item__top"><span>${esc(catName[it.cat])}${it.brand ? ' · ' + esc(it.brand) : ''}</span><span>${pad(it.id)}</span></span>
+          <span class="item__name">${esc(it.name)}</span>
+        </span>
+        <span class="item__chev" aria-hidden="true">${CHEV}</span>
+      </button>
+      <div class="item__body" id="spec-${it.id}"><div>${isOpen ? itemBody(it) : ''}</div></div>
     </article>`;
 }
 
+function itemBody(it) {
+  const sp = SPECS[it.id];
+  const rows = sp && sp.specs.length
+    ? sp.specs.map((s) => `<dl class="spec"><dt>${esc(s.k)}</dt><dd>${esc(s.v)}</dd></dl>`).join('')
+    : '';
+  const desc = sp && sp.desc ? `<p class="item__desc">${esc(sp.desc)}</p>` : '';
+  const note = sp && sp.note ? `<p class="item__note">${esc(sp.note)}</p>` : '';
+  const src = sp && sp.from === 'doc' && sp.src
+    ? `<p class="item__src">За технічною документацією: ${esc(sp.src)}</p>`
+    : `<p class="item__src">Повна специфікація та документація — за запитом</p>`;
+  return `
+    <div class="item__inner">
+      ${desc}
+      ${rows || '<p class="item__empty">Параметри уточнюємо за запитом.</p>'}
+      ${note}
+      ${src}
+      <div class="item__foot">
+        <span class="muted mono" style="font-size:11px;letter-spacing:.1em">${pad(it.id)}</span>
+        <button class="btn btn--ghost btn--sm" type="button" data-req="${it.id}">Запит на позицію <span class="arr">→</span></button>
+      </div>
+    </div>`;
+}
+
+/* --- рендер --- */
 function render() {
   const list = filtered();
   countEl.textContent = `${list.length} із ${ITEMS.length}`;
@@ -96,11 +126,27 @@ function render() {
   observeRise(host);
 }
 
+/* --- розгортання та запит --- */
 host.addEventListener('click', (e) => {
-  const b = e.target.closest('[data-req]');
-  if (!b) return;
-  const it = ITEMS.find((x) => x.id === Number(b.dataset.req));
-  if (it) prefillRequest(`${it.name} (${catName[it.cat]}, #${String(it.id).padStart(3, '0')})`);
+  const req = e.target.closest('[data-req]');
+  if (req) {
+    const it = ITEMS.find((x) => x.id === Number(req.dataset.req));
+    if (it) prefillRequest(`${it.name} (${catName[it.cat]}, ${pad(it.id)})`);
+    return;
+  }
+  const head = e.target.closest('.item__head');
+  if (!head) return;
+  const card = head.closest('.item');
+  const id = Number(card.dataset.id);
+  const willOpen = !card.classList.contains('is-open');
+  const body = card.querySelector('.item__body > div');
+  if (willOpen && !body.innerHTML.trim()) {
+    const it = ITEMS.find((x) => x.id === id);
+    body.innerHTML = itemBody(it);
+  }
+  card.classList.toggle('is-open', willOpen);
+  head.setAttribute('aria-expanded', String(willOpen));
+  if (willOpen) open.add(id); else open.delete(id);
 });
 
 /* --- старт: категорія з хеша --- */
