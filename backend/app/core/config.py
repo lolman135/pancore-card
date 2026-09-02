@@ -10,6 +10,8 @@ DEFAULT_ENV_PATH = BACKEND_DIR / ".env"
 DEFAULT_PROBLEM_BASE_URL = "https://pancore-card.example.com/problems"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8080
+DEFAULT_SMTP_HOST = "smtp.gmail.com"
+DEFAULT_SMTP_PORT = 465
 
 load_dotenv(DEFAULT_ENV_PATH)
 
@@ -23,6 +25,11 @@ class Settings:
     api_prefix: str = "/api/v1"
     cors_origins: tuple[str, ...] = ("*",)
     problem_base_url: str = DEFAULT_PROBLEM_BASE_URL
+    smtp_host: str = DEFAULT_SMTP_HOST
+    smtp_port: int = DEFAULT_SMTP_PORT
+    mail_from: str = ""
+    mail_from_password: str = ""
+    mail_to: str = ""
 
 
 @lru_cache
@@ -33,4 +40,9 @@ def get_settings() -> Settings:
         cors_origins=tuple(origin.strip() for origin in origins.split(",") if origin.strip()),
         port=int(os.getenv("BACKEND_PORT", DEFAULT_PORT)),
         host=os.getenv("BACKEND_HOST", DEFAULT_HOST),
+        smtp_host=os.getenv("SMTP_HOST", DEFAULT_SMTP_HOST),
+        smtp_port=int(os.getenv("SMTP_PORT", DEFAULT_SMTP_PORT)),
+        mail_from=os.getenv("MAIL_FROM", ""),
+        mail_from_password=os.getenv("MAIL_FROM_PASSWORD", ""),
+        mail_to=os.getenv("MAIL_TO", ""),
     )
