@@ -62,7 +62,6 @@ jobs:
     needs:
       - build-backend
       - build-frontend
-    if: github.event_name != 'pull_request'
     steps:
       - name: Get Code
         uses: actions/checkout@v6
