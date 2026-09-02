@@ -21,7 +21,6 @@
 </head>
 <body data-page="home">
 
-<!-- знак PANCORE (використовується через <use href="#pc-logo">) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <mask id="pc-cut">
@@ -237,10 +236,8 @@
         </div>
         <form class="form rise" data-delay="2" data-lead>
           <div class="form__row">
-            <div class="field"><label for="f-name">Ім’я</label><input id="f-name" name="name" type="text" required minlength="2" maxlength="120" autocomplete="name" placeholder="Як до вас звертатися"></div>
             <div class="field"><label for="f-contact">Контакт</label><input id="f-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
           </div>
-          <div class="field"><label for="f-company">Компанія</label><input id="f-company" name="company" type="text" maxlength="160" autocomplete="organization" placeholder="Необов’язково"></div>
           <div class="field"><label for="f-msg">Повідомлення</label><textarea id="f-msg" name="message" required minlength="5" maxlength="2000" placeholder="Коротко опишіть задачу, позиції та орієнтовні обсяги"></textarea></div>
           <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
           <div class="form__foot">
