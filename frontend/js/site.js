@@ -86,15 +86,30 @@ if (canvas) {
   });
   window.__mesh = mesh;
   if (mesh.ok && isFixed) {
-    // герой яскравий, далі поле приглушується, щоб не заважати тексту
+    // герой яскравий, далі поле приглушується; поза героєм рендер зупиняємо (GPU/батарея)
+    let ticking = false;
     const update = () => {
+      ticking = false;
       const h = Math.max(innerHeight, 1);   // у прихованій вкладці innerHeight може бути 0
       const k = Math.max(0, Math.min(1, 1 - (scrollY - h * 0.2) / (h * 0.9)));
       mesh.setIntensity(0.2 + 0.8 * k);
+      if (scrollY > h * 1.6) mesh.pause(); else mesh.resume();
     };
-    addEventListener('scroll', update, { passive: true });
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
     update();
+  } else if (mesh.ok && 'IntersectionObserver' in window) {
+    // смуга на внутрішніх сторінках: анімуємо лише поки вона в кадрі
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => (e.isIntersecting ? mesh.resume() : mesh.pause()));
+    }, { threshold: 0.02 });
+    io.observe(stage);
   }
+}
+
+/* ---------- карта світу (головна) ---------- */
+const wmHost = document.getElementById('worldmap');
+if (wmHost) {
+  import('./worldmap.js').then(({ mountWorldMap }) => mountWorldMap(wmHost, { reduced: reducedMotion }));
 }
 
 /* ---------- лічильники ---------- */
@@ -192,11 +207,20 @@ export function initLeadForm(form) {
       });
       if (res.ok) { say(MSG.ok, 'ok'); form.reset(); }
       else if (res.status === 422) {
+        // бекенд віддає RFC 7807 application/problem+json:
+        // { type, title, status, detail, instance, field?: "contact", errors?: [{field, message, type}] }
         const j = await res.json().catch(() => null);
-        const d = j && j.detail;
-        const msg = Array.isArray(d) ? d.map((x) => x.msg).join('; ') : typeof d === 'string' ? d : '';
-        say(msg ? `${MSG.contact} ${msg}` : MSG.contact, 'err');
-        form.elements.contact && form.elements.contact.focus();
+        const field = j && (j.field || (Array.isArray(j.errors) && j.errors[0] && j.errors[0].field)) || '';
+        const detail = j && typeof j.detail === 'string' ? j.detail : '';
+        const detailUa = /[а-яіїєґ]/i.test(detail) ? detail : '';
+        if (field === 'contact' || /invalid-contact/.test(String(j && j.type))) {
+          say(detailUa || MSG.contact, 'err');
+          form.elements.contact && form.elements.contact.focus();
+        } else {
+          say(detailUa || MSG.invalid, 'err');
+          const f = field && form.elements[field];
+          f && f.focus && f.focus();
+        }
       }
       else if (res.status === 429) say(MSG.limit, 'err');
       else throw new Error(`HTTP ${res.status}`);
