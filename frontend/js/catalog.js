@@ -9,7 +9,7 @@ import { prefillRequest, observeRise, reducedMotion } from './site.js';
 import { CATEGORIES, ITEMS } from './data/catalog.js';
 import { SPECS } from './data/specs.js';
 
-const host = document.getElementById('catalog');
+const host = document.getElementById('catalog-list');
 const chipsHost = document.getElementById('chips');
 const search = document.getElementById('q');
 const countEl = document.getElementById('count');
