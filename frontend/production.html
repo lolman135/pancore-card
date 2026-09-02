@@ -4,11 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Виробництво — PANCORE</title>
-<meta name="description" content="Власне виробництво PANCORE у Польщі: безшпульний звій оптоволокна G.657.A2 у польовому корпусі, пропелери 10″ і 15″ литтям під тиском, композити, SMT. Паспорт виробу, OTDR-контроль, креслення, документи для замовника.">
+<meta name="description" content="Власне виробництво PANCORE в ЄС: безшпульний звій оптоволокна G.657.A2 у польовому корпусі, пропелери 10″ і 15″ литтям під тиском, композити, SMT. Паспорт виробу, OTDR-контроль, креслення, документи для замовника.">
 <meta name="theme-color" content="#07080b">
 <!-- База API. Порожньо = той самий origin (бекенд роздає фронт або стоїть за одним проксі).
      Окремий домен API: content="https://api.pancore.example" -->
 <meta name="api-base" content="">
+<meta property="og:title" content="Виробництво PANCORE — оптоволокно, пропелери, композити">
+<meta property="og:description" content="Безшпульний звій G.657.A2 5–60 км, пропелери 10″/15″ з креслень власних прес-форм, карбон, SMT. Виробництво в ЄС.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://lolman135.github.io/pancore-card/frontend/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +51,11 @@
         <a href="catalog.html" data-nav="catalog">Асортимент</a>
       </nav>
       <div class="head__cta">
-        <a class="btn btn--primary btn--sm" href="index.html#contact">Зв’язатися</a>
+        <form class="hsearch" action="catalog.html" method="get" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input name="q" type="search" placeholder="Пошук у каталозі" aria-label="Пошук у каталозі" autocomplete="off">
+        </form>
+        <a class="btn btn--primary btn--sm" href="#request">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
     </div>
@@ -55,8 +64,8 @@
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
-    <a href="index.html#contact" data-nav="contact">Зв’язатися</a>
-    <p class="mnav__foot">PANCORE · MADE IN POLAND · EU</p>
+    <a href="#request" data-nav="contact">Зв’язатися</a>
+    <p class="mnav__foot">PANCORE · MADE IN EU</p>
   </nav>
 
   <!-- точки-навігація по блоках сторінки (наповнює production.js) -->
@@ -73,9 +82,9 @@
       </div>
       <div class="wrap">
         <p class="eyebrow rise">Виробництво</p>
-        <h1 class="h-display h1 rise" data-delay="1"><b>Власні лінії</b><br><b class="metal">у Польщі</b></h1>
+        <h1 class="h-display h1 rise" data-delay="1"><b>Власні лінії</b><br><b class="metal">в ЄС</b></h1>
         <p class="lead rise" data-delay="2" style="margin-top:24px">
-          Оптоволокно, композити, полімерне лиття та електроніка на одній площадці в Підкарпатті.
+          Оптоволокно, композити, полімерне лиття та електроніка на одній площадці в Європейському Союзі.
           Від сировини до протоколу якості — всередині компанії.
         </p>
       </div>
@@ -267,7 +276,7 @@
         </div>
         <div class="rise" style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
           <a class="btn btn--primary" href="catalog.html#item-901">Специфікація звою в асортименті <span class="arr">→</span></a>
-          <a class="btn btn--ghost" href="index.html#contact">Запит зразків та умов</a>
+          <a class="btn btn--ghost" href="#request">Запит зразків та умов</a>
         </div>
       </div>
     </section>
@@ -368,8 +377,12 @@
         <div class="propdeck rise" id="prop-box">
           <div class="propdeck__draw">
             <div class="propdeck__bar">
-              <div class="toggle" role="group" aria-label="Розмір пропелера"><button type="button" data-inch="10" class="is-on">10 × 5,0 × 3</button><button type="button" data-inch="15">15 × 10 × 3</button></div>
-              <span class="propdeck__note">Розміри у мм · обмір серійних зразків</span>
+              <div class="toggle" role="group" aria-label="Розмір пропелера"><button type="button" data-inch="10" class="is-on">10 × 5,0 × 3</button><button type="button" data-inch="15">15 × 10 × 3</button><button type="button" data-inch="scale">у масштабі</button></div>
+              <div class="propdeck__dl">
+                <span class="propdeck__note">Розміри у мм · обмір серійних зразків</span>
+                <button type="button" class="dl" data-dl="svg" title="Завантажити креслення у векторі"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>SVG</button>
+                <button type="button" class="dl" data-dl="png" title="Завантажити креслення як картинку"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>PNG</button>
+              </div>
             </div>
             <div class="sk sk--prop" data-sketch="prop" data-arg="10" aria-hidden="true"></div>
           </div>
@@ -440,7 +453,7 @@
         <div class="blk__head">
           <p class="eyebrow rise">09 · Електроніка та SMT</p>
           <h2 class="h-display h2 rise" data-delay="1">Наступний етап — власний монтаж плат</h2>
-          <p class="lead rise" data-delay="2">Лінія поверхневого монтажу на площадці понад 2000 м² у Підкарпатті: трафаретний друк пасти, SPI, встановлення компонентів, конвекційна пайка, AOI та рентген-контроль.</p>
+          <p class="lead rise" data-delay="2">Лінія поверхневого монтажу на площадці понад 2000 м² в ЄС: трафаретний друк пасти, SPI, встановлення компонентів, конвекційна пайка, AOI та рентген-контроль.</p>
           <p class="rise" data-delay="3"><span class="status">Проєкт у реалізації</span></p>
         </div>
         <div class="dos">
@@ -480,7 +493,7 @@
           <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>TDS</b><span>технічний паспорт виробу</span></div></div>
           <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Протокол партії</b><span>OTDR для звоїв · тяга і геометрія для пропелерів</span></div></div>
           <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Декларація виробника</b><span>відповідність заявленим характеристикам</span></div></div>
-          <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Походження</b><span>сертифікат Made in Poland · EUR.1 для України</span></div></div>
+          <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Походження</b><span>сертифікат походження ЄС · EUR.1 для України</span></div></div>
           <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Маркування QR</b><span>унікальний код кожного звою — простежуваність партії</span></div></div>
           <div class="doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg><div><b>Інструкція</b><span>розгортання, підключення, зворотна намотка</span></div></div>
         </div>
@@ -488,16 +501,30 @@
     </section>
 
     <!-- ════════ 11 ЗАПИТ ════════ -->
-    <section class="sec sec--tight blk" id="request" data-dot="Запит">
-      <div class="wrap">
-        <div class="cta rise">
+    <section class="sec sec--line blk" id="request" data-dot="Запит">
+      <div class="wrap contact">
+        <div class="contact__info">
           <div>
-            <p class="eyebrow">11 · Запит</p>
-            <h2 class="h-display h2">Потрібна специфікація під вашу платформу?</h2>
-            <p class="lead">Довжина звою, геометрія пропелера, розкрій листів — підготуємо пропозицію протягом робочого дня.</p>
+            <p class="eyebrow rise">11 · Запит</p>
+            <h2 class="h-display h2 rise" data-delay="1">Потрібна специфікація під вашу платформу?</h2>
+            <p class="lead rise" data-delay="2">Довжина звою, геометрія пропелера, розкрій листів — підготуємо пропозицію протягом робочого дня.</p>
           </div>
-          <a class="btn btn--primary" href="index.html#contact">Надіслати запит <span class="arr">→</span></a>
+          <div class="contact__lines rise" data-delay="3">
+            <div><small>Пошта</small><a href="mailto:info@pancore.tech">info@pancore.tech</a></div>
+            <div><small>Telegram</small><a href="https://t.me/pancore_tech" target="_blank" rel="noopener">Написати в Telegram</a></div>
+            <div><small>Виробництво та склад</small><span>Європейський Союз</span></div>
+          </div>
         </div>
+        <form class="form rise" data-delay="2" data-lead>
+          <div class="field"><label for="f-prod-contact">Контакт</label><input id="f-prod-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
+          <div class="field"><label for="f-prod-msg">Повідомлення</label><textarea id="f-prod-msg" name="message" required minlength="5" maxlength="2000" placeholder="Виріб, кількість, платформа, терміни"></textarea></div>
+          <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+          <div class="form__foot">
+            <button class="btn btn--primary" type="submit">Надіслати запит</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </div>
+          <p class="form__note">Надсилаючи форму, ви погоджуєтесь на обробку контактних даних для відповіді на запит.</p>
+        </form>
       </div>
     </section>
 
@@ -505,10 +532,15 @@
 
   <footer class="foot">
     <div class="wrap">
-      <div class="foot__bottom"><span>© 2026 PANCORE</span><span>MADE IN POLAND · EU</span></div>
+      <div class="foot__bottom"><span>© 2026 PANCORE · виробництво та склад у ЄС</span><span>MADE IN EU</span></div>
     </div>
   </footer>
 
+</div>
+
+<div class="fab-bar" aria-label="Швидкий зв’язок">
+  <a class="btn btn--primary btn--sm" href="#request">Зв’язатися</a>
+  <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_tech" target="_blank" rel="noopener">Telegram</a>
 </div>
 
 <script type="module" src="js/production.js"></script>

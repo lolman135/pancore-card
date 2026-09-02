@@ -168,6 +168,11 @@
 .propdeck { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(18px, 2.5vw, 32px); align-items: start; }
 .propdeck__bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
 .propdeck__note { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+.propdeck__dl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dl { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border: 1px solid var(--line-2); border-radius: var(--pill); font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-2); transition: border-color 0.2s, color 0.2s; }
+.dl:hover { border-color: var(--accent); color: #fff; }
+.dl svg { width: 12px; height: 12px; }
+.propsk--one { grid-template-columns: minmax(0, 420px); justify-content: center; }
 .propdeck__spec { padding: 18px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); }
 .propdeck__spec h3 { font-size: 18px; }
 .propdeck__spec .kv { margin-top: 12px; }
@@ -366,6 +371,26 @@
   .cmp-bar { left: 12px; right: 12px; transform: none; justify-content: space-between; }
   .cat-top { padding-top: calc(var(--head-h) + 24px); }
 }
+@media (max-width: 880px) {
+  .cmp-bar { bottom: 76px; }   /* над плаваючою панеллю запиту */
+}
 @media (prefers-reduced-motion: reduce) {
   .drawer__panel, .item, .prod, .tile { animation: none; transition: none; }
+}
+
+/* ---------- друк специфікації позиції (кнопка PDF у шухляді) ---------- */
+@media print {
+  body.is-printing { background: #fff; color: #000; }
+  body.is-printing * { visibility: hidden; }
+  body.is-printing .drawer, body.is-printing .drawer__panel, body.is-printing .drawer__panel * { visibility: visible; }
+  body.is-printing .drawer { position: static; }
+  body.is-printing .drawer__back, body.is-printing .drawer__x, body.is-printing .drawer__foot { display: none !important; }
+  body.is-printing .drawer__panel { position: absolute; left: 0; top: 0; width: 100%; height: auto; border: 0; box-shadow: none; background: #fff; color: #000; display: block; animation: none; }
+  body.is-printing .drawer__head { border-bottom: 1px solid #999; padding: 0 0 10px; }
+  body.is-printing .drawer__head h2, body.is-printing .spec dd, body.is-printing .item__desc, body.is-printing .cmp-table td { color: #000; }
+  body.is-printing .spec dt, body.is-printing .item__top, body.is-printing .item__src, body.is-printing .item__note, body.is-printing .cmp-table th { color: #444; }
+  body.is-printing .spec, body.is-printing .cmp-table td, body.is-printing .cmp-table th { border-color: #ddd; }
+  body.is-printing .own-badge { background: #000; color: #fff; }
+  body.is-printing .drawer__body { overflow: visible; padding: 10px 0; }
+  body.is-printing .drawer__body::after { content: "PANCORE · info@pancore.tech · Made in EU"; display: block; margin-top: 18px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; color: #444; }
 }

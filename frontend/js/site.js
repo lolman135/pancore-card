@@ -10,6 +10,19 @@ import { API_BASE as ENV_API_BASE } from './env.js';
 export const reducedMotion =
   matchMedia('(prefers-reduced-motion: reduce)').matches ||
   new URLSearchParams(location.search).has('static');
+/* мова сторінки: тексти, що генеруються скриптом, беруться за <html lang> */
+export const EN = /^en/i.test(document.documentElement.lang || '');
+
+/* ---------- пошук у шапці → каталог; «/» ставить курсор у пошук ---------- */
+document.querySelectorAll('form.hsearch').forEach((f) => f.addEventListener('submit', (e) => {
+  if (!f.querySelector('input').value.trim()) e.preventDefault();
+}));
+addEventListener('keydown', (e) => {
+  if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (/^(input|textarea|select)$/i.test(document.activeElement?.tagName || '')) return;
+  const s = document.querySelector('#q, .hsearch input');
+  if (s) { e.preventDefault(); s.focus(); }
+});
 
 /* ---------- шапка ---------- */
 const head = document.getElementById('head');
@@ -169,13 +182,19 @@ const CONTACT_URL = `${API_BASE}/api/v1/contact`;
 
 /* Як назвати канал зв'язку у відповіді: бекенд віддає contact_type,
    але «phone» користувачеві показуємо словами. */
-const CONTACT_LABEL = {
-  email: 'email',
-  phone: 'мобільний телефон',
-  telegram: 'telegram',
-};
+const CONTACT_LABEL = EN
+  ? { email: 'e-mail', phone: 'phone', telegram: 'Telegram' }
+  : { email: 'email', phone: 'мобільний телефон', telegram: 'telegram' };
 
-const MSG = {
+const MSG = EN ? {
+  sending: 'Sending…',
+  ok: 'Your enquiry has been sent. We reply within one business day.',
+  okTyped: (label) => `Your enquiry via ${label} has been sent. We reply within one business day.`,
+  invalid: 'Please check the form fields.',
+  contact: 'Enter an e-mail, phone number or @telegram.',
+  limit: 'Too many requests from your address. Try again later or write to us by e-mail.',
+  fail: 'Could not send. Please e-mail us — the address is next to the form.',
+} : {
   sending: 'Надсилаємо…',
   ok: 'Заявку надіслано. Відповімо протягом робочого дня.',
   okTyped: (label) => `Ваш запит на ${label} надіслано. Відповімо протягом робочого дня.`,
@@ -268,10 +287,10 @@ export function prefillRequest(text) {
   // причому дописується, а не затирає вже набраний текст
   const msg = field(form, 'message');
   if (msg) {
-    const line = `Прошу комерційну пропозицію на позицію: ${text}.`;
+    const line = EN ? `Please quote the following item: ${text}.` : `Прошу комерційну пропозицію на позицію: ${text}.`;
     msg.value = msg.value.trim()
       ? `${msg.value.replace(/\s+$/, '')}\n${line}`
-      : `${line}\nКількість: `;
+      : `${line}\n${EN ? 'Quantity: ' : 'Кількість: '}`;
   }
   form.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
   setTimeout(() => {
