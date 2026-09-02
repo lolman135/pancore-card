@@ -18,7 +18,8 @@ services:
       - '443:443'
     environment:
       - BACKEND_PORT=${BACKEND_PORT}
-      - NGINX_ENVSUBST_FILTER=BACKEND_PORT
+      - API_KEY=${API_KEY}
+      - NGINX_ENVSUBST_FILTER=BACKEND_PORT|API_KEY
     restart: always
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
