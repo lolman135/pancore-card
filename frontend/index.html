@@ -42,20 +42,26 @@
     position: relative;
     z-index: 1;
     max-width: 1080px;
+    min-height: 100vh;
     margin: 0 auto;
     padding: 0 28px;
+    display: flex;
+    flex-direction: column;
   }
+  main { flex: 1; }
 
-  h1, h2, h3, .brand, .nav a, button {
+  h1, h2, h3, .brand, .tab-btn, button {
     font-family: "Chakra Petch", sans-serif;
   }
 
-  /* ---------- шапка ---------- */
+  /* ---------- шапка и вкладки ---------- */
   header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
     padding: 26px 0;
+    border-bottom: 1px solid var(--line);
   }
 
   .brand {
@@ -64,6 +70,7 @@
     letter-spacing: 0.14em;
     color: var(--text);
     text-decoration: none;
+    white-space: nowrap;
   }
   .brand em {
     font-style: normal;
@@ -72,25 +79,44 @@
 
   .nav {
     display: flex;
-    gap: 30px;
+    gap: 6px;
   }
-  .nav a {
+  .tab-btn {
+    background: none;
+    border: 1px solid transparent;
     color: var(--text-dim);
-    text-decoration: none;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.06em;
-    transition: color 0.2s;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
   }
-  .nav a:hover, .nav a:focus-visible { color: var(--red); }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn[aria-selected="true"] {
+    color: var(--red);
+    border-color: var(--red);
+    background: rgba(255, 46, 63, 0.08);
+    box-shadow: 0 0 16px rgba(255, 46, 63, 0.25);
+  }
 
-  /* ---------- герой ---------- */
+  .tab { display: none; }
+  .tab.active {
+    display: block;
+    animation: tab-in 0.35s ease;
+  }
+  @keyframes tab-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ---------- герой (внутри вкладки "О компании") ---------- */
   .hero {
-    min-height: 78vh;
+    min-height: 62vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 40px 0 80px;
+    padding: 40px 0 60px;
   }
 
   .hero h1 {
@@ -113,6 +139,7 @@
     margin-top: 42px;
     display: inline-flex;
     gap: 16px;
+    flex-wrap: wrap;
   }
 
   .btn {
@@ -142,14 +169,15 @@
   }
 
   /* ---------- секции ---------- */
-  section { padding: 90px 0; }
+  .tab { padding: 56px 0 90px; }
+  .about-text { padding-top: 20px; }
 
-  section h2 {
+  .tab h2 {
     font-size: clamp(28px, 4vw, 42px);
     font-weight: 600;
     margin-bottom: 40px;
   }
-  section h2::after {
+  .tab h2::after {
     content: "";
     display: block;
     width: 64px;
@@ -187,20 +215,42 @@
     font-size: 15.5px;
   }
 
-  .about p {
+  .about-text p {
     max-width: 68ch;
     color: var(--text-dim);
     font-size: 18px;
   }
-  .about p + p { margin-top: 18px; }
-  .about strong { color: var(--text); }
+  .about-text p + p { margin-top: 18px; }
+  .about-text strong { color: var(--text); }
+
+  .tab-foot {
+    margin-top: 40px;
+    color: var(--text-dim);
+  }
+  .tab-foot a, .contact-info a {
+    color: var(--red);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .tab-foot a:hover, .contact-info a:hover { border-color: var(--red); }
 
   /* ---------- контакты ---------- */
+  .contact-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) 1fr;
+    gap: 48px;
+    align-items: start;
+  }
   .contact form {
-    max-width: 560px;
     display: grid;
     gap: 16px;
   }
+  .contact-info {
+    padding-top: 6px;
+    color: var(--text-dim);
+    max-width: 36ch;
+  }
+  .contact-info p + p { margin-top: 12px; }
   .contact label {
     font-size: 14px;
     font-weight: 600;
@@ -244,13 +294,20 @@
 
   :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 
+  @media (max-width: 760px) {
+    .contact-wrap { grid-template-columns: 1fr; gap: 28px; }
+  }
   @media (max-width: 640px) {
-    .nav { display: none; }
-    section { padding: 64px 0; }
+    header { flex-direction: column; align-items: flex-start; padding: 20px 0; }
+    .nav { width: 100%; }
+    .tab-btn { flex: 1; padding: 10px 8px; font-size: 14px; text-align: center; }
+    .tab { padding: 40px 0 64px; }
+    .hero { min-height: auto; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .card, .btn { transition: none; }
+    .card, .btn, .tab-btn { transition: none; }
+    .tab.active { animation: none; }
   }
 </style>
 </head>
@@ -260,88 +317,105 @@
 
 <div class="page">
   <header>
-    <a class="brand" href="#">PAN<em>CORE</em></a>
-    <nav class="nav">
-      <a href="#solutions">Решения</a>
-      <a href="#about">О компании</a>
-      <a href="#contact">Связаться</a>
+    <a class="brand" href="#about" data-tab-link="about">PAN<em>CORE</em></a>
+    <nav class="nav" role="tablist" aria-label="Разделы сайта">
+      <button class="tab-btn" id="tab-about" role="tab" data-tab="about" aria-selected="true" aria-controls="about">О компании</button>
+      <button class="tab-btn" id="tab-products" role="tab" data-tab="products" aria-selected="false" aria-controls="products">Товары</button>
+      <button class="tab-btn" id="tab-contact" role="tab" data-tab="contact" aria-selected="false" aria-controls="contact">Связаться</button>
     </nav>
   </header>
 
-  <section class="hero">
-    <h1>Дроны и оборонные системы нового поколения</h1>
-    <p>PANCORE разрабатывает и производит беспилотные комплексы, средства связи
-       и защитное оборудование для государственных заказчиков и промышленности.</p>
-    <div class="cta">
-      <a class="btn btn-solid" href="#contact">Обсудить проект</a>
-      <a class="btn btn-ghost" href="#solutions">Наши решения</a>
-    </div>
-  </section>
+  <main>
+    <!-- ===== О компании ===== -->
+    <section id="about" class="tab about" role="tabpanel" aria-labelledby="tab-about">
+      <div class="hero">
+        <h1>Дроны и оборонные системы нового поколения</h1>
+        <p>PANCORE разрабатывает и производит беспилотные комплексы, средства связи
+           и защитное оборудование для государственных заказчиков и промышленности.</p>
+        <div class="cta">
+          <a class="btn btn-solid" href="#contact" data-tab-link="contact">Обсудить проект</a>
+          <a class="btn btn-ghost" href="#products" data-tab-link="products">Смотреть товары</a>
+        </div>
+      </div>
 
-  <section id="solutions">
-    <h2>Решения</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Разведывательные БПЛА</h3>
-        <p>Аппараты самолётного и мультироторного типа с продолжительностью полёта
-           до 12 часов, тепловизионными и оптическими модулями.</p>
+      <div class="about-text">
+        <h2>О компании</h2>
+        <p><strong>PANCORE</strong> — инженерная компания полного цикла: от НИОКР и
+           прототипирования до серийного производства и полевой поддержки.
+           Собственное производство, лётно-испытательная база и команда инженеров
+           с опытом в авиации, радиоэлектронике и системах управления.</p>
+        <p>Мы работаем по контрактам с госструктурами и промышленными заказчиками,
+           соблюдаем требования по защите информации и предоставляем полный пакет
+           конструкторской и эксплуатационной документации.</p>
       </div>
-      <div class="card">
-        <h3>Ударные и грузовые платформы</h3>
-        <p>Тяжёлые платформы с полезной нагрузкой до 40 кг, модульная
-           архитектура под задачи заказчика.</p>
-      </div>
-      <div class="card">
-        <h3>Средства РЭБ и защита</h3>
-        <p>Детекторы дронов, комплексы подавления каналов управления
-           и навигации, защита объектов и колонн.</p>
-      </div>
-      <div class="card">
-        <h3>Наземные станции управления</h3>
-        <p>Защищённые каналы связи, ретрансляция, планирование миссий
-           и интеграция с существующими системами.</p>
-      </div>
-      <div class="card">
-        <h3>Обучение операторов</h3>
-        <p>Полный цикл подготовки: симуляторы, полевые занятия,
-           сопровождение эксплуатации.</p>
-      </div>
-      <div class="card">
-        <h3>Сервис и модернизация</h3>
-        <p>Ремонт, обновление ПО и аппаратной части, гарантийное
-           и постгарантийное обслуживание парка техники.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="about" class="about">
-    <h2>О компании</h2>
-    <p><strong>PANCORE</strong> — инженерная компания полного цикла: от НИОКР и
-       прототипирования до серийного производства и полевой поддержки.
-       Собственное производство, лётно-испытательная база и команда инженеров
-       с опытом в авиации, радиоэлектронике и системах управления.</p>
-    <p>Мы работаем по контрактам с госструктурами и промышленными заказчиками,
-       соблюдаем требования по защите информации и предоставляем полный пакет
-       конструкторской и эксплуатационной документации.</p>
-  </section>
+    <!-- ===== Товары ===== -->
+    <section id="products" class="tab" role="tabpanel" aria-labelledby="tab-products" hidden>
+      <h2>Товары</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Разведывательные БПЛА</h3>
+          <p>Аппараты самолётного и мультироторного типа с продолжительностью полёта
+             до 12 часов, тепловизионными и оптическими модулями.</p>
+        </div>
+        <div class="card">
+          <h3>Ударные и грузовые платформы</h3>
+          <p>Тяжёлые платформы с полезной нагрузкой до 40 кг, модульная
+             архитектура под задачи заказчика.</p>
+        </div>
+        <div class="card">
+          <h3>Средства РЭБ и защита</h3>
+          <p>Детекторы дронов, комплексы подавления каналов управления
+             и навигации, защита объектов и колонн.</p>
+        </div>
+        <div class="card">
+          <h3>Наземные станции управления</h3>
+          <p>Защищённые каналы связи, ретрансляция, планирование миссий
+             и интеграция с существующими системами.</p>
+        </div>
+        <div class="card">
+          <h3>Обучение операторов</h3>
+          <p>Полный цикл подготовки: симуляторы, полевые занятия,
+             сопровождение эксплуатации.</p>
+        </div>
+        <div class="card">
+          <h3>Сервис и модернизация</h3>
+          <p>Ремонт, обновление ПО и аппаратной части, гарантийное
+             и постгарантийное обслуживание парка техники.</p>
+        </div>
+      </div>
+      <p class="tab-foot">
+        Нужна спецификация или расчёт под задачу?
+        <a href="#contact" data-tab-link="contact">Напишите нам</a>
+      </p>
+    </section>
 
-  <section id="contact" class="contact">
-    <h2>Связаться с нами</h2>
-    <form id="lead-form">
-      <label>Имя
-        <input name="name" type="text" required minlength="2" maxlength="120" autocomplete="name">
-      </label>
-      <label>Email
-        <input name="email" type="email" required autocomplete="email">
-      </label>
-      <label>Сообщение
-        <textarea name="message" required minlength="5" maxlength="2000"
-          placeholder="Кратко опишите задачу"></textarea>
-      </label>
-      <button class="btn btn-solid" type="submit">Отправить заявку</button>
-      <p id="form-status" role="status"></p>
-    </form>
-  </section>
+    <!-- ===== Связаться ===== -->
+    <section id="contact" class="tab contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
+      <h2>Связаться с нами</h2>
+      <div class="contact-wrap">
+        <form id="lead-form">
+          <label>Имя
+            <input name="name" type="text" required minlength="2" maxlength="120" autocomplete="name">
+          </label>
+          <label>Email
+            <input name="email" type="email" required autocomplete="email">
+          </label>
+          <label>Сообщение
+            <textarea name="message" required minlength="5" maxlength="2000"
+              placeholder="Кратко опишите задачу"></textarea>
+          </label>
+          <button class="btn btn-solid" type="submit">Отправить заявку</button>
+          <p id="form-status" role="status"></p>
+        </form>
+        <div class="contact-info">
+          <p>Почта: <a href="mailto:info@pancore.tech">info@pancore.tech</a></p>
+          <p>Отвечаем в рабочие дни в течение суток.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer>
     <span>© 2026 PANCORE</span>
@@ -536,6 +610,52 @@
 })();
 </script>
 <script>
+/* ---------- вкладки ---------- */
+(() => {
+  const TABS = ["about", "products", "contact"];
+  const buttons = document.querySelectorAll(".tab-btn");
+  const panels = document.querySelectorAll(".tab");
+
+  function show(name, push = true) {
+    if (!TABS.includes(name)) name = "about";
+    panels.forEach((p) => {
+      const on = p.id === name;
+      p.classList.toggle("active", on);
+      p.hidden = !on;
+    });
+    buttons.forEach((b) => {
+      b.setAttribute("aria-selected", String(b.dataset.tab === name));
+    });
+    if (push && location.hash !== "#" + name) {
+      history.pushState(null, "", "#" + name);
+    }
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  buttons.forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
+
+  // ссылки внутри вкладок (кнопки в герое, "Напишите нам", логотип)
+  document.querySelectorAll("[data-tab-link]").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      show(a.dataset.tabLink);
+    });
+  });
+
+  // стрелки ← → по вкладкам с клавиатуры
+  document.querySelector(".nav").addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const cur = TABS.findIndex((t) => location.hash === "#" + t);
+    const i = cur < 0 ? 0 : cur;
+    const next = TABS[(i + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length];
+    show(next);
+    document.querySelector(`.tab-btn[data-tab="${next}"]`).focus();
+  });
+
+  window.addEventListener("popstate", () => show(location.hash.slice(1), false));
+  show(location.hash.slice(1) || "about", false);
+})();
+
 /* ---------- отправка формы в FastAPI ---------- */
 const form = document.getElementById("lead-form");
 const status = document.getElementById("form-status");
