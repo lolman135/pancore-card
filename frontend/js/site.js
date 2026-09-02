@@ -173,17 +173,21 @@ const MSG = {
   fail: 'Не вдалося надіслати. Напишіть нам на пошту — адреса поруч із формою.',
 };
 
+/* Бекенд приймає лише contact і comment, тому все, що є у формі понад це
+   (позиція з каталогу, сторінка), додається у comment окремими рядками. */
 function buildPayload(form) {
   const fd = new FormData(form);
   const get = (k) => String(fd.get(k) || '').trim();
   const lines = [];
-  if (get('name')) lines.push(`Ім’я: ${get('name')}`);
-  if (get('company')) lines.push(`Компанія: ${get('company')}`);
-  if (get('item')) lines.push(`Позиція: ${get('item')}`);
+  if (get('position')) lines.push(`Позиція: ${get('position')}`);
   lines.push(`Сторінка: ${location.pathname}${location.hash}`);
   const comment = `${lines.join('\n')}\n\n${get('message')}`.slice(0, 4000);
   return { contact: get('contact').slice(0, 254), comment };
 }
+
+/* Поля беремо через querySelector: form.elements.<name> ламається на іменах,
+   що збігаються з властивостями колекції (item, length, namedItem…). */
+const field = (form, name) => form.querySelector(`[name="${name}"]`);
 
 export function initLeadForm(form) {
   const status = form.querySelector('.form__status');
@@ -193,7 +197,8 @@ export function initLeadForm(form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     // пастка для ботів: приховане поле має лишатися порожнім
-    if (form.elements.website && form.elements.website.value) { say(MSG.ok, 'ok'); form.reset(); return; }
+    const hp = field(form, 'website');
+    if (hp && hp.value) { say(MSG.ok, 'ok'); form.reset(); return; }
     if (!form.reportValidity()) { say(MSG.invalid, 'err'); return; }
 
     const payload = buildPayload(form);
@@ -210,15 +215,16 @@ export function initLeadForm(form) {
         // бекенд віддає RFC 7807 application/problem+json:
         // { type, title, status, detail, instance, field?: "contact", errors?: [{field, message, type}] }
         const j = await res.json().catch(() => null);
-        const field = j && (j.field || (Array.isArray(j.errors) && j.errors[0] && j.errors[0].field)) || '';
+        const badField = (j && (j.field || (Array.isArray(j.errors) && j.errors[0] && j.errors[0].field))) || '';
         const detail = j && typeof j.detail === 'string' ? j.detail : '';
         const detailUa = /[а-яіїєґ]/i.test(detail) ? detail : '';
-        if (field === 'contact' || /invalid-contact/.test(String(j && j.type))) {
+        if (badField === 'contact' || /invalid-contact/.test(String(j && j.type))) {
           say(detailUa || MSG.contact, 'err');
-          form.elements.contact && form.elements.contact.focus();
+          const c = field(form, 'contact');
+          c && c.focus();
         } else {
           say(detailUa || MSG.invalid, 'err');
-          const f = field && form.elements[field];
+          const f = badField && field(form, badField);
           f && f.focus && f.focus();
         }
       }
@@ -237,10 +243,13 @@ document.querySelectorAll('form[data-lead]').forEach(initLeadForm);
 export function prefillRequest(text) {
   const form = document.querySelector('form[data-lead]');
   if (!form) return;
-  const item = form.elements.item;
-  if (item) item.value = text;
-  const msg = form.elements.message;
+  const pos = field(form, 'position');
+  if (pos) pos.value = text;
+  const msg = field(form, 'message');
   if (msg && !msg.value.trim()) msg.value = `Прошу комерційну пропозицію на позицію: ${text}.\nКількість: `;
   form.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
-  setTimeout(() => form.elements.name && form.elements.name.focus({ preventScroll: true }), reducedMotion ? 0 : 500);
+  setTimeout(() => {
+    const c = field(form, 'contact');
+    c && c.focus({ preventScroll: true });
+  }, reducedMotion ? 0 : 500);
 }
