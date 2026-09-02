@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" aria-label="PANCORE">
+  <!-- Знак PANCORE: диск, розрізаний діагональною смугою; всередині — кільце зі штрихом («Ø»).
+       Колір знака — currentColor; вирізи прозорі (маска). Зроблено за растровим оригіналом,
+       за наявності векторного вихідника — замінити файл. -->
+  <defs>
+    <mask id="pc-cut">
+      <rect width="200" height="200" fill="#fff"/>
+      <rect x="-60" y="90" width="320" height="20" fill="#000" transform="rotate(-45 100 100) translate(0 -20)"/>
+      <circle cx="100" cy="100" r="46" fill="none" stroke="#000" stroke-width="13"/>
+      <rect x="64" y="94" width="72" height="12" fill="#000" transform="rotate(-45 100 100)"/>
+    </mask>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="currentColor" mask="url(#pc-cut)"/>
+</svg>
