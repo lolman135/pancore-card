@@ -64,6 +64,26 @@ jobs:
       - build-frontend
     if: github.event_name != 'pull_request'
     steps:
+      - name: Get Code
+        uses: actions/checkout@v6
+
+      - name: Prepare Deploy Directory
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: mkdir -p ~/pancore
+
+      - name: Copy Compose File to Server
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: compose.yaml
+          target: ~/pancore
+
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1
         with:
@@ -72,7 +92,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script_stop: true
           script: |
-            cd /opt/pancore
+            cd ~/pancore
             BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/pancore/backend:${{ github.run_number }} \
             FRONTEND_IMAGE=ghcr.io/${{ github.repository_owner }}/pancore/frontend:${{ github.run_number }} \
             docker compose up -d --pull always
