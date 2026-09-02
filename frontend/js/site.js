@@ -245,8 +245,15 @@ export function prefillRequest(text) {
   if (!form) return;
   const pos = field(form, 'position');
   if (pos) pos.value = text;
+  // окремого поля «Позиція» у формі може не бути — тоді позиція йде в повідомлення,
+  // причому дописується, а не затирає вже набраний текст
   const msg = field(form, 'message');
-  if (msg && !msg.value.trim()) msg.value = `Прошу комерційну пропозицію на позицію: ${text}.\nКількість: `;
+  if (msg) {
+    const line = `Прошу комерційну пропозицію на позицію: ${text}.`;
+    msg.value = msg.value.trim()
+      ? `${msg.value.replace(/\s+$/, '')}\n${line}`
+      : `${line}\nКількість: `;
+  }
   form.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
   setTimeout(() => {
     const c = field(form, 'contact');
