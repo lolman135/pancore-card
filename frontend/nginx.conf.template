@@ -49,8 +49,7 @@ server {
 
     # Хешів у назвах немає, тож кеш короткий; HTML завжди свіжий.
     location ~* \.(css|js|svg|webp|woff2?)$ {
-        expires 1h;
-        add_header Cache-Control "public";
+        add_header Cache-Control "no-cache";
     }
 
     location ~* \.html$ {
