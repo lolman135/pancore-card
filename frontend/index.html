@@ -351,19 +351,27 @@
 
 <script>
 /* ============================================================
-   Интерактивный plexus-фон по референсу:
-   два слоя красной сетки (верхний и нижний), тёмная полоса
-   посередине, узлы светятся и тянутся к курсору.
+   Интерактивный фон по референсу: сплошная триангулированная
+   сетка на всю страницу. Вершины стоят на "домашних" позициях
+   (сетка с джиттером), слегка дышат и ограниченно тянутся
+   к курсору, грани покрывают весь экран без разрывов.
    ============================================================ */
 (() => {
   const canvas = document.getElementById("mesh");
   const ctx = canvas.getContext("2d");
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  let W, H, dpr, nodes = [], sparks = [];
+  let W, H, dpr, nodes = [], edges = [], sparks = [];
   const mouse = { x: -1e4, y: -1e4, active: false };
 
   const RED = (a) => `rgba(255, 60, 72, ${a})`;
+
+  const SPACING = 130;     // шаг сетки, px
+  const JITTER = 0.42;     // разброс вершин от узла сетки (доля шага)
+  const MOUSE_R = 240;     // радиус влияния курсора
+  const MAX_PULL = 32;     // максимум смещения вершины к курсору, px
+  const EASE = 0.02;       // скорость стягивания (меньше — плавнее)
+  const WOBBLE = 6;        // амплитуда "дыхания" вершин, px
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -374,32 +382,49 @@
     canvas.style.width = W + "px";
     canvas.style.height = H + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    initNodes();
+    buildMesh();
   }
 
-  // Две горизонтальные полосы, как на референсе: сетка сверху и снизу
-  function bandY(band) {
-    return band === 0
-      ? H * (0.02 + Math.random() * 0.36)   // верхний слой
-      : H * (0.55 + Math.random() * 0.43);  // нижний слой
-  }
-
-  function initNodes() {
+  function buildMesh() {
     nodes = [];
-    const count = Math.min(150, Math.floor((W * H) / 11000));
-    for (let i = 0; i < count; i++) {
-      const band = i % 2;
-      nodes.push({
-        band,
-        x: Math.random() * W,
-        y: bandY(band),
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.18,
-        r: 0.8 + Math.random() * 1.8,
-        glow: Math.random() < 0.12 // часть узлов — яркие "звёзды"
-      });
+    edges = [];
+    // сетка с запасом за краями, чтобы грани уходили за экран
+    const cols = Math.ceil(W / SPACING) + 3;
+    const rows = Math.ceil(H / SPACING) + 3;
+    const j = SPACING * JITTER;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        nodes.push({
+          hx: (c - 1) * SPACING + (Math.random() - 0.5) * 2 * j,
+          hy: (r - 1) * SPACING + (Math.random() - 0.5) * 2 * j,
+          ox: 0, oy: 0,                    // смещение к курсору
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.4 + Math.random() * 0.5,
+          r: 0.8 + Math.random() * 1.8,
+          glow: Math.random() < 0.1,       // яркие "звёзды"
+          px: 0, py: 0
+        });
+      }
     }
-    // пылинки-искры на заднем плане
+
+    // триангуляция: горизонтальные, вертикальные и одна диагональ
+    // на ячейку (направление случайное — сетка выглядит живой)
+    const idx = (r, c) => r * cols + c;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const w = 0.5 + Math.random() * 0.5; // базовая яркость грани
+        if (c + 1 < cols) edges.push([idx(r, c), idx(r, c + 1), w]);
+        if (r + 1 < rows) edges.push([idx(r, c), idx(r + 1, c), 0.5 + Math.random() * 0.5]);
+        if (c + 1 < cols && r + 1 < rows) {
+          const diag = Math.random() < 0.5
+            ? [idx(r, c), idx(r + 1, c + 1)]
+            : [idx(r, c + 1), idx(r + 1, c)];
+          edges.push([diag[0], diag[1], 0.4 + Math.random() * 0.5]);
+        }
+      }
+    }
+
     sparks = Array.from({ length: 40 }, () => ({
       x: Math.random() * W,
       y: Math.random() * H,
@@ -409,19 +434,17 @@
     }));
   }
 
-  const LINK = 150;        // дистанция соединения узлов
-  const MOUSE_R = 240;     // радиус влияния курсора
-  const PULL = 0.045;      // сила притяжения к курсору
+  let t = 0;
 
   function step() {
+    t += 0.008;
     ctx.clearRect(0, 0, W, H);
 
-    // фон — лёгкая красная дымка по полосам
+    // лёгкая красная дымка
     const fog = ctx.createLinearGradient(0, 0, 0, H);
     fog.addColorStop(0, "rgba(120, 20, 30, 0.10)");
-    fog.addColorStop(0.45, "rgba(0, 0, 0, 0)");
-    fog.addColorStop(0.75, "rgba(120, 20, 30, 0.08)");
-    fog.addColorStop(1, "rgba(0, 0, 0, 0)");
+    fog.addColorStop(0.5, "rgba(0, 0, 0, 0)");
+    fog.addColorStop(1, "rgba(120, 20, 30, 0.08)");
     ctx.fillStyle = fog;
     ctx.fillRect(0, 0, W, H);
 
@@ -435,92 +458,63 @@
       ctx.fill();
     }
 
-    // движение узлов
+    // позиции вершин: дом + дыхание + ограниченное смещение к курсору
     for (const n of nodes) {
-      if (!reduceMotion) {
-        n.x += n.vx;
-        n.y += n.vy;
-      }
+      const wob = reduceMotion ? 0 : WOBBLE;
+      const bx = n.hx + Math.cos(t * n.speed + n.phase) * wob;
+      const by = n.hy + Math.sin(t * n.speed * 1.3 + n.phase) * wob;
 
-      // притяжение к курсору
-      const dx = mouse.x - n.x, dy = mouse.y - n.y;
+      let tx = 0, ty = 0;
+      const dx = mouse.x - bx, dy = mouse.y - by;
       const md = Math.hypot(dx, dy);
       if (mouse.active && md < MOUSE_R && md > 1) {
-        const f = (1 - md / MOUSE_R) * PULL;
-        n.x += dx * f;
-        n.y += dy * f;
+        const k = (1 - md / MOUSE_R) * MAX_PULL;
+        tx = (dx / md) * k;
+        ty = (dy / md) * k;
       }
+      n.ox += (tx - n.ox) * EASE;
+      n.oy += (ty - n.oy) * EASE;
 
-      // отражение от краёв и удержание в своей полосе
-      if (n.x < -20) n.x = W + 20;
-      if (n.x > W + 20) n.x = -20;
-      const top = n.band === 0 ? 0 : H * 0.52;
-      const bot = n.band === 0 ? H * 0.42 : H;
-      if (n.y < top || n.y > bot) n.vy *= -1;
+      n.px = bx + n.ox;
+      n.py = by + n.oy;
     }
 
-    // линии между узлами (только внутри своей полосы — сохраняет два слоя)
-    for (let i = 0; i < nodes.length; i++) {
-      const a = nodes[i];
-      for (let j = i + 1; j < nodes.length; j++) {
-        const b = nodes[j];
-        if (a.band !== b.band) continue;
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const d2 = dx * dx + dy * dy;
-        if (d2 > LINK * LINK) continue;
-        const d = Math.sqrt(d2);
+    // грани сетки
+    for (const [ai, bi, w] of edges) {
+      const a = nodes[ai], b = nodes[bi];
+      const mx = (a.px + b.px) / 2, my = (a.py + b.py) / 2;
+      const mdist = Math.hypot(mouse.x - mx, mouse.y - my);
+      const boost = mouse.active && mdist < MOUSE_R
+        ? (1 - mdist / MOUSE_R) * 0.5 : 0;
 
-        // ближе к курсору — ярче
-        const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-        const mdist = Math.hypot(mouse.x - mx, mouse.y - my);
-        const boost = mouse.active && mdist < MOUSE_R
-          ? (1 - mdist / MOUSE_R) * 0.55 : 0;
-
-        const alpha = (1 - d / LINK) * 0.28 + boost;
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = RED(alpha);
-        ctx.lineWidth = boost > 0.2 ? 1.4 : 0.9;
-        ctx.stroke();
-      }
+      ctx.beginPath();
+      ctx.moveTo(a.px, a.py);
+      ctx.lineTo(b.px, b.py);
+      ctx.strokeStyle = RED(0.1 + w * 0.16 + boost);
+      ctx.lineWidth = boost > 0.2 ? 1.4 : 0.9;
+      ctx.stroke();
     }
 
-    // узлы
+    // вершины
     for (const n of nodes) {
-      const mdist = Math.hypot(mouse.x - n.x, mouse.y - n.y);
+      const mdist = Math.hypot(mouse.x - n.px, mouse.y - n.py);
       const near = mouse.active && mdist < MOUSE_R ? 1 - mdist / MOUSE_R : 0;
       const r = n.r + near * 1.6;
 
       if (n.glow || near > 0.4) {
-        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 7);
+        const g = ctx.createRadialGradient(n.px, n.py, 0, n.px, n.py, r * 7);
         g.addColorStop(0, RED(0.8));
         g.addColorStop(1, RED(0));
         ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, r * 7, 0, Math.PI * 2);
+        ctx.arc(n.px, n.py, r * 7, 0, Math.PI * 2);
         ctx.fill();
       }
 
       ctx.beginPath();
-      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = n.glow ? "rgba(255, 230, 232, 0.95)" : RED(0.85 + near * 0.15);
+      ctx.arc(n.px, n.py, r, 0, Math.PI * 2);
+      ctx.fillStyle = n.glow ? "rgba(255, 230, 232, 0.95)" : RED(0.7 + near * 0.3);
       ctx.fill();
-    }
-
-    // линии от курсора к ближайшим узлам
-    if (mouse.active) {
-      for (const n of nodes) {
-        const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
-        if (d < MOUSE_R * 0.7) {
-          ctx.beginPath();
-          ctx.moveTo(mouse.x, mouse.y);
-          ctx.lineTo(n.x, n.y);
-          ctx.strokeStyle = RED((1 - d / (MOUSE_R * 0.7)) * 0.4);
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-      }
     }
 
     requestAnimationFrame(step);
@@ -540,7 +534,8 @@
   resize();
   requestAnimationFrame(step);
 })();
-
+</script>
+<script>
 /* ---------- отправка формы в FastAPI ---------- */
 const form = document.getElementById("lead-form");
 const status = document.getElementById("form-status");
