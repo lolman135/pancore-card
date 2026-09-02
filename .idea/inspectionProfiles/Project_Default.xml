@@ -1,0 +1,56 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="ignoredPackages">
+        <list>
+          <option value="aiohappyeyeballs" />
+          <option value="aiohttp" />
+          <option value="aiosignal" />
+          <option value="alerts-in-ua" />
+          <option value="annotated-doc" />
+          <option value="anyio" />
+          <option value="attrs" />
+          <option value="beautifulsoup4" />
+          <option value="bs4" />
+          <option value="certifi" />
+          <option value="charset-normalizer" />
+          <option value="click" />
+          <option value="fastapi" />
+          <option value="frozenlist" />
+          <option value="h11" />
+          <option value="idna" />
+          <option value="multidict" />
+          <option value="numpy" />
+          <option value="opencv-python" />
+          <option value="pandas" />
+          <option value="polars-runtime-32" />
+          <option value="propcache" />
+          <option value="pyarrow" />
+          <option value="PyMuPDF" />
+          <option value="python-dateutil" />
+          <option value="pytz" />
+          <option value="PyYAML" />
+          <option value="requests" />
+          <option value="six" />
+          <option value="soupsieve" />
+          <option value="starlette" />
+          <option value="tzdata" />
+          <option value="urllib3" />
+          <option value="uvicorn" />
+          <option value="xlsxwriter" />
+          <option value="yarl" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredBaseClasses">
+        <list>
+          <option value="unittest.TestCase" />
+          <option value="unittest.case.TestCase" />
+          <option value="main.Player" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
