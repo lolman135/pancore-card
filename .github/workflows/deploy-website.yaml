@@ -93,9 +93,14 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script_stop: true
           script: |
+            set -e
             cd ~/pancore
+            cat > .env <<'ENVFILE'
+            BACKEND_PORT=8080
+            BACKEND_HOST=0.0.0.0
+            NGINX_PORT=80
+            ENVFILE
             BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/pancore/backend:${{ github.run_number }} \
             FRONTEND_IMAGE=ghcr.io/${{ github.repository_owner }}/pancore/frontend:${{ github.run_number }} \
             docker compose up -d --pull always
