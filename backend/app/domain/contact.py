@@ -11,16 +11,12 @@ class InvalidContactError(ValueError):
 
 @dataclass(frozen=True, slots=True)
 class Contact:
-    """Распознанный и приведённый к каноническому виду контакт."""
-
     kind: ContactKind
     value: str
 
 
 @dataclass(frozen=True, slots=True)
 class ContactSubmission:
-    """Заявка с формы: контакт, комментарий и момент получения."""
-
     contact: Contact
     comment: str
     created_at: datetime
