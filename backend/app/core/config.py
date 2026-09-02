@@ -5,9 +5,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-BACKEND_DIR = Path(__file__).resolve().parents[2]
+BACKEND_DIR = Path(__file__).resolve().parents[3]
 DEFAULT_ENV_PATH = BACKEND_DIR / ".env"
-DEFAULT_STORAGE_PATH = BACKEND_DIR / "data" / "contacts.jsonl"
 DEFAULT_PROBLEM_BASE_URL = "https://pancore-card.example.com/problems"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8080
@@ -22,7 +21,6 @@ class Settings:
     port: int = DEFAULT_PORT
     host: str = DEFAULT_HOST
     api_prefix: str = "/api/v1"
-    storage_path: Path = DEFAULT_STORAGE_PATH
     cors_origins: tuple[str, ...] = ("*",)
     problem_base_url: str = DEFAULT_PROBLEM_BASE_URL
 
@@ -31,9 +29,8 @@ class Settings:
 def get_settings() -> Settings:
     origins = os.getenv("CORS_ORIGINS", "*")
     return Settings(
-        storage_path=Path(os.getenv("CONTACTS_STORAGE_PATH", DEFAULT_STORAGE_PATH)),
         problem_base_url=os.getenv("PROBLEM_BASE_URL", DEFAULT_PROBLEM_BASE_URL).rstrip("/"),
         cors_origins=tuple(origin.strip() for origin in origins.split(",") if origin.strip()),
-        port=int(os.getenv("PORT", DEFAULT_PORT)),
-        host=os.getenv("HOST", DEFAULT_HOST),
+        port=int(os.getenv("BACKEND_PORT", DEFAULT_PORT)),
+        host=os.getenv("BACKEND_HOST", DEFAULT_HOST),
     )

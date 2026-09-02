@@ -11,6 +11,7 @@ frontend/
 ├── catalog.html          ассортимент: 163 позиции / 20 категорий, поиск, фильтр, раскрывающаяся тех.спецификация, форма запроса
 ├── css/style.css         дизайн-система (токены в :root)
 ├── js/site.js            общая логика: шапка, меню, появление блоков, WebGL-фон, карта, форма → API
+├── js/env.js             ГЕНЕРИРУЕТСЯ из .env: адрес бэкенда (`backend/scripts/gen_frontend_env.py`)
 ├── js/mesh.js            WebGL-поле граней (three.js, свои шейдеры) — ключевой визуальный элемент
 ├── js/worldmap.js        карта мира: точечный суходол + анимированные маршруты
 ├── js/catalog.js         логика страницы ассортимента (аккордеон со спецификацией)
@@ -37,11 +38,24 @@ py -m http.server 8090 --bind 127.0.0.1
 ```bash
 py -m venv .venv
 .venv/Scripts/python.exe -m pip install -r requirements.txt
-.venv/Scripts/python.exe -m uvicorn main:app --reload --port 8000
+.venv/Scripts/python.exe main.py          # host/port берутся из .env в корне репозитория
 ```
 
-Фронт и бэк на разных портах → в `<meta name="api-base">` каждой страницы поставить
-`http://127.0.0.1:8000` (CORS у бэка по умолчанию `*`). Пусто = тот же origin.
+### Адрес бэкенда для фронта
+
+Хост и порт лежат в корневом `.env` (`BACKEND_HOST`, `BACKEND_PORT`). Браузер `.env`
+прочитать не может, поэтому адрес генерируется в `js/env.js`:
+
+```bash
+py backend/scripts/gen_frontend_env.py    # → frontend/js/env.js: export const API_BASE = '…'
+```
+
+Запускать после каждой правки `BACKEND_HOST` / `BACKEND_PORT`. Скрипт берёт значения через
+`get_settings()`, так что источник правды один, и подменяет адрес привязки `0.0.0.0` на
+`127.0.0.1` — на `0.0.0.0` браузер не ходит.
+
+Приоритет адреса в `site.js`: непустой `<meta name="api-base">` → `API_BASE` из `js/env.js`
+→ пусто (тот же origin). CORS у бэка по умолчанию `*`.
 
 Параметр `?static` в адресе выключает анимации (то же, что системное «уменьшить движение»).
 Двойным кликом по `index.html` открывать нельзя: ES-модули с `file://` блокируются.
@@ -76,7 +90,7 @@ Content-Type: application/json
 
 | Ответ | Что делает фронт |
 |-------|------------------|
-| `200 {"status":"ok","contact_type":"email\|phone\|telegram"}` | «Заявку надіслано», форма очищается |
+| `200 {"status":"ok","contact_type":"email\|phone\|telegram"}` | «Ваш запит на email / telegram / мобільний телефон надіслано», форма очищается. Неизвестный или отсутствующий `contact_type` → общее «Заявку надіслано» |
 | `422` с `field: "contact"` или `type …/invalid-contact` | своё сообщение «Вкажіть email, телефон або @telegram», фокус на поле «Контакт» (английский `detail` не показывается) |
 | `422` validation-error | показывает `detail` (он на украинском), фокус на поле из `errors[0].field` |
 | `429` | «Забагато запитів» (на будущее, rate-limit у бэка пока нет) |
