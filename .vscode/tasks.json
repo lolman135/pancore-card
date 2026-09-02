@@ -1,0 +1,33 @@
+{
+  // Запуск із VS Code: Ctrl+Shift+B — стартують фронт і бекенд разом.
+  // Або Terminal → Run Task… → окремо «Фронт» чи «Бекенд».
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Фронт (http://127.0.0.1:8090)",
+      "type": "shell",
+      "command": "py",
+      "args": ["-m", "http.server", "8090"],
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "group": "servers" }
+    },
+    {
+      "label": "Бекенд (http://127.0.0.1:8000/docs)",
+      "type": "shell",
+      // першого разу сам створить .venv і поставить залежності
+      "command": "if (-not (Test-Path .venv)) { py -m venv .venv; .venv\\Scripts\\python.exe -m pip install -r requirements.txt }; .venv\\Scripts\\python.exe -m uvicorn main:app --reload --port 8000",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "group": "servers" }
+    },
+    {
+      "label": "Запустити все (фронт + бекенд)",
+      "dependsOn": ["Фронт (http://127.0.0.1:8090)", "Бекенд (http://127.0.0.1:8000/docs)"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    }
+  ]
+}
