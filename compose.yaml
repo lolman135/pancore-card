@@ -1,0 +1,15 @@
+services:
+  backend:
+    build:
+      context: backend/
+    ports:
+      - '${BACKEND_PORT}:${BACKEND_PORT}'
+    restart: always
+    networks:
+      - inner-network
+    env_file:
+      - .env
+
+networks:
+  inner-network:
+    driver: bridge
