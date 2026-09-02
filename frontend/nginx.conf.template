@@ -3,9 +3,27 @@
 
 limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
 
+# HTTP → HTTPS. Certbot ходить standalone з зупинкою контейнера,
+# тому ACME-виключення тут не потрібне.
 server {
     listen 80;
-    server_name _;
+    server_name pancore.eu www.pancore.eu;
+    return 301 https://pancore.eu$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name pancore.eu www.pancore.eu;
+
+    # Сертифікати з хоста, змонтовані read-only у compose.
+    ssl_certificate     /etc/letsencrypt/live/pancore.eu/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/pancore.eu/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    add_header Strict-Transport-Security "max-age=31536000" always;
 
     # DNS Docker: ім'я сервіса бекенда резолвиться в рантаймі, тому nginx
     # піднімається навіть коли бекенд ще не готовий.
