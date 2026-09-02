@@ -6,6 +6,9 @@
 <title>Асортимент — PANCORE</title>
 <meta name="description" content="Асортимент PANCORE: оптоволокно, оптичний зв’язок, карбон, пропелери, рами, двигуни, регулятори, польотні контролери, відеозв’язок, камери, автопілоти, ДВЗ — 163 позиції у 20 категоріях.">
 <meta name="theme-color" content="#07080b">
+<!-- База API. Порожньо = той самий origin (бекенд роздає фронт або стоїть за одним проксі).
+     Окремий домен API: content="https://api.pancore.example" -->
+<meta name="api-base" content="">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -114,7 +117,7 @@
           <div class="field"><label for="f-item">Позиція</label><input id="f-item" name="item" type="text" maxlength="240" placeholder="Оберіть у списку або впишіть модель"></div>
           <div class="form__row">
             <div class="field"><label for="f-name">Ім’я</label><input id="f-name" name="name" type="text" required minlength="2" maxlength="120" autocomplete="name" placeholder="Як до вас звертатися"></div>
-            <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" required maxlength="160" autocomplete="email" placeholder="name@company.com"></div>
+            <div class="field"><label for="f-contact">Контакт</label><input id="f-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
           </div>
           <div class="field"><label for="f-msg">Повідомлення</label><textarea id="f-msg" name="message" required minlength="5" maxlength="2000" placeholder="Кількість, терміни, вимоги до документації"></textarea></div>
           <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>

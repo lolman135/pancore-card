@@ -138,14 +138,37 @@ if (chipsHost) {
   });
 }
 
-/* ---------- форма запиту → POST /api/contact ---------- */
+/* ---------- форма запиту → POST {API_BASE}/api/v1/contact ----------
+   Контракт бекенда (backend/app/dto/contact.py):
+     запит   { contact: string ≤254 (email | телефон | @telegram), comment: string ≤4000 }
+     200     { status: "ok", contact_type: "email" | "phone" | "telegram" }
+     422     { detail: "текст" } — контакт не розпізнано; або список pydantic
+   Ім'я, компанія, позиція та сторінка пакуються в comment.
+   API_BASE — <meta name="api-base" content="https://api.example.com">;
+   порожньо = той самий origin. */
+const API_BASE = (document.querySelector('meta[name="api-base"]')?.content || '').replace(/\/+$/, '');
+const CONTACT_URL = `${API_BASE}/api/v1/contact`;
+
 const MSG = {
   sending: 'Надсилаємо…',
   ok: 'Заявку надіслано. Відповімо протягом робочого дня.',
   invalid: 'Перевірте поля форми.',
+  contact: 'Вкажіть email, телефон або @telegram.',
   limit: 'Забагато запитів із вашої адреси. Спробуйте пізніше або напишіть на пошту.',
   fail: 'Не вдалося надіслати. Напишіть нам на пошту — адреса поруч із формою.',
 };
+
+function buildPayload(form) {
+  const fd = new FormData(form);
+  const get = (k) => String(fd.get(k) || '').trim();
+  const lines = [];
+  if (get('name')) lines.push(`Ім’я: ${get('name')}`);
+  if (get('company')) lines.push(`Компанія: ${get('company')}`);
+  if (get('item')) lines.push(`Позиція: ${get('item')}`);
+  lines.push(`Сторінка: ${location.pathname}${location.hash}`);
+  const comment = `${lines.join('\n')}\n\n${get('message')}`.slice(0, 4000);
+  return { contact: get('contact').slice(0, 254), comment };
+}
 
 export function initLeadForm(form) {
   const status = form.querySelector('.form__status');
@@ -158,24 +181,22 @@ export function initLeadForm(form) {
     if (form.elements.website && form.elements.website.value) { say(MSG.ok, 'ok'); form.reset(); return; }
     if (!form.reportValidity()) { say(MSG.invalid, 'err'); return; }
 
-    const data = Object.fromEntries(new FormData(form));
-    delete data.website;
-    data.page = location.pathname + location.hash;
-
+    const payload = buildPayload(form);
     btn.disabled = true;
     say(MSG.sending);
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch(CONTACT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       if (res.ok) { say(MSG.ok, 'ok'); form.reset(); }
       else if (res.status === 422) {
         const j = await res.json().catch(() => null);
         const d = j && j.detail;
         const msg = Array.isArray(d) ? d.map((x) => x.msg).join('; ') : typeof d === 'string' ? d : '';
-        say(msg ? `${MSG.invalid} ${msg}` : MSG.invalid, 'err');
+        say(msg ? `${MSG.contact} ${msg}` : MSG.contact, 'err');
+        form.elements.contact && form.elements.contact.focus();
       }
       else if (res.status === 429) say(MSG.limit, 'err');
       else throw new Error(`HTTP ${res.status}`);
