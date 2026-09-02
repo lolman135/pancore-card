@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Асортимент — PANCORE</title>
+<meta name="description" content="Асортимент PANCORE: оптоволокно, оптичний зв’язок, карбон, пропелери, рами, двигуни, регулятори, польотні контролери, відеозв’язок, камери, автопілоти, ДВЗ — 163 позиції у 20 категоріях.">
+<meta name="theme-color" content="#07080b">
+<!-- База API. Порожньо = той самий origin (бекенд роздає фронт або стоїть за одним проксі).
+     Окремий домен API: content="https://api.pancore.example" -->
+<meta name="api-base" content="">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
+</head>
+<body data-page="catalog">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <mask id="pc-cut">
+      <rect width="200" height="200" fill="#fff"/>
+      <rect x="-60" y="90" width="320" height="20" fill="#000" transform="rotate(-45 100 100) translate(0 -20)"/>
+      <circle cx="100" cy="100" r="46" fill="none" stroke="#000" stroke-width="13"/>
+      <rect x="64" y="94" width="72" height="12" fill="#000" transform="rotate(-45 100 100)"/>
+    </mask>
+    <symbol id="pc-logo" viewBox="0 0 200 200"><circle cx="100" cy="100" r="100" fill="currentColor" mask="url(#pc-cut)"/></symbol>
+  </defs>
+</svg>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="page">
+
+  <header class="head" id="head">
+    <div class="wrap head__in">
+      <a class="brand" href="index.html" aria-label="PANCORE — на головну">
+        <svg class="brand__mark" viewBox="0 0 200 200" aria-hidden="true"><use href="#pc-logo"/></svg>
+        <span class="brand__word">Pancore</span>
+      </a>
+      <nav class="nav" aria-label="Основна навігація">
+        <a href="index.html" data-nav="home">Головна</a>
+        <a href="production.html" data-nav="production">Виробництво</a>
+        <a href="catalog.html" data-nav="catalog">Асортимент</a>
+        <a href="index.html#contact" data-nav="contact">Контакти</a>
+      </nav>
+      <div class="head__cta">
+        <a class="btn btn--primary btn--sm" href="#request">Запит</a>
+        <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
+      </div>
+    </div>
+  </header>
+  <nav class="mnav" id="mnav" aria-label="Мобільна навігація">
+    <a href="index.html" data-nav="home">Головна</a>
+    <a href="production.html" data-nav="production">Виробництво</a>
+    <a href="catalog.html" data-nav="catalog">Асортимент</a>
+    <a href="index.html#contact" data-nav="contact">Контакти</a>
+    <p class="mnav__foot">PANCORE · MADE IN POLAND · EU</p>
+  </nav>
+
+  <main>
+
+    <!-- ════════ СМУГА-ГЕРОЙ ════════ -->
+    <section class="band" style="min-height:52svh">
+      <div class="mesh-stage is-band" aria-hidden="true">
+        <canvas id="mesh"></canvas>
+        <div class="mesh-fog"></div>
+        <div class="mesh-vignette"></div>
+      </div>
+      <div class="wrap">
+        <p class="eyebrow rise">Асортимент</p>
+        <h1 class="h-display h1 rise" data-delay="1"><b>163 позиції.</b><br><b class="metal">Один контракт.</b></h1>
+        <p class="lead rise" data-delay="2" style="margin-top:24px">
+          Власні вироби та компоненти перевірених виробників у 20 категоріях. Позначка «Документація» —
+          технічний паспорт саме на цю модель, «Док. аналога» — на близьку модель тієї ж лінійки,
+          решта надається за запитом.
+        </p>
+      </div>
+    </section>
+
+    <!-- ════════ ПАНЕЛЬ ФІЛЬТРІВ ════════ -->
+    <div class="toolbar">
+      <div class="wrap toolbar__in">
+        <div class="toolbar__row">
+          <label class="search" aria-label="Пошук по асортименту">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input id="q" type="search" placeholder="Пошук: 3115, H743, тепловізор, 60 км…" autocomplete="off">
+          </label>
+          <label class="chip" style="cursor:pointer"><input id="doc-only" type="checkbox" style="accent-color:var(--accent)"> тільки з документацією</label>
+          <span class="toolbar__count" id="count"></span>
+        </div>
+        <div class="chips chips--scroll" id="chips" role="tablist" aria-label="Категорії"></div>
+      </div>
+    </div>
+
+    <!-- ════════ СПИСОК ════════ -->
+    <section class="sec sec--tight">
+      <div class="wrap" id="catalog" aria-live="polite"></div>
+    </section>
+
+    <!-- ════════ ЗАПИТ ════════ -->
+    <section class="sec sec--line" id="request">
+      <div class="wrap contact">
+        <div class="contact__info">
+          <div>
+            <p class="eyebrow rise">Запит</p>
+            <h2 class="h-display h2 rise" data-delay="1">Пропозиція на позицію</h2>
+            <p class="lead rise" data-delay="2">Натисніть «Запит» біля потрібної позиції або опишіть задачу своїми словами. Підбираємо аналоги, якщо конкретна модель недоступна, і надсилаємо документацію разом із пропозицією.</p>
+          </div>
+          <div class="contact__lines rise" data-delay="3">
+            <div><small>Пошта</small><a href="mailto:info@pancore.tech">info@pancore.tech</a></div>
+            <div><small>Відповідь</small><span>протягом робочого дня</span></div>
+          </div>
+        </div>
+        <form class="form rise" data-delay="2" data-lead>
+          <div class="field"><label for="f-item">Позиція</label><input id="f-item" name="item" type="text" maxlength="240" placeholder="Оберіть у списку або впишіть модель"></div>
+          <div class="form__row">
+            <div class="field"><label for="f-name">Ім’я</label><input id="f-name" name="name" type="text" required minlength="2" maxlength="120" autocomplete="name" placeholder="Як до вас звертатися"></div>
+            <div class="field"><label for="f-contact">Контакт</label><input id="f-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
+          </div>
+          <div class="field"><label for="f-msg">Повідомлення</label><textarea id="f-msg" name="message" required minlength="5" maxlength="2000" placeholder="Кількість, терміни, вимоги до документації"></textarea></div>
+          <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+          <div class="form__foot">
+            <button class="btn btn--primary" type="submit">Надіслати запит</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </div>
+          <p class="form__note">Надсилаючи форму, ви погоджуєтесь на обробку контактних даних для відповіді на запит.</p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot__grid">
+        <div>
+          <a class="brand" href="index.html" aria-label="PANCORE">
+            <svg class="brand__mark" viewBox="0 0 200 200" aria-hidden="true"><use href="#pc-logo"/></svg>
+            <span class="brand__word">Pancore</span>
+          </a>
+          <p class="foot__tag">Виробництво та компоненти для безпілотних систем. Польща, Європейський Союз.</p>
+        </div>
+        <div>
+          <h4>Розділи</h4>
+          <ul><li><a href="index.html">Головна</a></li><li><a href="production.html">Виробництво</a></li><li><a href="catalog.html">Асортимент</a></li><li><a href="index.html#contact">Контакти</a></li></ul>
+        </div>
+        <div>
+          <h4>Напрями</h4>
+          <ul><li><a href="production.html#fiber">Оптоволокно</a></li><li><a href="production.html#composites">Композити</a></li><li><a href="production.html#injection">Полімерне лиття</a></li><li><a href="production.html#smt">Електроніка</a></li></ul>
+        </div>
+        <div>
+          <h4>Зв’язок</h4>
+          <ul><li><a href="mailto:info@pancore.tech">info@pancore.tech</a></li><li><a href="#request">Форма запиту</a></li></ul>
+        </div>
+      </div>
+      <div class="foot__bottom"><span>© 2026 PANCORE</span><span>MADE IN POLAND · EU</span></div>
+    </div>
+  </footer>
+
+</div>
+
+<script type="module" src="js/catalog.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.db
+*.sqlite3
+
+# Node (на випадок збірки)
+node_modules/
+dist/
+
+# ОС / редактори
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
