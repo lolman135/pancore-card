@@ -194,6 +194,27 @@
 .prod b { font-size: 15px; font-weight: 700; }
 .prod p { font-size: 13px; color: var(--text-2); line-height: 1.5; }
 .prod .go { margin-top: auto; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-2); }
+/* У .prods з auto-fit одинока картка займала всю ширину, а .sketch тягнеться
+   на 100% — звідси ескіз на пів екрана. Обмежуємо саму картку, не всі ескізи. */
+.prods--solo { max-width: 640px; }
+/* Картка-виріб у рядок: компактний ескіз ліворуч, текст праворуч. */
+.prod--row {
+  grid-template-columns: minmax(0, 176px) minmax(0, 1fr);
+  grid-template-rows: auto; align-items: center; gap: 18px; padding: 18px;
+}
+.prod--row .prod__fig {
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-s);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 70%);
+}
+.prod--row .prod__fig .sk { padding: 0; }
+.prod--row .prod__fig .sketch { max-height: 104px; }
+.prod--row .prod__txt { display: grid; gap: 8px; align-content: center; }
+.prod--row .prod__txt p { margin: 0; }
+.prod--row .go { margin-top: 2px; }
+@media (max-width: 700px) {
+  .prod--row { grid-template-columns: 1fr; gap: 14px; }
+  .prod--row .prod__fig { justify-self: start; min-width: 176px; }
+}
 .stages { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0; position: relative; }
 .stages::before { content: ""; position: absolute; left: 12px; right: 12px; top: 11px; height: 1px; background: var(--line-2); }
 .stage { position: relative; padding: 28px 12px 0 0; }
