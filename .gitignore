@@ -20,3 +20,4 @@ Thumbs.db
 
 # Згенеровано backend/scripts/gen_frontend_env.py
 frontend/js/env.js
+local-compose/

@@ -1,0 +1,7 @@
+Dockerfile
+.dockerignore
+README.md
+
+# Згенерований локальний env — в образі його заміняє js/env.docker.js,
+# тож збірка на машині розробника збігається зі збіркою в CI.
+js/env.js

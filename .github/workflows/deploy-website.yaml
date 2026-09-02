@@ -1,0 +1,58 @@
+name: deploy-website.yaml
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v6
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKE }}
+
+      - name: Build and Push docker image to GHCR
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/pancore/backend:latest
+            ghcr.io/${{ github.repository_owner }}/pancore/backend:${{ github.run_number }}
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v6
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKE }}
+
+      - name: Build and Push docker image to GHCR
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/pancore/frontend:latest
+            ghcr.io/${{ github.repository_owner }}/pancore/frontend:${{ github.run_number }}
+            
+  
