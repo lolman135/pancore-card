@@ -13,7 +13,6 @@ PHONE_SEPARATORS_RE = re.compile(r"[\s()\-.]")
 
 
 def parse_contact(raw: str) -> Contact:
-    """Определяет тип контакта и нормализует его. Бросает InvalidContactError."""
     value = raw.strip()
 
     if EMAIL_RE.match(value):
@@ -30,4 +29,4 @@ def parse_contact(raw: str) -> Contact:
     if TELEGRAM_RE.match(value):
         return Contact(kind="telegram", value=f"@{value.lstrip('@')}")
 
-    raise InvalidContactError("Укажите телефон, email или телеграм (@username)")
+    raise InvalidContactError("Use phone number, email or telegram (@username)")
