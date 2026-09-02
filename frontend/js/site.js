@@ -5,7 +5,7 @@
    ============================================================ */
 
 import { createMesh } from './mesh.js';
-import { API_BASE as ENV_API_BASE } from './env.js';
+import { API_BASE as ENV_API_BASE, API_KEY } from './env.js';
 
 export const reducedMotion =
   matchMedia('(prefers-reduced-motion: reduce)').matches ||
@@ -238,7 +238,12 @@ export function initLeadForm(form) {
     try {
       const res = await fetch(CONTACT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        // X-API-Key з env.js; у Docker ключ порожній — його підставляє nginx при проксуванні
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...(API_KEY ? { 'X-API-Key': API_KEY } : {}),
+        },
         body: JSON.stringify(payload),
       });
       if (res.ok) {

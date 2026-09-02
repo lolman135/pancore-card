@@ -4,6 +4,7 @@ from email.message import EmailMessage
 from typing import Protocol
 
 from app.domain.contact import ContactSubmission
+from app.core import config
 
 logger = logging.getLogger(__name__)
 

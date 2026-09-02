@@ -13,6 +13,7 @@ DEFAULT_PORT = 8080
 DEFAULT_SMTP_HOST = "smtp.gmail.com"
 DEFAULT_SMTP_PORT = 465
 
+
 load_dotenv(DEFAULT_ENV_PATH)
 
 
@@ -30,6 +31,8 @@ class Settings:
     mail_from: str = ""
     mail_from_password: str = ""
     mail_to: str = ""
+    api_key: str = ""
+    prod_flag: bool = False
 
 
 @lru_cache
@@ -45,4 +48,9 @@ def get_settings() -> Settings:
         mail_from=os.getenv("MAIL_FROM", ""),
         mail_from_password=os.getenv("MAIL_FROM_PASSWORD", ""),
         mail_to=os.getenv("MAIL_TO", ""),
+        api_key=os.getenv("API_KEY", ""),
+        prod_flag=_env_bool("PROD_FLAG")
     )
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    return os.getenv(name, str(default)).strip().lower() in ("1", "true", "yes", "on")

@@ -1,8 +1,8 @@
 """Генерує frontend/js/env.js з .env.
 
 Фронт статичний, без збірки, тому прочитати .env у браузері неможливо —
-адреса бекенда під'їжджає готовим ES-модулем. Запускати після зміни
-BACKEND_HOST / BACKEND_PORT у .env.
+адреса бекенда та API-ключ під'їжджають готовим ES-модулем. Запускати
+після зміни BACKEND_HOST / BACKEND_PORT / API_KEY у .env.
 """
 
 import sys
@@ -20,10 +20,11 @@ BROWSER_FALLBACK_HOST = "127.0.0.1"
 
 TEMPLATE = """\
 /* Згенеровано backend/scripts/gen_frontend_env.py з .env — не редагувати вручну.
-   Перегенерувати після зміни BACKEND_HOST / BACKEND_PORT:
+   Перегенерувати після зміни BACKEND_HOST / BACKEND_PORT / API_KEY:
      python backend/scripts/gen_frontend_env.py
-   Порожній рядок = той самий origin, що й сторінка. */
+   Порожній API_BASE = той самий origin, що й сторінка. */
 export const API_BASE = '{api_base}';
+export const API_KEY = '{api_key}';
 """
 
 
@@ -35,8 +36,10 @@ def main() -> None:
     settings = get_settings()
     api_base = f"http://{browser_host(settings.host)}:{settings.port}"
     FRONTEND_ENV_PATH.parent.mkdir(parents=True, exist_ok=True)
-    FRONTEND_ENV_PATH.write_text(TEMPLATE.format(api_base=api_base), encoding="utf-8")
-    print(f"{FRONTEND_ENV_PATH} -> API_BASE = {api_base}")
+    FRONTEND_ENV_PATH.write_text(
+        TEMPLATE.format(api_base=api_base, api_key=settings.api_key), encoding="utf-8"
+    )
+    print(f"{FRONTEND_ENV_PATH} -> API_BASE = {api_base}, API_KEY = {'set' if settings.api_key else 'empty'}")
 
 
 if __name__ == "__main__":
