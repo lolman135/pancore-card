@@ -1,685 +1,285 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PANCORE — дроны и оборонное оборудование</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PANCORE — виробництво та компоненти для безпілотних систем</title>
+<meta name="description" content="PANCORE — виробничо-інженерна компанія в ЄС (Польща): оптоволоконні системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих для БпЛА.">
+<meta name="theme-color" content="#07080b">
+<meta property="og:title" content="PANCORE — виробництво та компоненти для безпілотних систем">
+<meta property="og:description" content="Оптоволокно G.657.A2 у польовому корпусі, карбон, полімерне лиття, електроніка. Виробництво в Польщі, ЄС.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0b0508;
-    --red: #ff2e3f;
-    --red-dim: #8f2530;
-    --text: #f2e9ea;
-    --text-dim: #b39a9e;
-    --panel: rgba(20, 8, 12, 0.55);
-    --line: rgba(255, 46, 63, 0.25);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: "Manrope", sans-serif;
-    font-size: 17px;
-    line-height: 1.65;
-    overflow-x: hidden;
-  }
-
-  #mesh {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    display: block;
-  }
-
-  .page {
-    position: relative;
-    z-index: 1;
-    max-width: 1080px;
-    min-height: 100vh;
-    margin: 0 auto;
-    padding: 0 28px;
-    display: flex;
-    flex-direction: column;
-  }
-  main { flex: 1; }
-
-  h1, h2, h3, .brand, .tab-btn, button {
-    font-family: "Chakra Petch", sans-serif;
-  }
-
-  /* ---------- шапка и вкладки ---------- */
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 26px 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .brand {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    color: var(--text);
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .brand em {
-    font-style: normal;
-    color: var(--red);
-  }
-
-  .nav {
-    display: flex;
-    gap: 6px;
-  }
-  .tab-btn {
-    background: none;
-    border: 1px solid transparent;
-    color: var(--text-dim);
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    padding: 10px 18px;
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn[aria-selected="true"] {
-    color: var(--red);
-    border-color: var(--red);
-    background: rgba(255, 46, 63, 0.08);
-    box-shadow: 0 0 16px rgba(255, 46, 63, 0.25);
-  }
-
-  .tab { display: none; }
-  .tab.active {
-    display: block;
-    animation: tab-in 0.35s ease;
-  }
-  @keyframes tab-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: none; }
-  }
-
-  /* ---------- герой (внутри вкладки "О компании") ---------- */
-  .hero {
-    min-height: 62vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 40px 0 60px;
-  }
-
-  .hero h1 {
-    font-size: clamp(44px, 8vw, 96px);
-    font-weight: 700;
-    line-height: 1.02;
-    letter-spacing: 0.02em;
-    max-width: 15ch;
-    text-shadow: 0 0 40px rgba(255, 46, 63, 0.35);
-  }
-
-  .hero p {
-    margin-top: 26px;
-    max-width: 52ch;
-    color: var(--text-dim);
-    font-size: 19px;
-  }
-
-  .hero .cta {
-    margin-top: 42px;
-    display: inline-flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 14px 30px;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-    cursor: pointer;
-    border: 1px solid var(--red);
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  }
-  .btn-solid {
-    background: var(--red);
-    color: #16040a;
-  }
-  .btn-solid:hover, .btn-solid:focus-visible {
-    box-shadow: 0 0 28px rgba(255, 46, 63, 0.55);
-  }
-  .btn-ghost {
-    background: transparent;
-    color: var(--red);
-  }
-  .btn-ghost:hover, .btn-ghost:focus-visible {
-    background: rgba(255, 46, 63, 0.12);
-  }
-
-  /* ---------- секции ---------- */
-  .tab { padding: 56px 0 90px; }
-  .about-text { padding-top: 20px; }
-
-  .tab h2 {
-    font-size: clamp(28px, 4vw, 42px);
-    font-weight: 600;
-    margin-bottom: 40px;
-  }
-  .tab h2::after {
-    content: "";
-    display: block;
-    width: 64px;
-    height: 2px;
-    margin-top: 14px;
-    background: var(--red);
-    box-shadow: 0 0 12px var(--red);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 22px;
-  }
-
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    backdrop-filter: blur(6px);
-    padding: 30px 28px;
-    transition: border-color 0.25s, transform 0.25s;
-  }
-  .card:hover {
-    border-color: var(--red);
-    transform: translateY(-3px);
-  }
-  .card h3 {
-    font-size: 19px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--text);
-  }
-  .card p {
-    color: var(--text-dim);
-    font-size: 15.5px;
-  }
-
-  .about-text p {
-    max-width: 68ch;
-    color: var(--text-dim);
-    font-size: 18px;
-  }
-  .about-text p + p { margin-top: 18px; }
-  .about-text strong { color: var(--text); }
-
-  .tab-foot {
-    margin-top: 40px;
-    color: var(--text-dim);
-  }
-  .tab-foot a, .contact-info a {
-    color: var(--red);
-    text-decoration: none;
-    border-bottom: 1px solid var(--line);
-  }
-  .tab-foot a:hover, .contact-info a:hover { border-color: var(--red); }
-
-  /* ---------- контакты ---------- */
-  .contact-wrap {
-    display: grid;
-    grid-template-columns: minmax(0, 560px) 1fr;
-    gap: 48px;
-    align-items: start;
-  }
-  .contact form {
-    display: grid;
-    gap: 16px;
-  }
-  .contact-info {
-    padding-top: 6px;
-    color: var(--text-dim);
-    max-width: 36ch;
-  }
-  .contact-info p + p { margin-top: 12px; }
-  .contact label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-dim);
-    display: grid;
-    gap: 8px;
-  }
-  .contact input, .contact textarea {
-    background: rgba(15, 6, 9, 0.7);
-    border: 1px solid var(--line);
-    color: var(--text);
-    font: inherit;
-    padding: 13px 14px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .contact input:focus, .contact textarea:focus {
-    border-color: var(--red);
-    box-shadow: 0 0 14px rgba(255, 46, 63, 0.3);
-  }
-  .contact textarea { min-height: 130px; resize: vertical; }
-  .contact button { justify-self: start; }
-
-  #form-status {
-    font-size: 15px;
-    min-height: 22px;
-  }
-  #form-status.ok { color: #7ee29a; }
-  #form-status.err { color: var(--red); }
-
-  footer {
-    padding: 36px 0 44px;
-    border-top: 1px solid var(--line);
-    color: var(--text-dim);
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
-
-  @media (max-width: 760px) {
-    .contact-wrap { grid-template-columns: 1fr; gap: 28px; }
-  }
-  @media (max-width: 640px) {
-    header { flex-direction: column; align-items: flex-start; padding: 20px 0; }
-    .nav { width: 100%; }
-    .tab-btn { flex: 1; padding: 10px 8px; font-size: 14px; text-align: center; }
-    .tab { padding: 40px 0 64px; }
-    .hero { min-height: auto; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .card, .btn, .tab-btn { transition: none; }
-    .tab.active { animation: none; }
-  }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
-<body>
+<body data-page="home">
 
-<canvas id="mesh" aria-hidden="true"></canvas>
+<!-- знак PANCORE (використовується через <use href="#pc-logo">) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <mask id="pc-cut">
+      <rect width="200" height="200" fill="#fff"/>
+      <rect x="-60" y="90" width="320" height="20" fill="#000" transform="rotate(-45 100 100) translate(0 -20)"/>
+      <circle cx="100" cy="100" r="46" fill="none" stroke="#000" stroke-width="13"/>
+      <rect x="64" y="94" width="72" height="12" fill="#000" transform="rotate(-45 100 100)"/>
+    </mask>
+    <symbol id="pc-logo" viewBox="0 0 200 200"><circle cx="100" cy="100" r="100" fill="currentColor" mask="url(#pc-cut)"/></symbol>
+  </defs>
+</svg>
+
+<div class="mesh-stage" aria-hidden="true">
+  <canvas id="mesh"></canvas>
+  <div class="mesh-fog"></div>
+  <div class="mesh-vignette"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
 
 <div class="page">
-  <header>
-    <a class="brand" href="#about" data-tab-link="about">PAN<em>CORE</em></a>
-    <nav class="nav" role="tablist" aria-label="Разделы сайта">
-      <button class="tab-btn" id="tab-about" role="tab" data-tab="about" aria-selected="true" aria-controls="about">О компании</button>
-      <button class="tab-btn" id="tab-products" role="tab" data-tab="products" aria-selected="false" aria-controls="products">Товары</button>
-      <button class="tab-btn" id="tab-contact" role="tab" data-tab="contact" aria-selected="false" aria-controls="contact">Связаться</button>
-    </nav>
+
+  <header class="head" id="head">
+    <div class="wrap head__in">
+      <a class="brand" href="index.html" aria-label="PANCORE — на головну">
+        <svg class="brand__mark" viewBox="0 0 200 200" aria-hidden="true"><use href="#pc-logo"/></svg>
+        <span class="brand__word">Pancore</span>
+      </a>
+      <nav class="nav" aria-label="Основна навігація">
+        <a href="index.html" data-nav="home">Головна</a>
+        <a href="production.html" data-nav="production">Виробництво</a>
+        <a href="catalog.html" data-nav="catalog">Асортимент</a>
+        <a href="index.html#contact" data-nav="contact">Контакти</a>
+      </nav>
+      <div class="head__cta">
+        <a class="btn btn--primary btn--sm" href="#contact">Запит</a>
+        <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
+      </div>
+    </div>
   </header>
+  <nav class="mnav" id="mnav" aria-label="Мобільна навігація">
+    <a href="index.html" data-nav="home">Головна</a>
+    <a href="production.html" data-nav="production">Виробництво</a>
+    <a href="catalog.html" data-nav="catalog">Асортимент</a>
+    <a href="#contact" data-nav="contact">Контакти</a>
+    <p class="mnav__foot">PANCORE · MADE IN POLAND · EU</p>
+  </nav>
 
   <main>
-    <!-- ===== О компании ===== -->
-    <section id="about" class="tab about" role="tabpanel" aria-labelledby="tab-about">
-      <div class="hero">
-        <h1>Дроны и оборонные системы нового поколения</h1>
-        <p>PANCORE разрабатывает и производит беспилотные комплексы, средства связи
-           и защитное оборудование для государственных заказчиков и промышленности.</p>
-        <div class="cta">
-          <a class="btn btn-solid" href="#contact" data-tab-link="contact">Обсудить проект</a>
-          <a class="btn btn-ghost" href="#products" data-tab-link="products">Смотреть товары</a>
+
+    <!-- ════════ ГЕРОЙ ════════ -->
+    <section class="hero" id="top">
+      <div class="wrap hero__in">
+        <div class="hero__grid">
+          <div>
+            <p class="eyebrow rise">Виробництво · Польща, ЄС</p>
+            <h1 class="h-display h1 hero__title rise" data-delay="1">
+              <b>Виробництво</b>
+              <b>та компоненти</b>
+              <b class="metal">для безпілотних систем</b>
+            </h1>
+            <p class="lead hero__lead rise" data-delay="2">
+              PANCORE — виробничо-інженерна компанія в Європейському Союзі: оптоволоконні
+              системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих
+              для БпЛА — з власним контролем якості та повним пакетом документів.
+            </p>
+            <div class="hero__cta rise" data-delay="3">
+              <a class="btn btn--primary" href="catalog.html">Асортимент <span class="arr">→</span></a>
+              <a class="btn btn--ghost" href="production.html">Виробництво</a>
+            </div>
+          </div>
+          <div class="hero__side rise" data-delay="4">
+            <span class="tag">Оптоволокно G.657.A2 · 5–60 км</span>
+            <span class="tag">Карбон · Полімерне лиття</span>
+            <span class="tag">Компоненти · 20 категорій</span>
+          </div>
         </div>
       </div>
+      <span class="hero__scroll" aria-hidden="true">Прокрутіть</span>
+    </section>
 
-      <div class="about-text">
-        <h2>О компании</h2>
-        <p><strong>PANCORE</strong> — инженерная компания полного цикла: от НИОКР и
-           прототипирования до серийного производства и полевой поддержки.
-           Собственное производство, лётно-испытательная база и команда инженеров
-           с опытом в авиации, радиоэлектронике и системах управления.</p>
-        <p>Мы работаем по контрактам с госструктурами и промышленными заказчиками,
-           соблюдаем требования по защите информации и предоставляем полный пакет
-           конструкторской и эксплуатационной документации.</p>
+    <!-- ════════ ПРО КОМПАНІЮ ════════ -->
+    <section class="sec" id="about">
+      <div class="wrap">
+        <div class="sec__head">
+          <p class="eyebrow rise">Про компанію</p>
+          <h2 class="h-display h2 rise" data-delay="1">Повний цикл: від сировини до готового виробу</h2>
+          <p class="lead rise" data-delay="2">
+            Ми запускаємо власні виробничі лінії у Підкарпатті (Польща) і поєднуємо їх із мережею
+            перевірених виробників компонентів. Замовник отримує одного постачальника, єдину
+            відповідальність за якість і документи, готові до митного оформлення та технічного приймання.
+          </p>
+        </div>
+        <div class="stats">
+          <div class="stat rise"><span class="stat__v metal">5–60<small>км</small></span><span class="stat__k">Лінійка безшпульних звоїв оптоволокна</span></div>
+          <div class="stat rise" data-delay="1"><span class="stat__v metal">до 80<small>км</small></span><span class="stat__k">Оптичний канал керування Sky / Ground</span></div>
+          <div class="stat rise" data-delay="2"><span class="stat__v metal"><span data-count="3800">3 800</span><small>kN</small></span><span class="stat__k">Зусилля змикання термопластавтоматів</span></div>
+          <div class="stat rise" data-delay="3"><span class="stat__v metal"><span data-count="163">163</span></span><span class="stat__k">Позиції в асортименті · 20 категорій</span></div>
+        </div>
       </div>
     </section>
 
-    <!-- ===== Товары ===== -->
-    <section id="products" class="tab" role="tabpanel" aria-labelledby="tab-products" hidden>
-      <h2>Товары</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Разведывательные БПЛА</h3>
-          <p>Аппараты самолётного и мультироторного типа с продолжительностью полёта
-             до 12 часов, тепловизионными и оптическими модулями.</p>
+    <!-- ════════ НАПРЯМИ ════════ -->
+    <section class="sec sec--line" id="directions">
+      <div class="wrap">
+        <div class="sec__head sec__head--row">
+          <div>
+            <p class="eyebrow rise">Напрями</p>
+            <h2 class="h-display h2 rise" data-delay="1">Чотири напрями під один контракт</h2>
+          </div>
+          <a class="btn btn--ghost rise" data-delay="2" href="production.html">Про виробництво</a>
         </div>
-        <div class="card">
-          <h3>Ударные и грузовые платформы</h3>
-          <p>Тяжёлые платформы с полезной нагрузкой до 40 кг, модульная
-             архитектура под задачи заказчика.</p>
-        </div>
-        <div class="card">
-          <h3>Средства РЭБ и защита</h3>
-          <p>Детекторы дронов, комплексы подавления каналов управления
-             и навигации, защита объектов и колонн.</p>
-        </div>
-        <div class="card">
-          <h3>Наземные станции управления</h3>
-          <p>Защищённые каналы связи, ретрансляция, планирование миссий
-             и интеграция с существующими системами.</p>
-        </div>
-        <div class="card">
-          <h3>Обучение операторов</h3>
-          <p>Полный цикл подготовки: симуляторы, полевые занятия,
-             сопровождение эксплуатации.</p>
-        </div>
-        <div class="card">
-          <h3>Сервис и модернизация</h3>
-          <p>Ремонт, обновление ПО и аппаратной части, гарантийное
-             и постгарантийное обслуживание парка техники.</p>
+        <div class="dirs">
+          <a class="card card--link rise" href="production.html#fiber">
+            <span class="card__code">01</span>
+            <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><circle cx="20" cy="20" r="6"/><path d="M26 20a6 6 0 0 1-6 6"/><path d="M20 7V3M33 20h4"/><path d="M20 33c0 3 2 4 5 4"/></svg></span>
+            <h3 class="h3">Оптоволоконні системи</h3>
+            <p>Безшпульні звої G.657.A2 від 5 до 60 км у польовому корпусі, бортові та наземні оптичні термінали. Канал, невидимий для радіорозвідки та РЕБ.</p>
+            <span class="card__go">Докладніше →</span>
+          </a>
+          <a class="card card--link rise" data-delay="1" href="production.html#composites">
+            <span class="card__code">02</span>
+            <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M6 14l14-7 14 7-14 7z"/><path d="M6 20l14 7 14-7"/><path d="M6 26l14 7 14-7"/></svg></span>
+            <h3 class="h3">Композитні матеріали</h3>
+            <p>Карбонові листи 2–8 мм, труби та рами БпЛА. Власна лінія: розкрій, намотування, обмотка з ЧПУ, термообробка, шліфування.</p>
+            <span class="card__go">Докладніше →</span>
+          </a>
+          <a class="card card--link rise" data-delay="2" href="production.html#injection">
+            <span class="card__code">03</span>
+            <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M7 11h26v7H7z"/><path d="M11 18v10h18V18"/><path d="M20 28v7M20 4v7"/><path d="M15 32h10"/></svg></span>
+            <h3 class="h3">Полімерне лиття</h3>
+            <p>Пропелери 10″ та 15″, корпуси й деталі з армованих поліамідів на термопластавтоматах 3200 / 3800 kN із роботизованим зніманням.</p>
+            <span class="card__go">Докладніше →</span>
+          </a>
+          <a class="card card--link rise" data-delay="3" href="catalog.html">
+            <span class="card__code">04</span>
+            <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="11" y="11" width="18" height="18" rx="2"/><rect x="16" y="16" width="8" height="8"/><path d="M15 11V6M20 11V6M25 11V6M15 34v-5M20 34v-5M25 34v-5M11 15H6M11 20H6M11 25H6M34 15h-5M34 20h-5M34 25h-5"/></svg></span>
+            <h3 class="h3">Електроніка та компоненти</h3>
+            <p>Двигуни, регулятори, польотні контролери, відеозв’язок, камери й тепловізори, автопілоти — 20 категорій під один контракт.</p>
+            <span class="card__go">До асортименту →</span>
+          </a>
         </div>
       </div>
-      <p class="tab-foot">
-        Нужна спецификация или расчёт под задачу?
-        <a href="#contact" data-tab-link="contact">Напишите нам</a>
-      </p>
     </section>
 
-    <!-- ===== Связаться ===== -->
-    <section id="contact" class="tab contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
-      <h2>Связаться с нами</h2>
-      <div class="contact-wrap">
-        <form id="lead-form">
-          <label>Имя
-            <input name="name" type="text" required minlength="2" maxlength="120" autocomplete="name">
-          </label>
-          <label>Email
-            <input name="email" type="email" required autocomplete="email">
-          </label>
-          <label>Сообщение
-            <textarea name="message" required minlength="5" maxlength="2000"
-              placeholder="Кратко опишите задачу"></textarea>
-          </label>
-          <button class="btn btn-solid" type="submit">Отправить заявку</button>
-          <p id="form-status" role="status"></p>
+    <!-- ════════ ВИРОБНИЦТВО (тизер) ════════ -->
+    <section class="sec sec--line" id="production">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow rise">Виробництво</p>
+          <h2 class="h-display h2 rise" data-delay="1">Власні лінії у Польщі</h2>
+          <p class="lead rise" data-delay="2">
+            Перемотування та стабілізація оптоволокна, 3D-друк корпусів, лиття під тиском,
+            обробка композитів. Кожна партія проходить вимірювання — довжина, маса, загасання —
+            і фіксується у протоколі якості.
+          </p>
+          <a class="btn btn--primary rise" data-delay="3" href="production.html">Про виробництво <span class="arr">→</span></a>
+        </div>
+        <div class="mosaic rise" data-delay="2">
+          <figure><img src="assets/img/fiber-casing.webp" alt="Польовий корпус звою оптоволокна" loading="lazy"><figcaption>Корпус звою · PETG</figcaption></figure>
+          <figure><img src="assets/img/qc-otdr.webp" alt="Рефлектометр OTDR під час контролю звою" loading="lazy"><figcaption>OTDR-контроль</figcaption></figure>
+          <figure><img src="assets/img/winder-1.webp" alt="Намотувальна станція з огородженням безпеки" loading="lazy"><figcaption>Намотувальна станція</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ ПЕРЕВАГИ ════════ -->
+    <section class="sec sec--line" id="why">
+      <div class="wrap">
+        <div class="sec__head">
+          <p class="eyebrow rise">Чому PANCORE</p>
+          <h2 class="h-display h2 rise" data-delay="1">Зроблено так, щоб не було питань</h2>
+        </div>
+        <div class="grid grid--3">
+          <article class="card card--num rise"><span class="card__n">01</span><h3 class="h3">Виробництво в ЄС</h3><p>Продукція Made in Poland: сертифікат походження, EUR.1 для України, декларація виробника.</p></article>
+          <article class="card card--num rise" data-delay="1"><span class="card__n">02</span><h3 class="h3">Контроль кожної партії</h3><p>Рефлектометрія OTDR, зважування, вимірювання розмірів. Протокол на кожен звій, кожну партію виробів.</p></article>
+          <article class="card card--num rise" data-delay="2"><span class="card__n">03</span><h3 class="h3">Документи без сюрпризів</h3><p>TDS, протоколи випробувань, паспорти виробів, інструкції — комплект, який проходить митницю і технічне приймання.</p></article>
+          <article class="card card--num rise" data-delay="3"><span class="card__n">04</span><h3 class="h3">Один контракт</h3><p>Власні вироби та компоненти 20 категорій постачаються під одним договором з єдиною відповідальністю.</p></article>
+          <article class="card card--num rise" data-delay="4"><span class="card__n">05</span><h3 class="h3">Склад у ЄС</h3><p>Виробництво та склад у Підкарпатті: швидкі партії, консолідація вантажів, доставка по Європі та в Україну.</p></article>
+          <article class="card card--num rise" data-delay="5"><span class="card__n">06</span><h3 class="h3">Інженерна адаптація</h3><p>Довжина звою, геометрія та крок пропелера, компонування рами — під платформу замовника, а не навпаки.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ АСОРТИМЕНТ (тизер) ════════ -->
+    <section class="sec sec--line" id="catalog">
+      <div class="wrap">
+        <div class="sec__head sec__head--row">
+          <div>
+            <p class="eyebrow rise">Асортимент</p>
+            <h2 class="h-display h2 rise" data-delay="1">163 позиції у 20 категоріях</h2>
+            <p class="lead rise" data-delay="2">Власні вироби та компоненти перевірених виробників: від оптоволокна і карбону до двигунів, камер і автопілотів. Документація — на кожну позицію з позначкою, решта надається за запитом.</p>
+          </div>
+          <a class="btn btn--primary rise" data-delay="2" href="catalog.html">Відкрити асортимент <span class="arr">→</span></a>
+        </div>
+        <div class="chips rise" id="cat-chips" data-delay="1"></div>
+      </div>
+    </section>
+
+    <!-- ════════ КОНТАКТИ ════════ -->
+    <section class="sec sec--line" id="contact">
+      <div class="wrap contact">
+        <div class="contact__info">
+          <div>
+            <p class="eyebrow rise">Контакти</p>
+            <h2 class="h-display h2 rise" data-delay="1">Обговоримо вашу задачу</h2>
+            <p class="lead rise" data-delay="2">Надішліть запит — відповімо протягом робочого дня комерційною пропозицією або уточнюючими питаннями. Працюємо з юридичними особами в Україні та ЄС.</p>
+          </div>
+          <div class="contact__lines rise" data-delay="3">
+            <div><small>Пошта</small><a href="mailto:info@pancore.tech">info@pancore.tech</a></div>
+            <div><small>Виробництво та склад</small><span>Підкарпатське воєводство, Польща</span></div>
+            <div><small>Мови спілкування</small><span>UA · EN · PL</span></div>
+          </div>
+        </div>
+        <form class="form rise" data-delay="2" data-lead>
+          <div class="form__row">
+            <div class="field"><label for="f-name">Ім’я</label><input id="f-name" name="name" type="text" required minlength="2" maxlength="120" autocomplete="name" placeholder="Як до вас звертатися"></div>
+            <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" required maxlength="160" autocomplete="email" placeholder="name@company.com"></div>
+          </div>
+          <div class="field"><label for="f-company">Компанія</label><input id="f-company" name="company" type="text" maxlength="160" autocomplete="organization" placeholder="Необов’язково"></div>
+          <div class="field"><label for="f-msg">Повідомлення</label><textarea id="f-msg" name="message" required minlength="5" maxlength="2000" placeholder="Коротко опишіть задачу, позиції та орієнтовні обсяги"></textarea></div>
+          <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+          <div class="form__foot">
+            <button class="btn btn--primary" type="submit">Надіслати запит</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </div>
+          <p class="form__note">Надсилаючи форму, ви погоджуєтесь на обробку контактних даних для відповіді на запит.</p>
         </form>
-        <div class="contact-info">
-          <p>Почта: <a href="mailto:info@pancore.tech">info@pancore.tech</a></p>
-          <p>Отвечаем в рабочие дни в течение суток.</p>
-        </div>
       </div>
     </section>
+
   </main>
 
-  <footer>
-    <span>© 2026 PANCORE</span>
-    <span>info@pancore.tech</span>
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot__grid">
+        <div>
+          <a class="brand" href="index.html" aria-label="PANCORE">
+            <svg class="brand__mark" viewBox="0 0 200 200" aria-hidden="true"><use href="#pc-logo"/></svg>
+            <span class="brand__word">Pancore</span>
+          </a>
+          <p class="foot__tag">Виробництво та компоненти для безпілотних систем. Польща, Європейський Союз.</p>
+        </div>
+        <div>
+          <h4>Розділи</h4>
+          <ul><li><a href="index.html">Головна</a></li><li><a href="production.html">Виробництво</a></li><li><a href="catalog.html">Асортимент</a></li><li><a href="#contact">Контакти</a></li></ul>
+        </div>
+        <div>
+          <h4>Напрями</h4>
+          <ul><li><a href="production.html#fiber">Оптоволокно</a></li><li><a href="production.html#composites">Композити</a></li><li><a href="production.html#injection">Полімерне лиття</a></li><li><a href="production.html#smt">Електроніка</a></li></ul>
+        </div>
+        <div>
+          <h4>Зв’язок</h4>
+          <ul><li><a href="mailto:info@pancore.tech">info@pancore.tech</a></li><li><a href="#contact">Форма запиту</a></li></ul>
+        </div>
+      </div>
+      <div class="foot__bottom"><span>© 2026 PANCORE</span><span>MADE IN POLAND · EU</span></div>
+    </div>
   </footer>
+
 </div>
 
-<script>
-/* ============================================================
-   Интерактивный фон по референсу: сплошная триангулированная
-   сетка на всю страницу. Вершины стоят на "домашних" позициях
-   (сетка с джиттером), слегка дышат и ограниченно тянутся
-   к курсору, грани покрывают весь экран без разрывов.
-   ============================================================ */
-(() => {
-  const canvas = document.getElementById("mesh");
-  const ctx = canvas.getContext("2d");
-  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  let W, H, dpr, nodes = [], edges = [], sparks = [];
-  const mouse = { x: -1e4, y: -1e4, active: false };
-
-  const RED = (a) => `rgba(255, 60, 72, ${a})`;
-
-  const SPACING = 130;     // шаг сетки, px
-  const JITTER = 0.42;     // разброс вершин от узла сетки (доля шага)
-  const MOUSE_R = 240;     // радиус влияния курсора
-  const MAX_PULL = 32;     // максимум смещения вершины к курсору, px
-  const EASE = 0.02;       // скорость стягивания (меньше — плавнее)
-  const WOBBLE = 6;        // амплитуда "дыхания" вершин, px
-
-  function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    canvas.style.width = W + "px";
-    canvas.style.height = H + "px";
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    buildMesh();
-  }
-
-  function buildMesh() {
-    nodes = [];
-    edges = [];
-    // сетка с запасом за краями, чтобы грани уходили за экран
-    const cols = Math.ceil(W / SPACING) + 3;
-    const rows = Math.ceil(H / SPACING) + 3;
-    const j = SPACING * JITTER;
-
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        nodes.push({
-          hx: (c - 1) * SPACING + (Math.random() - 0.5) * 2 * j,
-          hy: (r - 1) * SPACING + (Math.random() - 0.5) * 2 * j,
-          ox: 0, oy: 0,                    // смещение к курсору
-          phase: Math.random() * Math.PI * 2,
-          speed: 0.4 + Math.random() * 0.5,
-          r: 0.8 + Math.random() * 1.8,
-          glow: Math.random() < 0.1,       // яркие "звёзды"
-          px: 0, py: 0
-        });
-      }
-    }
-
-    // триангуляция: горизонтальные, вертикальные и одна диагональ
-    // на ячейку (направление случайное — сетка выглядит живой)
-    const idx = (r, c) => r * cols + c;
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const w = 0.5 + Math.random() * 0.5; // базовая яркость грани
-        if (c + 1 < cols) edges.push([idx(r, c), idx(r, c + 1), w]);
-        if (r + 1 < rows) edges.push([idx(r, c), idx(r + 1, c), 0.5 + Math.random() * 0.5]);
-        if (c + 1 < cols && r + 1 < rows) {
-          const diag = Math.random() < 0.5
-            ? [idx(r, c), idx(r + 1, c + 1)]
-            : [idx(r, c + 1), idx(r + 1, c)];
-          edges.push([diag[0], diag[1], 0.4 + Math.random() * 0.5]);
-        }
-      }
-    }
-
-    sparks = Array.from({ length: 40 }, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      r: 0.5 + Math.random() * 1.6,
-      a: 0.05 + Math.random() * 0.25,
-      s: 0.05 + Math.random() * 0.15
-    }));
-  }
-
-  let t = 0;
-
-  function step() {
-    t += 0.008;
-    ctx.clearRect(0, 0, W, H);
-
-    // лёгкая красная дымка
-    const fog = ctx.createLinearGradient(0, 0, 0, H);
-    fog.addColorStop(0, "rgba(120, 20, 30, 0.10)");
-    fog.addColorStop(0.5, "rgba(0, 0, 0, 0)");
-    fog.addColorStop(1, "rgba(120, 20, 30, 0.08)");
-    ctx.fillStyle = fog;
-    ctx.fillRect(0, 0, W, H);
-
-    // пылинки
-    for (const s of sparks) {
-      s.y -= s.s;
-      if (s.y < -5) { s.y = H + 5; s.x = Math.random() * W; }
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 210, 214, ${s.a})`;
-      ctx.fill();
-    }
-
-    // позиции вершин: дом + дыхание + ограниченное смещение к курсору
-    for (const n of nodes) {
-      const wob = reduceMotion ? 0 : WOBBLE;
-      const bx = n.hx + Math.cos(t * n.speed + n.phase) * wob;
-      const by = n.hy + Math.sin(t * n.speed * 1.3 + n.phase) * wob;
-
-      let tx = 0, ty = 0;
-      const dx = mouse.x - bx, dy = mouse.y - by;
-      const md = Math.hypot(dx, dy);
-      if (mouse.active && md < MOUSE_R && md > 1) {
-        const k = (1 - md / MOUSE_R) * MAX_PULL;
-        tx = (dx / md) * k;
-        ty = (dy / md) * k;
-      }
-      n.ox += (tx - n.ox) * EASE;
-      n.oy += (ty - n.oy) * EASE;
-
-      n.px = bx + n.ox;
-      n.py = by + n.oy;
-    }
-
-    // грани сетки
-    for (const [ai, bi, w] of edges) {
-      const a = nodes[ai], b = nodes[bi];
-      const mx = (a.px + b.px) / 2, my = (a.py + b.py) / 2;
-      const mdist = Math.hypot(mouse.x - mx, mouse.y - my);
-      const boost = mouse.active && mdist < MOUSE_R
-        ? (1 - mdist / MOUSE_R) * 0.5 : 0;
-
-      ctx.beginPath();
-      ctx.moveTo(a.px, a.py);
-      ctx.lineTo(b.px, b.py);
-      ctx.strokeStyle = RED(0.1 + w * 0.16 + boost);
-      ctx.lineWidth = boost > 0.2 ? 1.4 : 0.9;
-      ctx.stroke();
-    }
-
-    // вершины
-    for (const n of nodes) {
-      const mdist = Math.hypot(mouse.x - n.px, mouse.y - n.py);
-      const near = mouse.active && mdist < MOUSE_R ? 1 - mdist / MOUSE_R : 0;
-      const r = n.r + near * 1.6;
-
-      if (n.glow || near > 0.4) {
-        const g = ctx.createRadialGradient(n.px, n.py, 0, n.px, n.py, r * 7);
-        g.addColorStop(0, RED(0.8));
-        g.addColorStop(1, RED(0));
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(n.px, n.py, r * 7, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.beginPath();
-      ctx.arc(n.px, n.py, r, 0, Math.PI * 2);
-      ctx.fillStyle = n.glow ? "rgba(255, 230, 232, 0.95)" : RED(0.7 + near * 0.3);
-      ctx.fill();
-    }
-
-    requestAnimationFrame(step);
-  }
-
-  window.addEventListener("resize", resize);
-  window.addEventListener("mousemove", (e) => {
-    mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true;
-  });
-  window.addEventListener("mouseleave", () => { mouse.active = false; });
-  window.addEventListener("touchmove", (e) => {
-    const t = e.touches[0];
-    mouse.x = t.clientX; mouse.y = t.clientY; mouse.active = true;
-  }, { passive: true });
-  window.addEventListener("touchend", () => { mouse.active = false; });
-
-  resize();
-  requestAnimationFrame(step);
-})();
-</script>
-<script>
-/* ---------- вкладки ---------- */
-(() => {
-  const TABS = ["about", "products", "contact"];
-  const buttons = document.querySelectorAll(".tab-btn");
-  const panels = document.querySelectorAll(".tab");
-
-  function show(name, push = true) {
-    if (!TABS.includes(name)) name = "about";
-    panels.forEach((p) => {
-      const on = p.id === name;
-      p.classList.toggle("active", on);
-      p.hidden = !on;
-    });
-    buttons.forEach((b) => {
-      b.setAttribute("aria-selected", String(b.dataset.tab === name));
-    });
-    if (push && location.hash !== "#" + name) {
-      history.pushState(null, "", "#" + name);
-    }
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }
-
-  buttons.forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
-
-  // ссылки внутри вкладок (кнопки в герое, "Напишите нам", логотип)
-  document.querySelectorAll("[data-tab-link]").forEach((a) => {
-    a.addEventListener("click", (e) => {
-      e.preventDefault();
-      show(a.dataset.tabLink);
-    });
-  });
-
-  // стрелки ← → по вкладкам с клавиатуры
-  document.querySelector(".nav").addEventListener("keydown", (e) => {
-    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-    const cur = TABS.findIndex((t) => location.hash === "#" + t);
-    const i = cur < 0 ? 0 : cur;
-    const next = TABS[(i + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length];
-    show(next);
-    document.querySelector(`.tab-btn[data-tab="${next}"]`).focus();
-  });
-
-  window.addEventListener("popstate", () => show(location.hash.slice(1), false));
-  show(location.hash.slice(1) || "about", false);
-})();
-
-/* ---------- отправка формы в FastAPI ---------- */
-const form = document.getElementById("lead-form");
-const status = document.getElementById("form-status");
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  status.textContent = "Отправка…";
-  status.className = "";
-  const data = Object.fromEntries(new FormData(form));
-  try {
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-    if (!res.ok) throw new Error();
-    status.textContent = "Заявка отправлена. Мы свяжемся с вами.";
-    status.className = "ok";
-    form.reset();
-  } catch {
-    status.textContent = "Не удалось отправить. Проверьте поля и попробуйте ещё раз.";
-    status.className = "err";
-  }
-});
-</script>
+<script type="module" src="js/site.js"></script>
 </body>
 </html>
