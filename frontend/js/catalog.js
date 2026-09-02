@@ -19,7 +19,8 @@ const counts = {};
 ITEMS.forEach((it) => { counts[it.cat] = (counts[it.cat] || 0) + 1; });
 
 const state = { cat: 'all', q: '' };
-const open = new Set();   // id розгорнутих карток — переживає перерендер
+const open = new Set();       // id розгорнутих карток — переживає перерендер
+const openCats = new Set();   // id розгорнутих категорій — теж переживає перерендер
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const pad = (id) => `#${String(id).padStart(3, '0')}`;
@@ -35,6 +36,7 @@ chipsHost.addEventListener('click', (e) => {
   const b = e.target.closest('[data-cat]');
   if (!b) return;
   state.cat = b.dataset.cat;
+  if (state.cat !== 'all') openCats.add(state.cat);
   history.replaceState(null, '', location.pathname + location.search + (state.cat === 'all' ? '' : `#${state.cat}`));
   renderChips();
   render();
@@ -103,7 +105,7 @@ function itemBody(it) {
       ${src}
       <div class="item__foot">
         <span class="muted mono" style="font-size:11px;letter-spacing:.1em">${pad(it.id)}</span>
-        <button class="btn btn--ghost btn--sm" type="button" data-req="${it.id}">Запит на позицію <span class="arr">→</span></button>
+        <button class="btn btn--ghost btn--sm" type="button" data-req="${it.id}">Запит на позицію</button>
       </div>
     </div>`;
 }
@@ -118,11 +120,22 @@ function render() {
   }
   const groups = new Map();
   list.forEach((it) => { if (!groups.has(it.cat)) groups.set(it.cat, []); groups.get(it.cat).push(it); });
-  host.innerHTML = CATEGORIES.filter((c) => groups.has(c.id)).map((c) => `
-    <section class="cat-group rise" id="${c.id}">
-      <div class="cat-group__head"><h2 class="h-display">${c.name}</h2><span>${groups.get(c.id).length} поз.</span></div>
-      <div class="items">${groups.get(c.id).map(itemCard).join('')}</div>
-    </section>`).join('');
+  // під час пошуку групи розгорнуті — інакше знахідки лишились би за згорнутими вкладками
+  const forceOpen = Boolean(state.q);
+  host.innerHTML = CATEGORIES.filter((c) => groups.has(c.id)).map((c) => {
+    const isOpen = forceOpen || openCats.has(c.id);
+    return `
+    <section class="cat-group rise ${isOpen ? 'is-open' : ''}" id="${c.id}">
+      <button class="cat-group__head" type="button" aria-expanded="${isOpen}" aria-controls="cat-${c.id}">
+        <h2 class="h-display">${c.name}</h2>
+        <span>${groups.get(c.id).length} поз.</span>
+        <span class="cat-group__chev" aria-hidden="true">${CHEV}</span>
+      </button>
+      <div class="cat-group__body" id="cat-${c.id}"><div>
+        <div class="items">${groups.get(c.id).map(itemCard).join('')}</div>
+      </div></div>
+    </section>`;
+  }).join('');
   observeRise(host);
 }
 
@@ -132,6 +145,15 @@ host.addEventListener('click', (e) => {
   if (req) {
     const it = ITEMS.find((x) => x.id === Number(req.dataset.req));
     if (it) prefillRequest(`${it.name} (${catName[it.cat]}, ${pad(it.id)})`);
+    return;
+  }
+  const catHead = e.target.closest('.cat-group__head');
+  if (catHead) {
+    const group = catHead.closest('.cat-group');
+    const willOpen = !group.classList.contains('is-open');
+    group.classList.toggle('is-open', willOpen);
+    catHead.setAttribute('aria-expanded', String(willOpen));
+    if (willOpen) openCats.add(group.id); else openCats.delete(group.id);
     return;
   }
   const head = e.target.closest('.item__head');
@@ -151,6 +173,6 @@ host.addEventListener('click', (e) => {
 
 /* --- старт: категорія з хеша --- */
 const hash = location.hash.slice(1);
-if (hash && catName[hash]) state.cat = hash;
+if (hash && catName[hash]) { state.cat = hash; openCats.add(hash); }
 renderChips();
 render();

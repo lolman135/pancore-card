@@ -14,6 +14,38 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<style>
+  /* ---------- категорії як згорнуті вкладки ---------- */
+  .cat-group { padding-top: 18px; }
+  .cat-group__head {
+    width: 100%; cursor: pointer; text-align: left;
+    display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center; gap: 16px;
+    margin-bottom: 0; padding: 14px 0;
+    background: none; color: inherit;
+    border: 0; border-bottom: 1px solid var(--line);
+    transition: border-color 0.25s;
+  }
+  .cat-group__head:hover { border-bottom-color: var(--line-2); }
+  .cat-group.is-open > .cat-group__head { border-bottom-color: rgba(255, 61, 79, 0.4); }
+  .cat-group__head h2 { font-size: clamp(19px, 1.9vw, 25px); }
+  .cat-group__head .cat-group__chev {
+    width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line-2);
+    display: grid; place-items: center; color: var(--text-2); letter-spacing: normal;
+    transition: transform 0.35s var(--ease), border-color 0.2s, color 0.2s;
+  }
+  .cat-group__head .cat-group__chev svg { width: 14px; height: 14px; }
+  .cat-group.is-open > .cat-group__head .cat-group__chev {
+    transform: rotate(180deg); border-color: var(--accent); color: var(--accent-2);
+  }
+  .cat-group__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s var(--ease); }
+  .cat-group.is-open > .cat-group__body { grid-template-rows: 1fr; }
+  .cat-group__body > div { overflow: hidden; }
+  .cat-group__body .items { padding-top: 18px; }
+  @media (prefers-reduced-motion: reduce) {
+    .cat-group__body, .cat-group__head .cat-group__chev { transition: none; }
+  }
+</style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
 <body data-page="catalog">
@@ -43,7 +75,6 @@
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
         <a href="catalog.html" data-nav="catalog">Асортимент</a>
-        <a href="index.html#contact" data-nav="contact">Контакти</a>
       </nav>
       <div class="head__cta">
         <a class="btn btn--primary btn--sm" href="#request">Запит</a>
@@ -55,7 +86,7 @@
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
-    <a href="index.html#contact" data-nav="contact">Контакти</a>
+    <a href="#request" data-nav="contact">Запит</a>
     <p class="mnav__foot">PANCORE · MADE IN POLAND · EU</p>
   </nav>
 
@@ -72,8 +103,9 @@
         <p class="eyebrow rise">Асортимент</p>
         <h1 class="h-display h1 rise" data-delay="1"><b>163 позиції.</b><br><b class="metal">Один контракт.</b></h1>
         <p class="lead rise" data-delay="2" style="margin-top:24px">
-          Власні вироби та компоненти перевірених виробників у 20 категоріях. Розгорніть позицію —
-          побачите технічну специфікацію; кнопка «Запит» підставить її у форму внизу сторінки.
+          Власні вироби та компоненти перевірених виробників у 20 категоріях. Категорії згорнуті —
+          розгорніть потрібну, далі розгорніть позицію й побачите технічну специфікацію;
+          кнопка «Запит» підставить її у форму внизу сторінки.
         </p>
       </div>
     </section>
