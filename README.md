@@ -46,6 +46,16 @@ HTML-сторінок впишіть:
 Порожній `api-base` означає «той самий origin» — режим продакшена, коли фронт
 роздає той же сервер (nginx / StaticFiles), деталі у `frontend/README.md`.
 
+## Запуск у Docker
+
+```bash
+docker compose up -d --build      # → http://127.0.0.1:${NGINX_PORT}
+```
+
+nginx роздає статику з `frontend/` і проксує `/api/` на сервіс `backend`
+(порт із `.env`, конфіг — `frontend/nginx.conf.template`). Бекенд назовні не
+публікується. Подробиці — у `frontend/README.md`.
+
 ## Гілки
 
 - `frontend-pancore` — актуальний фронт + бекенд з master;

@@ -5,6 +5,7 @@
    ============================================================ */
 
 import { createMesh } from './mesh.js';
+import { API_BASE as ENV_API_BASE } from './env.js';
 
 export const reducedMotion =
   matchMedia('(prefers-reduced-motion: reduce)').matches ||
@@ -159,14 +160,25 @@ if (chipsHost) {
      200     { status: "ok", contact_type: "email" | "phone" | "telegram" }
      422     { detail: "текст" } — контакт не розпізнано; або список pydantic
    Ім'я, компанія, позиція та сторінка пакуються в comment.
-   API_BASE — <meta name="api-base" content="https://api.example.com">;
-   порожньо = той самий origin. */
-const API_BASE = (document.querySelector('meta[name="api-base"]')?.content || '').replace(/\/+$/, '');
+   Адреса бекенда, за спаданням пріоритету:
+     1) <meta name="api-base" content="https://api.example.com"> — ручне перевизначення;
+     2) API_BASE з ./env.js — генерується з .env (backend/scripts/gen_frontend_env.py);
+     3) порожньо = той самий origin. */
+const API_BASE = (document.querySelector('meta[name="api-base"]')?.content || ENV_API_BASE || '').replace(/\/+$/, '');
 const CONTACT_URL = `${API_BASE}/api/v1/contact`;
+
+/* Як назвати канал зв'язку у відповіді: бекенд віддає contact_type,
+   але «phone» користувачеві показуємо словами. */
+const CONTACT_LABEL = {
+  email: 'email',
+  phone: 'мобільний телефон',
+  telegram: 'telegram',
+};
 
 const MSG = {
   sending: 'Надсилаємо…',
   ok: 'Заявку надіслано. Відповімо протягом робочого дня.',
+  okTyped: (label) => `Ваш запит на ${label} надіслано. Відповімо протягом робочого дня.`,
   invalid: 'Перевірте поля форми.',
   contact: 'Вкажіть email, телефон або @telegram.',
   limit: 'Забагато запитів із вашої адреси. Спробуйте пізніше або напишіть на пошту.',
@@ -210,7 +222,14 @@ export function initLeadForm(form) {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (res.ok) { say(MSG.ok, 'ok'); form.reset(); }
+      if (res.ok) {
+        // 200 { status: "ok", contact_type: "email" | "phone" | "telegram" };
+        // якщо тіло не прочиталось або тип невідомий — загальне повідомлення
+        const j = await res.json().catch(() => null);
+        const label = CONTACT_LABEL[j && j.contact_type];
+        say(label ? MSG.okTyped(label) : MSG.ok, 'ok');
+        form.reset();
+      }
       else if (res.status === 422) {
         // бекенд віддає RFC 7807 application/problem+json:
         // { type, title, status, detail, instance, field?: "contact", errors?: [{field, message, type}] }
@@ -245,8 +264,15 @@ export function prefillRequest(text) {
   if (!form) return;
   const pos = field(form, 'position');
   if (pos) pos.value = text;
+  // окремого поля «Позиція» у формі може не бути — тоді позиція йде в повідомлення,
+  // причому дописується, а не затирає вже набраний текст
   const msg = field(form, 'message');
-  if (msg && !msg.value.trim()) msg.value = `Прошу комерційну пропозицію на позицію: ${text}.\nКількість: `;
+  if (msg) {
+    const line = `Прошу комерційну пропозицію на позицію: ${text}.`;
+    msg.value = msg.value.trim()
+      ? `${msg.value.replace(/\s+$/, '')}\n${line}`
+      : `${line}\nКількість: `;
+  }
   form.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
   setTimeout(() => {
     const c = field(form, 'contact');
