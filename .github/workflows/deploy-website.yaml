@@ -22,7 +22,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKE }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push docker image to GHCR
         uses: docker/build-push-action@v5
@@ -44,7 +44,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKE }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push docker image to GHCR
         uses: docker/build-push-action@v5
