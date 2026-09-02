@@ -12,6 +12,8 @@ frontend/
 ├── css/style.css         дизайн-система (токены в :root)
 ├── js/site.js            общая логика: шапка, меню, появление блоков, WebGL-фон, карта, форма → API
 ├── js/env.js             ГЕНЕРИРУЕТСЯ из .env: адрес бэкенда (`backend/scripts/gen_frontend_env.py`)
+├── js/env.docker.js      версия env.js для compose: пустой API_BASE (тот же origin, что и nginx)
+├── nginx.conf.template   конфиг nginx для compose: статика + прокси /api/ на бэкенд
 ├── js/mesh.js            WebGL-поле граней (three.js, свои шейдеры) — ключевой визуальный элемент
 ├── js/worldmap.js        карта мира: точечный суходол + анимированные маршруты
 ├── js/catalog.js         логика страницы ассортимента (аккордеон со спецификацией)
@@ -56,6 +58,37 @@ py backend/scripts/gen_frontend_env.py    # → frontend/js/env.js: export const
 
 Приоритет адреса в `site.js`: непустой `<meta name="api-base">` → `API_BASE` из `js/env.js`
 → пусто (тот же origin). CORS у бэка по умолчанию `*`.
+
+## Запуск через Docker (nginx + бэкенд)
+
+Из корня репозитория:
+
+```bash
+docker compose up -d --build      # → http://127.0.0.1:${NGINX_PORT}
+docker compose down
+```
+
+`compose.yaml` поднимает два сервиса в сети `inner-network`:
+
+- `backend` — образ из `backend/Dockerfile`, наружу **не** публикуется, слушает `BACKEND_HOST:BACKEND_PORT` из `.env`;
+- `nginx` — `nginx:alpine`, публикует `NGINX_PORT:80`, монтирует папку `frontend/` в `/usr/share/nginx/html`
+  только на чтение и отдаёт её как статику.
+
+Адрес бэкенда в конфиг попадает из `.env`: `nginx.conf.template` лежит в
+`/etc/nginx/templates/`, и штатный entrypoint образа прогоняет через него `envsubst`,
+подставляя `${BACKEND_PORT}` (`NGINX_ENVSUBST_FILTER` ограничивает подстановку одной этой
+переменной, чтобы не задеть переменные самого nginx). Хост — имя сервиса `backend`,
+резолвится встроенным DNS Docker (`resolver 127.0.0.11`); адрес взят в переменную
+`$backend_url`, поэтому nginx стартует, даже если бэкенд ещё поднимается.
+
+Origin у фронта и API общий, так что `API_BASE` должен быть пустым — поверх `js/env.js`
+монтируется `js/env.docker.js` с `export const API_BASE = ''`. Генератор для этого режима
+запускать не нужно, и на чистом клоне всё работает без него. CORS в этой схеме не
+задействован: запросы same-origin, preflight не отправляется.
+
+Rate-limit `10r/s`, `burst=20`, ответ `429` навешан **только** на `location /api/` — статику
+он ограничивать не должен, одна страница тянет три десятка файлов и упёрлась бы в лимит.
+`429` фронт уже обрабатывает («Забагато запитів»).
 
 Параметр `?static` в адресе выключает анимации (то же, что системное «уменьшить движение»).
 Двойным кликом по `index.html` открывать нельзя: ES-модули с `file://` блокируются.

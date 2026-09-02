@@ -2,13 +2,32 @@ services:
   backend:
     build:
       context: backend/
-    ports:
-      - '${BACKEND_PORT}:${BACKEND_PORT}'
+    container_name: pancore-backend-${ENV:-main}
+    env_file:
+      - .env
     restart: always
     networks:
       - inner-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: pancore-nginx-${ENV:-main}
     env_file:
       - .env
+    ports:
+      - '${NGINX_PORT:-80}:80'
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT}
+      - NGINX_ENVSUBST_FILTER=BACKEND_PORT
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./frontend/js/env.docker.js:/usr/share/nginx/html/js/env.js:ro
+      - ./frontend/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+    restart: always
+    networks:
+      - inner-network
+    depends_on:
+      - backend
 
 networks:
   inner-network:

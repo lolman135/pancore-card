@@ -17,3 +17,6 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/tasks.json
+
+# Згенеровано backend/scripts/gen_frontend_env.py
+frontend/js/env.js
