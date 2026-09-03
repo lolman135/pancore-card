@@ -658,3 +658,20 @@ body.menu-open .mnav { display: flex; }
 .fab-desk.is-on { opacity: 1; transform: none; pointer-events: auto; }
 .fab-desk:hover { background: #ff5566; }
 @media (max-width: 880px) { .fab-desk { display: none; } }
+
+/* ---------- плавна заміна вмісту (swapIn у site.js): коротка поява після перемикання ---------- */
+.swap-in { animation: swap-in 0.32s var(--ease) both; }
+@keyframes swap-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- лоадер: логотип у кільці, ховає перший рендер; без живого JS сторож у <head> знімає .js-anim ---------- */
+.loader { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: var(--bg); transition: opacity 0.5s var(--ease), visibility 0.5s; }
+.loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader__in { position: relative; width: 104px; height: 104px; display: grid; place-items: center; }
+.loader__ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.loader__ring circle { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 302; stroke-dashoffset: 302; animation: loader-ring 1.3s var(--ease) infinite; filter: drop-shadow(0 0 8px var(--accent-glow)); }
+@keyframes loader-ring { 0% { stroke-dashoffset: 302; } 55% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -302; } }
+.loader__mark { width: 52px; height: 52px; color: var(--text); animation: loader-mark 1.3s ease-in-out infinite alternate; }
+@keyframes loader-mark { from { opacity: 0.55; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+.loader__word { position: absolute; left: 50%; top: calc(50% + 74px); transform: translateX(-50%); font-family: var(--f-brand); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
+html:not(.js-anim) .loader { display: none; }
+@media (prefers-reduced-motion: reduce) { .loader { display: none; } }

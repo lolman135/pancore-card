@@ -5,7 +5,7 @@
    точки-навігація по блоках
    ============================================================ */
 
-import { reducedMotion } from './site.js';
+import { reducedMotion, swapIn, scrollToEl } from './site.js';
 import { mountSketches, propSketch, propScaleSketch } from './sketches.js';
 
 const EN = /^en/i.test(document.documentElement.lang || '');
@@ -46,8 +46,10 @@ if (pass) {
     ro('kg').firstChild.textContent = kgf(RANGE.kg[i]);
     ro('kgc').firstChild.textContent = RANGE.kgc[i] != null ? kgf(RANGE.kgc[i]) : '—';
     ro('kgc').closest('.ro').classList.toggle('is-na', RANGE.kgc[i] == null);
-    ro('std').hidden = !RANGE.std[i];
-    ro('ref').hidden = i !== RANGE.ref;
+    // плашки не зникають із потоку (інакше рядок стрибав би), а гаснуть
+    ro('std').classList.toggle('is-off', !RANGE.std[i]);
+    ro('ref').classList.toggle('is-off', i !== RANGE.ref);
+    if (!reducedMotion) pass.querySelectorAll('.ro b, .passport__km').forEach((b) => { b.classList.remove('is-tick'); void b.offsetWidth; b.classList.add('is-tick'); });
     slider.value = i;
     slider.setAttribute('aria-valuetext', `${RANGE.km[i]} ${t('км', 'km')}`);
     const p = `${(i / last) * 100}%`;
@@ -122,6 +124,7 @@ if (otdr) {
       `Auto OTDR, ${wl} nm, ${d.date}. The trace is uniform over the whole length: no splices, breaks or local losses.`,
     );
     otdr.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('is-on', Number(b.dataset.wl) === wl));
+    swapIn(plot); swapIn(stats);
 
     // наведення: перехрестя + підказка (значення на лінійній ділянці)
     const svg = plot.querySelector('svg'), hov = svg.querySelector('.hover');
@@ -195,9 +198,11 @@ if (propBox) {
       q('[data-p="link"]').href = `catalog.html#item-${p.item}`;
     }
     propBox.querySelectorAll('.toggle button').forEach((b) => b.classList.toggle('is-on', b.dataset.inch === String(key)));
+    swapIn(q('[data-sketch="prop"]')); swapIn(q('.propdeck__spec'));
   };
   const setMat = (key) => {
     q('[data-p="mat"]').innerHTML = MATS[key].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+    swapIn(q('[data-p="mat"]'));
     propBox.querySelectorAll('.mat__opt').forEach((b) => { const on = b.dataset.mat === key; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
   };
   q('.toggle').addEventListener('click', (e) => { const b = e.target.closest('[data-inch]'); if (b) set(b.dataset.inch); });
@@ -269,6 +274,6 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('cli
   const tg = document.querySelector(a.getAttribute('href'));
   if (!tg) return;
   e.preventDefault();
-  tg.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+  scrollToEl(tg, 8);
   history.replaceState(null, '', a.getAttribute('href'));
 }));
