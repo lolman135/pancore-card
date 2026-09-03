@@ -44,7 +44,8 @@ const X = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-wid
 const I = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const ICONS = {
   coil:   I('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2.5"/><path d="M20.5 12h2"/>'),
-  prop:   I('<g fill="currentColor" fill-opacity="0.18"><path d="M12 10.4C10.4 8.2 10.3 4.5 11.6 2.6c.8-1 2.3-.2 2.3 1.5 0 2.7-.7 4.9-1.9 6.3z"/><path d="M12 10.4C10.4 8.2 10.3 4.5 11.6 2.6c.8-1 2.3-.2 2.3 1.5 0 2.7-.7 4.9-1.9 6.3z" transform="rotate(120 12 12)"/><path d="M12 10.4C10.4 8.2 10.3 4.5 11.6 2.6c.8-1 2.3-.2 2.3 1.5 0 2.7-.7 4.9-1.9 6.3z" transform="rotate(240 12 12)"/></g><circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="12" r="0.7" fill="currentColor"/>'),
+  /* пропелер: три суцільні лопаті з легким серпоподібним профілем і ступиця-кільце — читається і на 22 px, і на 120 px */
+  prop:   I('<g fill="currentColor" stroke="none"><path d="M12 12C9.1 9.9 8.4 5.6 10.1 2.9c.9-1.4 2.7-1.4 3.6-.1 1.4 2.2 1.1 5.9-1.7 9.2z"/><path d="M12 12C9.1 9.9 8.4 5.6 10.1 2.9c.9-1.4 2.7-1.4 3.6-.1 1.4 2.2 1.1 5.9-1.7 9.2z" transform="rotate(120 12 12)"/><path d="M12 12C9.1 9.9 8.4 5.6 10.1 2.9c.9-1.4 2.7-1.4 3.6-.1 1.4 2.2 1.1 5.9-1.7 9.2z" transform="rotate(240 12 12)"/></g><circle cx="12" cy="12" r="2.7" fill="var(--bg-2, #0c0e13)" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none"/>'),
   motors: I('<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 4.5V2M12 22v-2.5M4.5 12H2M22 12h-2.5M6.7 6.7L5 5M19 19l-1.7-1.7M17.3 6.7L19 5M5 19l1.7-1.7"/>'),
   esc:    I('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M13 8l-3 4.5h4L11 17"/>'),
   fc:     I('<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 7V4M14 7V4M10 20v-3M14 20v-3M7 10H4M7 14H4M20 10h-3M20 14h-3"/><circle cx="12" cy="12" r="1.5"/>'),
@@ -58,7 +59,7 @@ const ICONS = {
   optic:  I('<rect x="2" y="7.5" width="7" height="9" rx="1.5"/><rect x="15" y="7.5" width="7" height="9" rx="1.5"/><path d="M9 12h6"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><path d="M4.5 10.5v3M19.5 10.5v3M5.5 4.5v3M18.5 16.5v3"/>'),
   fiber:  I('<path d="M4 12a8 8 0 1 1 8 8"/><path d="M7 12a5 5 0 1 1 5 5"/><circle cx="12" cy="12" r="1.5"/>'),
   carbon: I('<path d="M3 15l7-4 11 4-7 4z"/><path d="M3 11l7-4 11 4M3 7l7-4 11 4"/>'),
-  props:  I('<circle cx="12" cy="12" r="1.8"/><path d="M12 10.2C11 6 12.5 2.5 14 3c1.6.6 1 5.5-2 7.2M10.4 12.9c-4.2.7-7.2-1.4-6.8-2.9.4-1.6 5.3-2 7.5.6M13.6 13.2c3.3 2.8 3.4 6.5 1.9 7-1.6.5-4-3.8-3.4-7.2"/>'),
+  get props() { return this.prop; },
   frames: I('<rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 9L3.5 3.5M15 9l5.5-5.5M9 15l-5.5 5.5M15 15l5.5 5.5"/><circle cx="3.5" cy="3.5" r="1.5"/><circle cx="20.5" cy="3.5" r="1.5"/><circle cx="3.5" cy="20.5" r="1.5"/><circle cx="20.5" cy="20.5" r="1.5"/>'),
   ice:    I('<rect x="6" y="9" width="12" height="11" rx="1.5"/><path d="M9 9V5h6v4M12 5V2M6 14H3M21 14h-3"/>'),
   jet:    I('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2"/><path d="M12 10V4.5M13.8 11l4.7-2.8M13.8 13l4.7 2.8M12 14v5.5M10.2 13l-4.7 2.8M10.2 11L5.5 8.2"/>'),
