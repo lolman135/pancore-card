@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#07080b">
 <meta name="api-base" content="">
 <meta property="og:title" content="PANCORE — виробництво та компоненти для безпілотних систем">
-<meta property="og:description" content="Безшпульний звій оптоволокна G.657.A2, пропелери 10″/15″, карбон, електроніка. Виробництво в ЄС, постачання в Україну.">
+<meta property="og:description" content="Безшпульна котушка оптоволокна G.657.A2, пропелери 10″/15″, карбон, електроніка. Виробництво в ЄС, постачання в Україну.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="uk_UA">
 <meta property="og:image" content="https://lolman135.github.io/pancore-card/frontend/assets/og.png">
@@ -21,13 +21,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20260902c">
 <style>
-  .hero__side { gap: 14px; margin-top: 52px; }
-  .hero__side .tag {
-    gap: 14px; padding: 20px 26px; border-radius: 16px;
-    font-size: 14px; letter-spacing: 0.1em;
+  /* Картки «Чому PANCORE» піднімаються при наведенні.
+     У style.css підйом уже описаний (.card:hover { transform: translateY(-4px) }),
+     але нижче стоїть .rise.is-in { transform: none } з такою ж вагою і перебиває його.
+     Селектор з #why важчий за рахунок id — тому підйом спрацьовує. */
+  #why .card { will-change: transform; }
+  #why .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 60px -28px rgba(255, 61, 79, 0.45);
   }
-  .hero__side .tag::before { width: 9px; height: 9px; box-shadow: 0 0 14px var(--accent); }
-  @media (max-width: 600px) { .hero__side .tag { width: 100%; padding: 18px 20px; font-size: 13px; } }
+  @media (prefers-reduced-motion: reduce) { #why .card:hover { transform: none; } }
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
@@ -106,14 +109,8 @@
               <a class="btn btn--ghost" href="production.html">Виробництво</a>
             </div>
           </div>
-          <div class="hero__side rise" data-delay="4">
-            <span class="tag">Оптоволокно G.657.A2 · 5–60 км</span>
-            <span class="tag">Карбон · Полімерне лиття</span>
-            <span class="tag">Компоненти · 20 категорій</span>
-          </div>
         </div>
       </div>
-      <span class="hero__scroll" aria-hidden="true">Прокрутіть</span>
     </section>
 
     <!-- ════════ ПРО КОМПАНІЮ ════════ -->
@@ -129,9 +126,9 @@
           </p>
         </div>
         <div class="stats">
-          <div class="stat rise"><span class="stat__v metal">5–60<small>км</small></span><span class="stat__k">Лінійка безшпульних звоїв оптоволокна</span></div>
+          <div class="stat rise"><span class="stat__v metal">5–60<small>км</small></span><span class="stat__k">Лінійка безшпульних котушок оптоволокна</span></div>
           <div class="stat rise" data-delay="1"><span class="stat__v metal">до 80<small>км</small></span><span class="stat__k">Оптичний канал керування Sky / Ground</span></div>
-          <div class="stat rise" data-delay="2"><span class="stat__v metal"><span data-count="3800">3 800</span><small>kN</small></span><span class="stat__k">Зусилля змикання термопластавтоматів</span></div>
+          <div class="stat rise" data-delay="2"><span class="stat__v metal">10″ / 15″</span><span class="stat__k">Пропелери власного полімерного лиття</span></div>
           <div class="stat rise" data-delay="3"><span class="stat__v metal"><span data-count="163">163</span></span><span class="stat__k">Позиції в асортименті · 20 категорій</span></div>
         </div>
       </div>
@@ -143,7 +140,7 @@
         <div class="sec__head sec__head--row">
           <div>
             <p class="eyebrow rise">Напрями</p>
-            <h2 class="h-display h2 rise" data-delay="1">Чотири напрями під один контракт</h2>
+            <h2 class="h-display h2 rise" data-delay="1">Чотири напрями — одне виробництво</h2>
           </div>
           <a class="btn btn--ghost rise" data-delay="2" href="production.html">Про виробництво</a>
         </div>
@@ -152,7 +149,7 @@
             <span class="card__code">01</span>
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><circle cx="20" cy="20" r="6"/><path d="M26 20a6 6 0 0 1-6 6"/><path d="M20 7V3M33 20h4"/><path d="M20 33c0 3 2 4 5 4"/></svg></span>
             <h3 class="h3">Оптоволоконні системи</h3>
-            <p>Безшпульні звої G.657.A2 від 5 до 60 км у польовому корпусі, бортові та наземні оптичні термінали. Канал, невидимий для радіорозвідки та РЕБ.</p>
+            <p>Безшпульні котушки G.657.A2 від 5 до 60 км у польовому корпусі, бортові та наземні оптичні термінали. Канал, невидимий для радіорозвідки та РЕБ.</p>
             <span class="card__go">Докладніше</span>
           </a>
           <a class="card card--link rise" data-delay="1" href="production.html#composites">
@@ -211,11 +208,11 @@
         </div>
         <div class="grid grid--3">
           <article class="card card--num rise"><span class="card__n">01</span><h3 class="h3">Виробництво в ЄС</h3><p>Продукція Made in EU: сертифікат походження, EUR.1 для України, декларація виробника.</p></article>
-          <article class="card card--num rise" data-delay="1"><span class="card__n">02</span><h3 class="h3">Контроль кожної партії</h3><p>Рефлектометрія OTDR, зважування, вимірювання розмірів. Протокол на кожен звій, кожну партію виробів.</p></article>
+          <article class="card card--num rise" data-delay="1"><span class="card__n">02</span><h3 class="h3">Контроль кожної партії</h3><p>Рефлектометрія OTDR, зважування, вимірювання розмірів. Протокол на кожну котушку, кожну партію виробів.</p></article>
           <article class="card card--num rise" data-delay="2"><span class="card__n">03</span><h3 class="h3">Документи без сюрпризів</h3><p>TDS, протоколи випробувань, паспорти виробів, інструкції — комплект, який проходить митницю і технічне приймання.</p></article>
           <article class="card card--num rise" data-delay="3"><span class="card__n">04</span><h3 class="h3">Один контракт</h3><p>Власні вироби та компоненти 20 категорій постачаються під одним договором з єдиною відповідальністю.</p></article>
           <article class="card card--num rise" data-delay="4"><span class="card__n">05</span><h3 class="h3">Склад у ЄС</h3><p>Виробництво та склад в Європейському Союзі: швидкі партії, консолідація вантажів, доставка по Європі та в Україну.</p></article>
-          <article class="card card--num rise" data-delay="5"><span class="card__n">06</span><h3 class="h3">Інженерна адаптація</h3><p>Довжина звою, геометрія та крок пропелера, компонування рами — під платформу замовника, а не навпаки.</p></article>
+          <article class="card card--num rise" data-delay="5"><span class="card__n">06</span><h3 class="h3">Інженерна адаптація</h3><p>Довжина котушки, геометрія та крок пропелера, компонування рами — під платформу замовника, а не навпаки.</p></article>
         </div>
       </div>
     </section>
@@ -231,7 +228,7 @@
         <div class="wm-stats rise" data-delay="2">
           <div class="wm-stat"><b>3</b><span>напрями поставок</span></div>
           <div class="wm-stat"><b>2 000 м²</b><span>виробнича площадка в ЄС</span></div>
-          <div class="wm-stat"><b>5–60 км</b><span>лінійка звоїв на відвантаження</span></div>
+          <div class="wm-stat"><b>5–60 км</b><span>лінійка котушок на відвантаження</span></div>
         </div>
         <div class="wm-wrap rise" data-delay="2" data-kind="all">
           <div id="worldmap" class="wm-host"></div>
@@ -242,8 +239,8 @@
           </div>
           <div class="wm-routes">
             <button type="button" class="wm-route wm-route--in" data-kind-btn="in"><span class="k">Китай → ЄС</span><b>Оптоволокно, гранулят, клей, обладнання</b><small>Одномодове волокно G.657.A2, армовані поліаміди, термопластавтомати та лінії для композитів.</small></button>
-            <button type="button" class="wm-route wm-route--out" data-kind-btn="out"><span class="k">ЄС → Україна</span><b>Звої, пропелери, карбон, комплекти</b><small>Готова продукція з сертифікатом походження ЄС і EUR.1, консолідовані партії зі складу в ЄС.</small></button>
-            <button type="button" class="wm-route wm-route--out" data-kind-btn="out"><span class="k">ЄС → Туреччина</span><b>Звої та компоненти для платформ</b><small>Оптоволоконні лінії й комплектуючі під платформи замовника, документи для технічного приймання.</small></button>
+            <button type="button" class="wm-route wm-route--out" data-kind-btn="out"><span class="k">ЄС → Україна</span><b>Котушки, пропелери, карбон, комплекти</b><small>Готова продукція з сертифікатом походження ЄС і EUR.1, консолідовані партії зі складу в ЄС.</small></button>
+            <button type="button" class="wm-route wm-route--out" data-kind-btn="out"><span class="k">ЄС → Туреччина</span><b>Котушки та компоненти для платформ</b><small>Оптоволоконні лінії й комплектуючі під платформи замовника, документи для технічного приймання.</small></button>
           </div>
           <p class="wm-story">На майданчику в ЄС ми перемотуємо та стабілізуємо волокно, ллємо пропелери й корпуси, збираємо комплекти і перевіряємо кожну партію. Тому на виході — продукція європейського походження з повним набором документів для митниці та приймання.</p>
         </div>
