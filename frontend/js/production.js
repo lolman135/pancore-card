@@ -14,27 +14,54 @@ const t = (uk, en) => (EN ? en : uk);
 
 mountSketches();
 
-/* ---------- паспорт звою: лінійка 5–60 км (розрахункова геометрія за еталоном 25 км) ---------- */
+/* ---------- паспорт звою: лінійка 5–60 км за КП SFC від 03.09.2026 ----------
+   Маса kg — звій без корпусу та модулів, kgc — у корпусі без модулів (40/60 км: корпус під замовлення).
+   Еталон SFC-30: 30,212 км за OTDR, 2 245 г. */
 const RANGE = {
-  km: [5, 10, 20, 25, 40, 60],
-  od: [92, 92, 103.8, 103.8, 115, 132],
-  id: 53,
-  h: [66, 121, 172, 215.56, 264, 282],
-  kg: [0.38, 0.70, 1.40, 1.751, 2.80, 4.20],
+  km:  [5, 10, 20, 30, 40, 60],
+  od:  [110, 110, 100.2, 121, 128, 150],
+  id:  [53, 53, 53, 53, 64, 64],
+  h:   [51, 102, 213.8, 213.8, 241, 241],
+  kg:  [0.38, 0.70, 1.459, 2.245, 2.96, 4.20],
+  kgc: [0.605, 1.094, 1.853, 2.795, null, null],
+  std: [false, false, true, true, false, false],
   ref: 3,
 };
 const fmt = (n, d = 1) => n.toLocaleString(LOC, { minimumFractionDigits: 0, maximumFractionDigits: d });
 const pass = document.getElementById('passport');
 if (pass) {
   const slider = pass.querySelector('input[type="range"]');
+  const fill = pass.querySelector('.rail__fill'), thumb = pass.querySelector('.rail__thumb');
+  const stops = [...pass.querySelectorAll('.rail__stops span')];
+  const svg = pass.querySelector('.pcoil');
+  const ro = (k) => pass.querySelector(`[data-ro="${k}"]`);
+  const K = 0.8, CX = 85, BASE = 206;   // силует: мм → px, вісь і лінія основи
   const set = (i) => {
-    pass.querySelector('[data-ro="km"]').textContent = RANGE.km[i];
-    pass.querySelector('[data-ro="od"]').firstChild.textContent = fmt(RANGE.od[i]);
-    pass.querySelector('[data-ro="id"]').firstChild.textContent = RANGE.id;
-    pass.querySelector('[data-ro="h"]').firstChild.textContent = fmt(RANGE.h[i], 2);
-    pass.querySelector('[data-ro="kg"]').firstChild.textContent = fmt(RANGE.kg[i], 3);
-    pass.querySelector('[data-ro="ref"]').hidden = i !== RANGE.ref;
-    pass.querySelectorAll('.passport__ticks span').forEach((el, k) => el.classList.toggle('is-on', k === i));
+    const od = RANGE.od[i], id = RANGE.id[i], h = RANGE.h[i], last = RANGE.km.length - 1;
+    ro('km').textContent = RANGE.km[i];
+    ro('od').firstChild.textContent = fmt(od);
+    ro('id').firstChild.textContent = id;
+    ro('h').firstChild.textContent = fmt(h);
+    const kgf = (v) => v.toLocaleString(LOC, { minimumFractionDigits: 2, maximumFractionDigits: 3 });   // 0,70 · 1,459 · 4,20 — як у КП
+    ro('kg').firstChild.textContent = kgf(RANGE.kg[i]);
+    ro('kgc').firstChild.textContent = RANGE.kgc[i] != null ? kgf(RANGE.kgc[i]) : '—';
+    ro('kgc').closest('.ro').classList.toggle('is-na', RANGE.kgc[i] == null);
+    ro('std').hidden = !RANGE.std[i];
+    ro('ref').hidden = i !== RANGE.ref;
+    slider.value = i;
+    slider.setAttribute('aria-valuetext', `${RANGE.km[i]} ${t('км', 'km')}`);
+    const p = `${(i / last) * 100}%`;
+    fill.style.width = p; thumb.style.left = p;
+    stops.forEach((s, k) => { s.classList.toggle('is-on', k === i); s.classList.toggle('is-past', k < i); });
+    // силует звою в масштабі: ширина = зовнішній Ø, висота = H, сердечник = внутрішній Ø
+    const w = od * K, hh = h * K, iw = id * K, top = BASE - hh;
+    const body = svg.querySelector('[data-el="body"]'), core = svg.querySelector('[data-el="core"]');
+    [['x', CX - w / 2], ['y', top], ['width', w], ['height', hh]].forEach(([a, v]) => body.setAttribute(a, v.toFixed(1)));
+    [['x', CX - iw / 2], ['y', top], ['width', iw], ['height', hh]].forEach(([a, v]) => core.setAttribute(a, v.toFixed(1)));
+    const tOd = svg.querySelector('[data-el="od"]'), tH = svg.querySelector('[data-el="h"]');
+    tOd.textContent = `Ø${fmt(od)}`; tOd.setAttribute('y', (top - 9).toFixed(1));
+    tH.textContent = `H ${fmt(h)}`; tH.setAttribute('x', (CX + w / 2 + 6).toFixed(1)); tH.setAttribute('y', (top + hh / 2 + 3).toFixed(1));
+    svg.querySelector('[data-el="id"]').textContent = `Ø${id}`;
   };
   slider.addEventListener('input', () => set(Number(slider.value)));
   set(Number(slider.value));

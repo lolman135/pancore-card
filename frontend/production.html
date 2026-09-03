@@ -18,8 +18,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260902c">
-<link rel="stylesheet" href="css/pages.css?v=20260902c">
+<link rel="stylesheet" href="css/style.css?v=20260903a">
+<link rel="stylesheet" href="css/pages.css?v=20260903a">
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
 <body data-page="production">
@@ -36,6 +36,7 @@
   </defs>
 </svg>
 <div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><i></i></div>
 
 <div class="page">
 
@@ -114,7 +115,7 @@
           <h2 class="h-display h2 rise" data-delay="1">Безшпульний звій оптоволокна G.657.A2</h2>
           <p class="lead rise" data-delay="2">Самонесуча прецизійна намотка без шпулі: менша маса, менший об’єм, реверсивне розгортання. Розроблено для тактичних волоконних ліній і мереж зв’язку, що розгортаються в польових умовах.</p>
           <div class="chips chips--tags rise" data-delay="3" style="margin-top:20px">
-            <span class="chip">ITU-T G.657.A2</span><span class="chip">сердечник Ø53 мм</span><span class="chip">лінійка 5–60 км</span><span class="chip">−35…+70 °C</span><span class="chip">реверсивна намотка</span>
+            <span class="chip">ITU-T G.657.A2</span><span class="chip">стандарт 20 · 30 км</span><span class="chip">5–60 км під замовлення</span><span class="chip">сердечник Ø53 / Ø64</span><span class="chip">−35…+70 °C</span><span class="chip">IP41 · опція IP67</span>
           </div>
         </div>
 
@@ -122,24 +123,46 @@
           <figure class="photo photo--tall rise" style="margin:0">
             <img src="assets/img/coil-casing-full.webp" alt="Безшпульний звій у польовому корпусі PANCORE" loading="lazy">
             <span class="hud" style="--x:50%;--y:6%"><span>кришка twist-lock</span></span>
-            <span class="hud hud--left" style="--x:26%;--y:80%"><span>ластівчин хвіст</span></span>
+            <span class="hud hud--left" style="--x:26%;--y:80%"><span>швидкознімне кріплення</span></span>
             <figcaption class="photo__cap">Готовий виріб · корпус PETG</figcaption>
           </figure>
           <div class="rise" data-delay="1" style="display:grid;gap:14px">
             <div class="passport" id="passport">
-              <div class="passport__head">
-                <div class="passport__km"><span data-ro="km">25</span><small>КМ</small></div>
-                <span class="passport__ref" data-ro="ref">Еталон · SR-FOC-25</span>
+              <div class="passport__top">
+                <div class="passport__km"><span data-ro="km">30</span><small>км</small></div>
+                <div class="passport__tags">
+                  <span class="ptag ptag--std" data-ro="std">стандартна одиниця</span>
+                  <span class="ptag ptag--ref" data-ro="ref">еталон SFC-30 · 30,212 км за OTDR</span>
+                </div>
               </div>
-              <input type="range" min="0" max="5" step="1" value="3" aria-label="Довжина звою">
-              <div class="passport__ticks"><span>5</span><span>10</span><span>20</span><span>25</span><span>40</span><span>60</span></div>
-              <div class="readouts">
-                <div class="ro"><b data-ro="od">103,8<small>мм</small></b><span>зовнішній Ø</span></div>
-                <div class="ro"><b data-ro="id">53<small>мм</small></b><span>внутрішній Ø</span></div>
-                <div class="ro"><b data-ro="h">215,56<small>мм</small></b><span>висота H</span></div>
-                <div class="ro"><b data-ro="kg">1,751<small>кг</small></b><span>маса звою</span></div>
+              <div class="rail">
+                <div class="rail__track"><i class="rail__fill"></i><i class="rail__thumb"></i></div>
+                <div class="rail__stops">
+                  <span style="--p:0%"><i></i><b>5</b></span><span style="--p:20%"><i></i><b>10</b></span><span style="--p:40%"><i></i><b>20</b></span>
+                  <span style="--p:60%"><i></i><b>30</b></span><span style="--p:80%"><i></i><b>40</b></span><span style="--p:100%"><i></i><b>60</b></span>
+                </div>
+                <input type="range" min="0" max="5" step="1" value="3" aria-label="Довжина звою" aria-valuetext="30 км">
               </div>
-              <p class="passport__fn">Розрахункова геометрія за еталонною щільністю намотування 25-км звою (гексагональна укладка ≈ 0,90). Фінальні розміри фіксуються специфікацією партії; кастомні довжини з кроком 5 км.</p>
+              <div class="passport__grid">
+                <svg class="pcoil" viewBox="0 0 170 226" aria-hidden="true">
+                  <defs><pattern id="pc-layers" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 2h4" stroke="rgba(255,255,255,0.16)" stroke-width="1"/></pattern></defs>
+                  <line class="pcoil__base" x1="12" y1="206" x2="158" y2="206"/>
+                  <rect class="pcoil__body" data-el="body" x="37" y="35" width="97" height="171" rx="2"/>
+                  <rect class="pcoil__core" data-el="core" x="64" y="35" width="42" height="171"/>
+                  <line class="pcoil__axis" x1="85" y1="8" x2="85" y2="214"/>
+                  <text class="pcoil__t" data-el="od" x="85" y="26" text-anchor="middle">Ø121</text>
+                  <text class="pcoil__t pcoil__t--h" data-el="h" x="140" y="122">H 213,8</text>
+                  <text class="pcoil__t" data-el="id" x="85" y="221" text-anchor="middle">Ø53</text>
+                </svg>
+                <div class="readouts">
+                  <div class="ro"><b data-ro="od">121<small>мм</small></b><span>зовнішній Ø</span></div>
+                  <div class="ro"><b data-ro="id">53<small>мм</small></b><span>внутрішній Ø</span></div>
+                  <div class="ro"><b data-ro="h">213,8<small>мм</small></b><span>висота H</span></div>
+                  <div class="ro"><b data-ro="kg">2,245<small>кг</small></b><span>маса звою</span></div>
+                  <div class="ro"><b data-ro="kgc">2,795<small>кг</small></b><span>маса в корпусі</span></div>
+                </div>
+              </div>
+              <p class="passport__fn">Маса звою — без корпусу та модулів, маса в корпусі — без модулів; для 40 і 60 км корпус розробляється під замовлення. Проміжні довжини 15, 25, 35, 45, 50, 55 км — під замовлення. Фактична довжина кожного звою фіксується OTDR-сканером. Дані: специфікація SRT-SFC-30-K/2026 і КП від 03.09.2026.</p>
             </div>
             <div class="sk" data-sketch="coil" aria-hidden="true"></div>
           </div>
@@ -173,6 +196,8 @@
               <div><dt>Діаметр модового поля</dt><dd>8,32 мкм</dd></div>
               <div><dt>Мінімальний радіус вигину</dt><dd>7,5 мм <em>· у 4 рази менший, ніж у G.652.D</em></dd></div>
               <div><dt>Сумісність</dt><dd>G.652.D — повна зворотна, без заміни мережі</dd></div>
+              <div><dt>Зовнішній діаметр волокна</dt><dd>250 мкм</dd></div>
+              <div><dt>Волокно</dt><dd>сертифіковане G.657.A2 <em>· YOFC, Hengtong</em></dd></div>
               <div><dt>Діапазон експлуатації</dt><dd>−35…+70 °C</dd></div>
             </dl>
             <div class="att">
@@ -212,10 +237,10 @@
             <div class="feats">
               <div><span class="n">01</span><div><b>Кришка twist-lock</b><p>Відкривається за рельєфними стрілками без інструменту — швидкий доступ до виводу волокна.</p></div></div>
               <div><span class="n">02</span><div><b>Захищений звій</b><p>Безшпульний звій у демпферному ложементі; волокно виходить через верхній конус.</p></div></div>
-              <div><span class="n">03</span><div><b>Відсік трансивера</b><p>Оптичний модуль і патчкорди змонтовано на внутрішній платі.</p></div></div>
-              <div><span class="n">04</span><div><b>Сервісний порт</b><p>Зовнішній інтерфейс на нижній кришці — корпус відкривати не потрібно.</p></div></div>
-              <div><span class="n">05</span><div><b>Кріплення «ластівчин хвіст»</b><p>Фіксація виробу на платформі носія по напрямній.</p></div></div>
-              <div><span class="n">06</span><div><b>Полімерний корпус</b><p>3D-друк із PETG; опція виконання IP67; адаптація під платформу замовника.</p></div></div>
+              <div><span class="n">03</span><div><b>Відсік оптичного модуля</b><p>Медіаконвертер і патчкорди в окремому відсіку; оптичний тракт — два патчкорди FC/UPC, зварні з’єднання у термоусадних гільзах.</p></div></div>
+              <div><span class="n">04</span><div><b>Сервісний порт</b><p>Доступ до оптичного тракту без розбирання виробу.</p></div></div>
+              <div><span class="n">05</span><div><b>Швидкознімне універсальне кріплення</b><p>Універсальне посадкове місце під різні платформи носія; знімається без інструменту.</p></div></div>
+              <div><span class="n">06</span><div><b>Полімерний корпус</b><p>3D-друк із PETG; базовий захист IP41, виконання IP67 — опція; адаптація під платформу замовника.</p></div></div>
             </div>
             <div class="sk" data-sketch="casing" aria-hidden="true" style="margin-top:14px"></div>
           </div>
@@ -248,8 +273,9 @@
               <div><dt>Довжина хвилі</dt><dd>1310 / 1550 нм <em>· поза радіоспектром: нема що глушити чи перехопити</em></dd></div>
               <div><dt>Розмір · маса</dt><dd>42 × 42 × 15 мм · ≤ 16 г</dd></div>
               <div><dt>Живлення</dt><dd>DC 5–9 В · ≤ 2,5 Вт</dd></div>
-              <div><dt>Сигнали</dt><dd>аналогове / HD відео (PAL/NTSC) + TTL-дані · RS485/422/232, аудіо опційно</dd></div>
+              <div><dt>Сигнали</dt><dd>відео PAL / NTSC + дані TTL-RX / TTL-TX · роз’єм GH 1,25 мм 5P, кабель 310 мм</dd></div>
               <div><dt>Оптика</dt><dd>одноволоконний FC · −5…0 дБм · <em>до 80 км</em></dd></div>
+              <div><dt>Монтаж · індикація</dt><dd>отвори Ø2,7 мм, 38 × 32 мм · P · F · V · D</dd></div>
             </dl>
           </article>
           <article class="rise" data-delay="1">
@@ -261,6 +287,7 @@
               <div><dt>Живлення</dt><dd>батарея 2S–6S · XT60</dd></div>
               <div><dt>Відеовихід</dt><dd>2 канали V1 / V2 · BNC або AV RCA</dd></div>
               <div><dt>Керування</dt><dd>CRSF / PPM · дротове і бездротове · тренер DSC · <em>до 80 км</em></dd></div>
+              <div><dt>Службові виходи</dt><dd>VTX · живлення 2S–6S · 5 В · TTL-RX / TTL-TX</dd></div>
             </dl>
           </article>
         </div>
@@ -303,7 +330,7 @@
               <thead><tr><th>Позиція</th><th>Параметри</th></tr></thead>
               <tbody>
                 <tr><td>Намотувальні станції</td><td class="mono">власна конструкція · сервопривід · лічильник довжини · пневматичний притиск · огородження безпеки</td></tr>
-                <tr><td>Оправки Ø53</td><td class="mono">єдиний посадковий сердечник для всієї лінійки 5–60 км</td></tr>
+                <tr><td>Оправки Ø53 / Ø64</td><td class="mono">сердечник Ø53 для 5–35 км · Ø64 для 40–60 км</td></tr>
                 <tr><td>3D-друк корпусів</td><td class="mono">PETG · кришка twist-lock · опція IP67</td></tr>
                 <tr><td>Контроль</td><td class="mono">Auto OTDR до 60 км · ваги · штангенциркуль</td></tr>
               </tbody>
@@ -543,6 +570,6 @@
   <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_tech" target="_blank" rel="noopener">Telegram</a>
 </div>
 
-<script type="module" src="js/production.js?v=20260902c"></script>
+<script type="module" src="js/production.js?v=20260903a"></script>
 </body>
 </html>

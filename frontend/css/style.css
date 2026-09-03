@@ -619,6 +619,7 @@ body.menu-open .mnav { display: flex; }
   .grid--3 { grid-template-columns: 1fr 1fr; }
   .gallery, .gallery--4 { grid-template-columns: repeat(2, 1fr); }
   .cta { grid-template-columns: 1fr; }
+    .form__foot .btn { width: 100%; }
 }
 @media (max-width: 600px) {
   body { font-size: 16px; }
@@ -638,3 +639,8 @@ body.menu-open .mnav { display: flex; }
   .hero__scroll::after, .status::before { animation: none; }
   .card, .btn, .item, .mosaic img { transition: none; }
 }
+
+/* ---------- смуга прокрутки над шапкою (лише де є розмітка .progress); на телефоні не показується ---------- */
+.progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 60; background: rgba(255, 255, 255, 0.06); pointer-events: none; }
+.progress i { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); box-shadow: 0 0 10px var(--accent-glow); }
+@media (max-width: 880px) { .progress { display: none; } }
