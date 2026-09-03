@@ -5,7 +5,7 @@ from app.domain.contact_parser import parse_contact
 from app.dto.contact import ContactRequest, ContactResponse
 from app.notifications.notifier import ContactNotifier
 from app.repositories.contact_repository import ContactRepository
-
+from app.core.config import get_settings
 
 class ContactService:
     """Разбирает заявку с формы, сохраняет её и уведомляет о ней."""
@@ -16,6 +16,9 @@ class ContactService:
 
     def submit(self, request: ContactRequest) -> ContactResponse:
         contact = parse_contact(request.contact)
+
+        settings = get_settings()
+
         submission = ContactSubmission(
             contact=contact,
             comment=request.comment,
@@ -25,4 +28,4 @@ class ContactService:
         self._repository.add(submission)
         self._notifier.notify(submission)
 
-        return ContactResponse(contact_type=contact.kind)
+        return ContactResponse(contact_type=contact.kind, mock_status=settings.prod_flag)

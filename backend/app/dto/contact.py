@@ -22,3 +22,4 @@ class ContactResponse(BaseModel):
 
     status: Literal["ok"] = "ok"
     contact_type: ContactKind
+    mock_status: bool

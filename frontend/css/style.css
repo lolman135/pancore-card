@@ -38,7 +38,13 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html {
+  scroll-behavior: smooth; -webkit-text-size-adjust: 100%;
+  /* Відступ для якорів: без нього перехід по #id ставить ціль під фіксовану шапку.
+     Діє і на нативні переходи, і на Element.scrollIntoView().
+     --scroll-pad рахує site.js за реальною висотою шапки + липкої панелі каталогу. */
+  scroll-padding-top: var(--scroll-pad, calc(var(--head-h) + 8px));
+}
 body {
   margin: 0;
   background: var(--bg);
