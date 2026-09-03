@@ -31,7 +31,9 @@ const PLACE = { cn: ['r', 0], eu: ['l', 0], ua: ['r', -14], tr: ['r', 12] };
 /* на обрізаній карті ЄС стоїть біля лівого краю — підпис іде під точку, Туреччина нижче */
 const PLACE_CROP = { cn: ['r', 0], eu: ['b', 0], ua: ['r', -16], tr: ['r', 26] };
 
-/* телефон: коридор ЄС–Китай (lon −5…140, lat 68…−4) замість усього світу */
+/* Замість усього світу показуємо Євразію: десктоп lon −15…150, lat 72…−10 (Україна по центру, масштаб
+   читається); телефон — вужчий коридор ЄС–Китай lon −5…140. Координати сітки: x = (lon+170)/350·1400, y = (78−lat)/134·536 */
+const DESK = { x: 620, y: 24, w: 660, h: 330 };
 const CROP = { x: 660, y: 40, w: 580, h: 330 };
 const narrow = matchMedia('(max-width: 640px)');
 
@@ -108,9 +110,10 @@ export function mountWorldMap(host, { reduced = false } = {}) {
 
   function layout() {
     const crop = narrow.matches;
-    const vb = crop ? CROP : { x: 0, y: 0, w: VIEW.w, h: VIEW.h };
+    const vb = crop ? CROP : DESK;
     svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
-    svg.classList.toggle('wm--crop', crop);
+    svg.classList.add('wm--crop');
+    svg.classList.toggle('wm--narrow', crop);
     lab.querySelectorAll('.wm__lbl').forEach((s) => {
       const n = NODES[s.dataset.node];
       const [side, dy] = (crop ? PLACE_CROP : PLACE)[s.dataset.node];

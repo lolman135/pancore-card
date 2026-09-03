@@ -44,7 +44,8 @@ const X = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-wid
 const I = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const ICONS = {
   coil:   I('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2.5"/><path d="M20.5 12h2"/>'),
-  prop:   I('<circle cx="12" cy="12" r="1.8"/><path d="M12 10.2C11 6 12.5 2.5 14 3c1.6.6 1 5.5-2 7.2M10.4 12.9c-4.2.7-7.2-1.4-6.8-2.9.4-1.6 5.3-2 7.5.6M13.6 13.2c3.3 2.8 3.4 6.5 1.9 7-1.6.5-4-3.8-3.4-7.2"/>'),
+  /* пропелер: три суцільні лопаті з легким серпоподібним профілем і ступиця-кільце — читається і на 22 px, і на 120 px */
+  prop:   I('<g fill="currentColor" stroke="none"><path d="M12 12C9.1 9.9 8.4 5.6 10.1 2.9c.9-1.4 2.7-1.4 3.6-.1 1.4 2.2 1.1 5.9-1.7 9.2z"/><path d="M12 12C9.1 9.9 8.4 5.6 10.1 2.9c.9-1.4 2.7-1.4 3.6-.1 1.4 2.2 1.1 5.9-1.7 9.2z" transform="rotate(120 12 12)"/><path d="M12 12C9.1 9.9 8.4 5.6 10.1 2.9c.9-1.4 2.7-1.4 3.6-.1 1.4 2.2 1.1 5.9-1.7 9.2z" transform="rotate(240 12 12)"/></g><circle cx="12" cy="12" r="2.7" fill="var(--bg-2, #0c0e13)" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none"/>'),
   motors: I('<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 4.5V2M12 22v-2.5M4.5 12H2M22 12h-2.5M6.7 6.7L5 5M19 19l-1.7-1.7M17.3 6.7L19 5M5 19l1.7-1.7"/>'),
   esc:    I('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M13 8l-3 4.5h4L11 17"/>'),
   fc:     I('<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 7V4M14 7V4M10 20v-3M14 20v-3M7 10H4M7 14H4M20 10h-3M20 14h-3"/><circle cx="12" cy="12" r="1.5"/>'),
@@ -55,10 +56,10 @@ const ICONS = {
   tx:     I('<rect x="3" y="9" width="18" height="9" rx="2"/><circle cx="8" cy="13.5" r="1.8"/><circle cx="16" cy="13.5" r="1.8"/><path d="M6 9V4M18 9V6"/>'),
   ant:    I('<path d="M12 21V9M12 9l-5-6M12 9l5-6M12 9l-2.5-6M12 9l2.5-6"/><circle cx="12" cy="9" r="1.5"/>'),
   cam:    I('<rect x="3" y="7" width="18" height="12" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 7l1.5-2.5h5L16 7"/>'),
-  optic:  I('<circle cx="5" cy="12" r="2.5"/><circle cx="19" cy="12" r="2.5"/><path d="M7.5 12c3-4 6-4 9 0M7.5 12c3 4 6 4 9 0"/>'),
+  optic:  I('<rect x="2" y="7.5" width="7" height="9" rx="1.5"/><rect x="15" y="7.5" width="7" height="9" rx="1.5"/><path d="M9 12h6"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><path d="M4.5 10.5v3M19.5 10.5v3M5.5 4.5v3M18.5 16.5v3"/>'),
   fiber:  I('<path d="M4 12a8 8 0 1 1 8 8"/><path d="M7 12a5 5 0 1 1 5 5"/><circle cx="12" cy="12" r="1.5"/>'),
   carbon: I('<path d="M3 15l7-4 11 4-7 4z"/><path d="M3 11l7-4 11 4M3 7l7-4 11 4"/>'),
-  props:  I('<circle cx="12" cy="12" r="1.8"/><path d="M12 10.2C11 6 12.5 2.5 14 3c1.6.6 1 5.5-2 7.2M10.4 12.9c-4.2.7-7.2-1.4-6.8-2.9.4-1.6 5.3-2 7.5.6M13.6 13.2c3.3 2.8 3.4 6.5 1.9 7-1.6.5-4-3.8-3.4-7.2"/>'),
+  get props() { return this.prop; },
   frames: I('<rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 9L3.5 3.5M15 9l5.5-5.5M9 15l-5.5 5.5M15 15l5.5 5.5"/><circle cx="3.5" cy="3.5" r="1.5"/><circle cx="20.5" cy="3.5" r="1.5"/><circle cx="3.5" cy="20.5" r="1.5"/><circle cx="20.5" cy="20.5" r="1.5"/>'),
   ice:    I('<rect x="6" y="9" width="12" height="11" rx="1.5"/><path d="M9 9V5h6v4M12 5V2M6 14H3M21 14h-3"/>'),
   jet:    I('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2"/><path d="M12 10V4.5M13.8 11l4.7-2.8M13.8 13l4.7 2.8M12 14v5.5M10.2 13l-4.7 2.8M10.2 11L5.5 8.2"/>'),
@@ -100,6 +101,38 @@ const short = (v, n = 34) => (v.length > n ? v.slice(0, n - 1).replace(/[\s·,;:
 /* стисле значення для картки і плиток фактів: перший фрагмент до « · », без дужок — «900 KV», «20 і 30 км» */
 const brief = (v, n = 28) => short(v.split(' · ')[0].replace(/\s*\([^)]*\)/g, '').trim(), n);
 const DOC = { yes: 'Документація виробника', analog: 'Аналог за запитом' };
+
+/* ---------- коротка назва на картці: повна лишається у вікні позиції ---------- */
+const NAMES = { 901: 'Безшпульний звій SFC-K · 5–60 км', 902: 'Пропелер 10 дюймів', 903: 'Пропелер 15 дюймів' };
+const METAS = { 901: 'PANCORE · еталон SFC-30 · 30,212 км', 902: 'PANCORE · 10 × 5,0 × 3', 903: 'PANCORE · 15 × 10 × 3' };
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+const INCH = /^(Пропелер|Рама)\s+(\d{1,2})["″]\s*([^—(]*)/;
+function shortName(it) {
+  if (NAMES[it.id]) return NAMES[it.id];
+  let n = it.name.replace(/\s*\([^)]*\)/g, '').replace(/\s*:\s+/g, ' ');
+  const inch = INCH.exec(n);
+  if (inch) return `${inch[1]} ${inch[2]} дюймів`;
+  let [head, tail] = n.split(/\s+—\s+/);
+  if (it.brand && tail && head.trim().toLowerCase() === it.brand.toLowerCase()) head = tail;   // «Opticallink — медіаконвертер…»
+  if (it.brand) head = head.replace(new RegExp(`\\s+${reEsc(it.brand)}$`, 'i'), '');              // бренд у кінці → у мета-рядок
+  return short(cap(head.replace(/,\s+/g, ' · ').trim()), 46);
+}
+function cardMeta(it) {
+  if (METAS[it.id]) return METAS[it.id];
+  const parts = it.brand ? [esc(it.brand)] : [];
+  const inch = INCH.exec(it.name);
+  if (inch) {   // пропелери та рами: модель замість параметра
+    const model = it.brand ? inch[3].replace(new RegExp(reEsc(it.brand), 'i'), '').replace(/\s+/g, ' ').trim() : inch[3].trim();
+    if (model) parts.push(`<b>${esc(model)}</b>`);
+    return parts.join(' · ');
+  }
+  // перший параметр, який не повторює назву (у сервоприводів і платформ «Модель» = назва)
+  const nm = norm(it.name);
+  const k = keyParams(it).find((s) => !/модель|назва|позиц/i.test(s.k) && !nm.includes(norm(brief(s.v))));
+  if (k) parts.push(`<b>${esc(brief(k.v))}</b>`);
+  return parts.join(' · ') || esc(catName[it.cat]);
+}
 
 /* ---------- фільтри: бренд, напруга S, діапазон ---------- */
 const S_RE = /(\d{1,2})S\b/g;
@@ -204,15 +237,13 @@ function summary(cat, items) {
 
 /* ---------- картка: іконка, назва, один ключовий параметр ---------- */
 function itemCard(it) {
-  const k = keyParams(it)[0];
-  const meta = [it.own ? 'PANCORE · власне виробництво' : (it.brand || catName[it.cat]), k ? `<b>${esc(brief(k.v))}</b>` : ''].filter(Boolean).join(' · ');
   return `
     <article class="item ${it.own ? 'item--own' : ''} ${state.compare.has(it.id) ? 'is-cmp' : ''}" data-id="${it.id}">
-      <button class="item__head" type="button" data-open="${it.id}" aria-haspopup="dialog">
+      <button class="item__head" type="button" data-open="${it.id}" aria-haspopup="dialog" title="${esc(it.name)}">
         <span class="item__ico" aria-hidden="true">${iconOf(it)}</span>
         <span class="item__txt">
-          <span class="item__name">${esc(it.name)}</span>
-          <span class="item__meta">${meta}</span>
+          <span class="item__name">${esc(shortName(it))}</span>
+          <span class="item__meta">${cardMeta(it)}</span>
         </span>
         <span class="item__chev" aria-hidden="true">${CHEV}</span>
       </button>
