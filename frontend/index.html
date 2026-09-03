@@ -19,11 +19,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260902c">
+<link rel="stylesheet" href="css/style.css?v=20260903b">
+<script>
+  /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
+     Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
+     модулів вміст показується без анімації замість порожньої сторінки.
+     Скрипт синхронний і в <head>, щоб клас стояв до першого рендера. */
+  document.documentElement.classList.add('js-anim');
+  window.__riseGuard = setTimeout(function () {
+    document.documentElement.classList.remove('js-anim');
+  }, 2000);
+</script>
 <style>
   /* Картки «Чому PANCORE» піднімаються при наведенні.
      У style.css підйом уже описаний (.card:hover { transform: translateY(-4px) }),
-     але нижче стоїть .rise.is-in { transform: none } з такою ж вагою і перебиває його.
+     але нижче стоїть .js-anim .rise.is-in { transform: none }, що перебиває його.
      Селектор з #why важчий за рахунок id — тому підйом спрацьовує. */
   #why .card { will-change: transform; }
   #why .card:hover {
@@ -227,7 +237,7 @@
         </div>
         <div class="wm-stats rise" data-delay="2">
           <div class="wm-stat"><b>3</b><span>напрями поставок</span></div>
-          <div class="wm-stat"><b>2 000 м²</b><span>виробнича площадка в ЄС</span></div>
+          <div class="wm-stat"><b>20 000 м²</b><span>виробнича площадка в ЄС</span></div>
           <div class="wm-stat"><b>5–60 км</b><span>лінійка котушок на відвантаження</span></div>
         </div>
         <div class="wm-wrap rise" data-delay="2" data-kind="all">
@@ -306,6 +316,6 @@
   <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_tech" target="_blank" rel="noopener">Telegram</a>
 </div>
 
-<script type="module" src="js/site.js?v=20260902c"></script>
+<script type="module" src="js/site.js?v=20260903b"></script>
 </body>
 </html>

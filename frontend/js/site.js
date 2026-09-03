@@ -4,8 +4,14 @@
    підсвітка карток · WebGL-поле · лічильники · форма запиту
    ============================================================ */
 
-import { createMesh } from './mesh.js';
-import { API_BASE as ENV_API_BASE, API_KEY } from './env.js';
+/* Скрипт дійшов до виконання — знімаємо сторож із <head>, інакше він показав би
+   весь вміст без анімації через 2 с (див. .js-anim у style.css). */
+clearTimeout(window.__riseGuard);
+
+/* env.js генерується з .env (backend/scripts/gen_frontend_env.py) і в репозиторії
+   його немає, тож на свіжому клоні статичний import поклав би весь site.js.
+   Динамічний із фолбеком лишає сторінку робочою: порожня база = той самий origin. */
+const { API_BASE: ENV_API_BASE = '', API_KEY = '' } = await import('./env.js').catch(() => ({}));
 
 export const reducedMotion =
   matchMedia('(prefers-reduced-motion: reduce)').matches ||
@@ -104,34 +110,38 @@ bindCardGlow();
 /* ---------- WebGL-поле граней ---------- */
 const canvas = document.getElementById('mesh');
 if (canvas) {
-  const stage = canvas.closest('.mesh-stage');
-  const isFixed = !stage.classList.contains('is-band');
-  const mesh = createMesh(canvas, {
-    static: reducedMotion,
-    density: isFixed ? 1 : 0.85,
-    edge: isFixed ? 1 : 0.9,
-    fill: isFixed ? 1 : 0.8,
-  });
-  window.__mesh = mesh;
-  if (mesh.ok && isFixed) {
-    // герой яскравий, далі поле приглушується; поза героєм рендер зупиняємо (GPU/батарея)
-    let ticking = false;
-    const update = () => {
-      ticking = false;
-      const h = Math.max(innerHeight, 1);   // у прихованій вкладці innerHeight може бути 0
-      const k = Math.max(0, Math.min(1, 1 - (scrollY - h * 0.2) / (h * 0.9)));
-      mesh.setIntensity(0.2 + 0.8 * k);
-      if (scrollY > h * 1.6) mesh.pause(); else mesh.resume();
-    };
-    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-    update();
-  } else if (mesh.ok && 'IntersectionObserver' in window) {
-    // смуга на внутрішніх сторінках: анімуємо лише поки вона в кадрі
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => (e.isIntersecting ? mesh.resume() : mesh.pause()));
-    }, { threshold: 0.02 });
-    io.observe(stage);
-  }
+  /* three.js їде з CDN, тож статичний import ставив би всю сторінку в залежність
+     від нього. Динамічний — недоступний CDN коштує лише фону (як worldmap нижче). */
+  import('./mesh.js').then(({ createMesh }) => {
+    const stage = canvas.closest('.mesh-stage');
+    const isFixed = !stage.classList.contains('is-band');
+    const mesh = createMesh(canvas, {
+      static: reducedMotion,
+      density: isFixed ? 1 : 0.85,
+      edge: isFixed ? 1 : 0.9,
+      fill: isFixed ? 1 : 0.8,
+    });
+    window.__mesh = mesh;
+    if (mesh.ok && isFixed) {
+      // герой яскравий, далі поле приглушується; поза героєм рендер зупиняємо (GPU/батарея)
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const h = Math.max(innerHeight, 1);   // у прихованій вкладці innerHeight може бути 0
+        const k = Math.max(0, Math.min(1, 1 - (scrollY - h * 0.2) / (h * 0.9)));
+        mesh.setIntensity(0.2 + 0.8 * k);
+        if (scrollY > h * 1.6) mesh.pause(); else mesh.resume();
+      };
+      addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+      update();
+    } else if (mesh.ok && 'IntersectionObserver' in window) {
+      // смуга на внутрішніх сторінках: анімуємо лише поки вона в кадрі
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => (e.isIntersecting ? mesh.resume() : mesh.pause()));
+      }, { threshold: 0.02 });
+      io.observe(stage);
+    }
+  }).catch(() => { /* three.js не завантажився — сторінка лишається без фону */ });
 }
 
 /* ---------- карта світу (головна) ---------- */
