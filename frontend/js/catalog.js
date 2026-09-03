@@ -2,14 +2,16 @@
    PANCORE — сторінка «Асортимент»
    бічна навігація · пошук по назвах і характеристиках · фільтри
    (бренд, напруга S, діапазон) · власне виробництво першим ·
-   ключові параметри на картці · шухляда специфікації з адресою
-   #item-NNN · порівняння до трьох позицій · запит на позицію
+   чисті картки (іконка категорії, назва, один ключовий параметр) ·
+   вікно позиції з ключовими фактами, ескізом для власних виробів,
+   переходом попередня/наступна, адресою #item-NNN · порівняння до трьох
    ============================================================ */
 
 import { prefillRequest, observeRise, reducedMotion } from './site.js';
 import { CATEGORIES, ITEMS } from './data/catalog.js';
 import { SPECS } from './data/specs.js';
 import { OWN_CATEGORY, OWN_ITEMS, OWN_SPECS } from './data/own.js';
+import { coilSketch, propSketch } from './sketches.js';
 
 const CATS = [OWN_CATEGORY, ...CATEGORIES];
 const ALL = [...OWN_ITEMS, ...ITEMS];
@@ -34,12 +36,39 @@ const CMP_MAX = 3;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const pad = (id) => `#${String(id).padStart(3, '0')}`;
 const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg>';
+const CHEV_L = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5L5.5 8 10 12.5"/></svg>';
 const CHEV_DOWN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>';
 const X = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" width="14" height="14"><path d="M3 3l10 10M13 3L3 13"/></svg>';
 
-/* ---------- ключові параметри на картці: які підписи головні для категорії ---------- */
+/* ---------- іконки категорій (лінійні, 24×24) ---------- */
+const I = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const ICONS = {
+  coil:   I('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2.5"/><path d="M20.5 12h2"/>'),
+  prop:   I('<circle cx="12" cy="12" r="1.8"/><path d="M12 10.2C11 6 12.5 2.5 14 3c1.6.6 1 5.5-2 7.2M10.4 12.9c-4.2.7-7.2-1.4-6.8-2.9.4-1.6 5.3-2 7.5.6M13.6 13.2c3.3 2.8 3.4 6.5 1.9 7-1.6.5-4-3.8-3.4-7.2"/>'),
+  motors: I('<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 4.5V2M12 22v-2.5M4.5 12H2M22 12h-2.5M6.7 6.7L5 5M19 19l-1.7-1.7M17.3 6.7L19 5M5 19l1.7-1.7"/>'),
+  esc:    I('<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M13 8l-3 4.5h4L11 17"/>'),
+  fc:     I('<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 7V4M14 7V4M10 20v-3M14 20v-3M7 10H4M7 14H4M20 10h-3M20 14h-3"/><circle cx="12" cy="12" r="1.5"/>'),
+  pdb:    I('<rect x="5" y="9" width="14" height="6" rx="1"/><path d="M12 9V4M12 20v-5M5 12H2M22 12h-3M8 4h8"/>'),
+  vtx:    I('<path d="M12 21V10"/><circle cx="12" cy="8.5" r="1.5"/><path d="M8.5 5a5 5 0 0 1 7 0M6 2.5a8.5 8.5 0 0 1 12 0"/><path d="M8 21h8"/>'),
+  vrx:    I('<rect x="3" y="7" width="14" height="10" rx="1.5"/><path d="M7 20h6M10 17v3"/><path d="M19 8.5a4 4 0 0 1 0 6M21.5 6a7.5 7.5 0 0 1 0 11"/>'),
+  rx:     I('<rect x="4" y="12" width="16" height="7" rx="1.5"/><path d="M8 12V6M8 6l4-3M16 12V8"/><circle cx="16" cy="15.5" r="1"/>'),
+  tx:     I('<rect x="3" y="9" width="18" height="9" rx="2"/><circle cx="8" cy="13.5" r="1.8"/><circle cx="16" cy="13.5" r="1.8"/><path d="M6 9V4M18 9V6"/>'),
+  ant:    I('<path d="M12 21V9M12 9l-5-6M12 9l5-6M12 9l-2.5-6M12 9l2.5-6"/><circle cx="12" cy="9" r="1.5"/>'),
+  cam:    I('<rect x="3" y="7" width="18" height="12" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 7l1.5-2.5h5L16 7"/>'),
+  optic:  I('<circle cx="5" cy="12" r="2.5"/><circle cx="19" cy="12" r="2.5"/><path d="M7.5 12c3-4 6-4 9 0M7.5 12c3 4 6 4 9 0"/>'),
+  fiber:  I('<path d="M4 12a8 8 0 1 1 8 8"/><path d="M7 12a5 5 0 1 1 5 5"/><circle cx="12" cy="12" r="1.5"/>'),
+  carbon: I('<path d="M3 15l7-4 11 4-7 4z"/><path d="M3 11l7-4 11 4M3 7l7-4 11 4"/>'),
+  props:  I('<circle cx="12" cy="12" r="1.8"/><path d="M12 10.2C11 6 12.5 2.5 14 3c1.6.6 1 5.5-2 7.2M10.4 12.9c-4.2.7-7.2-1.4-6.8-2.9.4-1.6 5.3-2 7.5.6M13.6 13.2c3.3 2.8 3.4 6.5 1.9 7-1.6.5-4-3.8-3.4-7.2"/>'),
+  frames: I('<rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 9L3.5 3.5M15 9l5.5-5.5M9 15l-5.5 5.5M15 15l5.5 5.5"/><circle cx="3.5" cy="3.5" r="1.5"/><circle cx="20.5" cy="3.5" r="1.5"/><circle cx="3.5" cy="20.5" r="1.5"/><circle cx="20.5" cy="20.5" r="1.5"/>'),
+  ice:    I('<rect x="6" y="9" width="12" height="11" rx="1.5"/><path d="M9 9V5h6v4M12 5V2M6 14H3M21 14h-3"/>'),
+  jet:    I('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2"/><path d="M12 10V4.5M13.8 11l4.7-2.8M13.8 13l4.7 2.8M12 14v5.5M10.2 13l-4.7 2.8M10.2 11L5.5 8.2"/>'),
+  other:  I('<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12L4 7.5M12 12v9"/>'),
+};
+const iconOf = (it) => (it.id === 901 ? ICONS.coil : it.own ? ICONS.prop : ICONS[it.cat] || ICONS.other);
+
+/* ---------- ключові параметри: які підписи головні для категорії ---------- */
 const KEY = {
-  own:      [/лінійка|діаметр/i, /еталон|крок/i, /загасання|кут атаки/i],
+  own:      [/стандартні|діаметр$/i, /еталон|крок/i, /загасання|кут атаки/i],
   motors:   [/^kv/i, /струм/i, /^маса/i],
   esc:      [/струм/i, /акумулятор|напруга|живлення/i, /прошивка|конфігурація/i],
   fc:       [/мікроконтролер/i, /напруга/i, /uart/i],
@@ -68,6 +97,9 @@ function keyParams(it) {
   return out.length ? out : sp.specs.slice(0, 3);
 }
 const short = (v, n = 34) => (v.length > n ? v.slice(0, n - 1).replace(/[\s·,;:]+\S*$/, '') + '…' : v);
+/* стисле значення для картки і плиток фактів: перший фрагмент до « · », без дужок — «900 KV», «20 і 30 км» */
+const brief = (v, n = 28) => short(v.split(' · ')[0].replace(/\s*\([^)]*\)/g, '').trim(), n);
+const DOC = { yes: 'Документація виробника', analog: 'Аналог за запитом' };
 
 /* ---------- фільтри: бренд, напруга S, діапазон ---------- */
 const S_RE = /(\d{1,2})S\b/g;
@@ -170,23 +202,23 @@ function summary(cat, items) {
   return parts.join(' · ');
 }
 
-/* ---------- картка ---------- */
+/* ---------- картка: іконка, назва, один ключовий параметр ---------- */
 function itemCard(it) {
-  const kv = keyParams(it).map((s) => `<i>${esc(s.k)}</i> ${esc(short(s.v))}`).join(' · ');
-  const own = it.own ? '<span class="own-badge">PANCORE</span>' : esc(catName[it.cat]) + (it.brand ? ' · ' + esc(it.brand) : '');
+  const k = keyParams(it)[0];
+  const meta = [it.own ? 'PANCORE · власне виробництво' : (it.brand || catName[it.cat]), k ? `<b>${esc(brief(k.v))}</b>` : ''].filter(Boolean).join(' · ');
   return `
     <article class="item ${it.own ? 'item--own' : ''} ${state.compare.has(it.id) ? 'is-cmp' : ''}" data-id="${it.id}">
       <button class="item__head" type="button" data-open="${it.id}" aria-haspopup="dialog">
-        <span>
-          <span class="item__top"><span>${own}</span><span>${pad(it.id)}</span></span>
+        <span class="item__ico" aria-hidden="true">${iconOf(it)}</span>
+        <span class="item__txt">
           <span class="item__name">${esc(it.name)}</span>
-          ${kv ? `<span class="item__kv">${kv}</span>` : ''}
+          <span class="item__meta">${meta}</span>
         </span>
         <span class="item__chev" aria-hidden="true">${CHEV}</span>
       </button>
       <div class="item__foot">
+        <span class="item__id">${pad(it.id)}</span>
         <button class="item__cmp ${state.compare.has(it.id) ? 'is-on' : ''}" type="button" data-cmp="${it.id}">Порівняти</button>
-        <button class="item__req" type="button" data-req="${it.id}">Запит →</button>
       </div>
     </article>`;
 }
@@ -242,8 +274,6 @@ host.addEventListener('click', (e) => {
   if (cat) { setCat(cat.dataset.cat); return; }
   const rq = e.target.closest('[data-req-q]');
   if (rq) { prefillRequest(search.value.trim()); return; }
-  const req = e.target.closest('[data-req]');
-  if (req) { requestItem(Number(req.dataset.req)); return; }
   const cmp = e.target.closest('[data-cmp]');
   if (cmp) { toggleCompare(Number(cmp.dataset.cmp)); return; }
   const open = e.target.closest('[data-open]');
@@ -255,28 +285,48 @@ function requestItem(id) {
   if (it) prefillRequest(`${it.name} (${catName[it.cat]}, ${pad(it.id)})`);
 }
 
-/* ---------- шухляда специфікації ---------- */
-function specTable(sp) {
-  return sp && sp.specs.length ? sp.specs.map((s) => `<dl class="spec"><dt>${esc(s.k)}</dt><dd>${esc(s.v)}</dd></dl>`).join('') : '<p class="item__empty">Параметри уточнюємо за запитом.</p>';
+/* ---------- вікно позиції ---------- */
+function specRows(sp, keys) {
+  if (!sp || !sp.specs.length) return '<p class="item__empty">Параметри уточнюємо за запитом.</p>';
+  return `<div class="specs-tbl">${sp.specs.map((s) => `<dl class="spec ${keys.includes(s) ? 'is-key' : ''}"><dt>${esc(s.k)}</dt><dd>${esc(s.v)}</dd></dl>`).join('')}</div>`;
+}
+/* ескіз для власних виробів, велика іконка категорії для решти */
+function heroArt(it) {
+  if (it.id === 901) return `<div class="drawer__sk">${coilSketch()}</div>`;
+  if (it.id === 902 || it.id === 903) return `<div class="drawer__sk drawer__sk--prop">${propSketch(it.id === 902 ? 10 : 15)}</div>`;
+  return `<div class="drawer__glyph">${iconOf(it)}</div>`;
 }
 function openItem(id) {
   const it = byId[id]; if (!it) return;
   const sp = SPEC[id];
+  const keys = keyParams(it);
+  const list = filtered();
+  const pos = list.findIndex((x) => x.id === id);
+  const prev = pos > 0 ? list[pos - 1] : null, next = pos >= 0 && pos < list.length - 1 ? list[pos + 1] : null;
   state.openId = id;
   drawer.classList.remove('drawer--cmp');
   drawer.innerHTML = `
     <div class="drawer__back" data-close></div>
     <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="dr-title">
-      <div class="drawer__head">
-        <div>
-          <div class="item__top"><span>${it.own ? '<span class="own-badge">PANCORE</span>' : esc(catName[it.cat]) + (it.brand ? ' · ' + esc(it.brand) : '')}</span><span>${pad(id)}</span></div>
-          <h2 id="dr-title">${esc(it.name)}</h2>
+      <div class="drawer__hero ${it.own ? 'drawer__hero--own' : ''}">
+        <div class="drawer__bar">
+          <div class="drawer__nav">
+            <button type="button" data-go="${prev ? prev.id : ''}" ${prev ? '' : 'disabled'} aria-label="Попередня позиція">${CHEV_L}</button>
+            <span>${pos + 1} / ${list.length}</span>
+            <button type="button" data-go="${next ? next.id : ''}" ${next ? '' : 'disabled'} aria-label="Наступна позиція">${CHEV}</button>
+          </div>
+          <button class="drawer__x" type="button" data-close aria-label="Закрити">${X}</button>
         </div>
-        <button class="drawer__x" type="button" data-close aria-label="Закрити">${X}</button>
+        ${heroArt(it)}
+        <div class="drawer__meta">${it.own ? '<span class="own-badge">PANCORE</span>' : `<span>${esc(catName[it.cat])}</span>`}${it.brand && !it.own ? `<span>${esc(it.brand)}</span>` : ''}<span class="mono">${pad(id)}</span></div>
+        <h2 id="dr-title">${esc(it.name)}</h2>
+        <div class="drawer__chips">${DOC[it.doc] ? `<span class="chip chip--doc">${DOC[it.doc]}</span>` : ''}${it.own ? '<span class="chip">Made in EU</span>' : ''}</div>
       </div>
       <div class="drawer__body">
+        ${keys.length ? `<div class="facts">${keys.slice(0, 3).map((s) => `<div class="fact"><b>${esc(brief(s.v, 34))}</b><span>${esc(s.k)}</span></div>`).join('')}</div>` : ''}
         ${sp && sp.desc ? `<p class="item__desc">${esc(sp.desc)}</p>` : ''}
-        ${specTable(sp)}
+        <p class="drawer__h">Характеристики</p>
+        ${specRows(sp, keys)}
         ${sp && sp.note ? `<p class="item__note">${esc(sp.note)}</p>` : ''}
         <p class="item__src">${sp && sp.from === 'doc' && sp.src ? 'За технічною документацією: ' + esc(sp.src) : 'Повна специфікація та документація — за запитом'}</p>
       </div>
@@ -291,6 +341,7 @@ function openItem(id) {
   drawer.hidden = false;
   document.body.style.overflow = 'hidden';
   history.replaceState(null, '', `${location.pathname}${location.search}#item-${String(id).padStart(3, '0')}`);
+  drawer.querySelector('.drawer__body').scrollTop = 0;
   drawer.querySelector('.drawer__x').focus();
 }
 function closeDrawer() {
@@ -301,6 +352,8 @@ function closeDrawer() {
 }
 drawer.addEventListener('click', async (e) => {
   if (e.target.closest('[data-close]')) { closeDrawer(); return; }
+  const go = e.target.closest('[data-go]');
+  if (go) { if (go.dataset.go) openItem(Number(go.dataset.go)); return; }
   if (e.target.closest('[data-print]')) {
     // PDF = друк у файл: у @media print видно лише панель специфікації (pages.css, body.is-printing)
     document.body.classList.add('is-printing');
@@ -319,7 +372,14 @@ drawer.addEventListener('click', async (e) => {
     catch { drawer.querySelector('#dr-ok').textContent = 'Не вдалося скопіювати'; }
   }
 });
-addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { closeDrawer(); return; }
+  if (drawer.hidden || state.openId == null || /input|textarea/i.test(document.activeElement?.tagName || '')) return;
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    const b = drawer.querySelector(`[data-go]:${e.key === 'ArrowLeft' ? 'first' : 'last'}-of-type`);
+    if (b && b.dataset.go) openItem(Number(b.dataset.go));
+  }
+});
 
 /* ---------- порівняння ---------- */
 function toggleCompare(id) {
@@ -352,11 +412,15 @@ function openCompare() {
     const differ = new Set(vals).size > 1;
     return `<tr><th>${esc(k)}</th>${vals.map((v) => `<td class="${differ ? 'diff' : ''}">${v}</td>`).join('')}</tr>`;
   }).join('');
+  state.openId = null;
   drawer.classList.add('drawer--cmp');
   drawer.innerHTML = `
     <div class="drawer__back" data-close></div>
     <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Порівняння">
-      <div class="drawer__head"><div><div class="item__top"><span>Порівняння</span><span>${items.length} поз.</span></div><h2>Параметри поруч</h2></div><button class="drawer__x" type="button" data-close aria-label="Закрити">${X}</button></div>
+      <div class="drawer__hero drawer__hero--cmp">
+        <div class="drawer__bar"><span class="drawer__meta"><span>Порівняння</span><span class="mono">${items.length} поз.</span></span><button class="drawer__x" type="button" data-close aria-label="Закрити">${X}</button></div>
+        <h2>Параметри поруч</h2>
+      </div>
       <div class="drawer__body"><div class="cmp-wrap"><table class="cmp-table">
         <thead><tr><th></th>${items.map((it) => `<th>${esc(it.name)}<br><span class="muted mono" style="font-size:10px">${pad(it.id)}</span></th>`).join('')}</tr></thead>
         <tbody>${rows}</tbody></table></div>
