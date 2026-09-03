@@ -619,6 +619,7 @@ body.menu-open .mnav { display: flex; }
   .grid--3 { grid-template-columns: 1fr 1fr; }
   .gallery, .gallery--4 { grid-template-columns: repeat(2, 1fr); }
   .cta { grid-template-columns: 1fr; }
+    .form__foot .btn { width: 100%; }
 }
 @media (max-width: 600px) {
   body { font-size: 16px; }
