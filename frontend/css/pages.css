@@ -56,21 +56,46 @@
 .hud span { padding: 5px 9px; border-radius: 6px; background: rgba(7, 8, 11, 0.78); backdrop-filter: blur(6px); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); white-space: nowrap; }
 .hud--left { flex-direction: row-reverse; }
 
-/* паспорт: повзунок довжини */
-.passport { padding: 22px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); display: grid; gap: 16px; }
-.passport__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.passport__km { font-family: var(--f-display); font-size: clamp(30px, 3.4vw, 42px); font-weight: 500; line-height: 1; }
-.passport__km small { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; color: var(--text-3); margin-left: 8px; }
-.passport__ref { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-2); }
-.passport input[type="range"] { width: 100%; accent-color: var(--accent); height: 28px; cursor: pointer; }
-.passport__ticks { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 10.5px; color: var(--text-3); letter-spacing: 0.08em; padding: 0 2px; }
-.passport__ticks b { color: var(--text-2); font-weight: 500; }
-.readouts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.ro { padding: 12px 12px 10px; border: 1px solid var(--line); border-radius: var(--r-s); background: rgba(255, 255, 255, 0.025); }
-.ro b { display: block; font-family: var(--f-display); font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; }
-.ro b small { font-size: 11px; color: var(--text-3); margin-left: 3px; font-family: var(--f-mono); }
-.ro span { display: block; margin-top: 4px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
+/* паспорт: повзунок довжини з силуетом звою в масштабі */
+.passport { position: relative; padding: 22px; border: 1px solid var(--line); border-radius: var(--r); background: linear-gradient(160deg, rgba(255, 61, 79, 0.07), var(--panel) 45%); display: grid; gap: 18px; overflow: hidden; }
+.passport::before { content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 61, 79, 0.16), transparent); pointer-events: none; }
+.passport__top { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.passport__km { font-family: var(--f-display); font-size: clamp(38px, 4vw, 54px); font-weight: 600; line-height: 0.95; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.passport__km small { font-family: var(--f-mono); font-size: 12px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); margin-left: 8px; }
+.passport__tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.ptag { padding: 5px 10px; border-radius: var(--pill); border: 1px solid var(--line-2); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-2); }
+.ptag[hidden] { display: none; }
+.ptag--std { border-color: rgba(111, 227, 160, 0.4); color: var(--ok); }
+.ptag--ref { border-color: rgba(255, 61, 79, 0.5); color: var(--accent-2); }
+/* рейка: невидимий нативний range зверху (перетягування, клавіатура), візуальна доріжка під ним */
+.rail { position: relative; padding: 12px 8px 30px; }
+.rail__track { position: relative; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.12); }
+.rail__fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); box-shadow: 0 0 12px var(--accent-glow); transition: width 0.45s var(--ease); }
+.rail__thumb { position: absolute; top: 50%; left: 60%; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px rgba(255, 61, 79, 0.22), 0 0 22px var(--accent-glow); transform: translate(-50%, -50%); transition: left 0.45s var(--ease), box-shadow 0.2s; }
+.rail:hover .rail__thumb, .rail input:focus-visible ~ .rail__track .rail__thumb { box-shadow: 0 0 0 7px rgba(255, 61, 79, 0.28), 0 0 26px var(--accent-glow); }
+.rail__stops { position: absolute; left: 8px; right: 8px; top: 12px; height: 4px; }
+.rail__stops span { position: absolute; left: var(--p); top: 50%; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 12px; }
+.rail__stops i { width: 8px; height: 8px; border-radius: 50%; background: var(--bg); border: 1.5px solid rgba(255, 255, 255, 0.35); transition: border-color 0.3s, opacity 0.3s; }
+.rail__stops .is-past i { border-color: var(--accent); background: var(--accent); }
+.rail__stops .is-on i { opacity: 0; }
+.rail__stops b { font-family: var(--f-mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-3); transition: color 0.3s; }
+.rail__stops .is-on b { color: #fff; }
+.rail input[type="range"] { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 40px; margin: 0; opacity: 0; cursor: pointer; z-index: 2; -webkit-appearance: none; appearance: none; }
+.passport__grid { display: grid; grid-template-columns: 118px minmax(0, 1fr); gap: 16px; align-items: center; }
+.pcoil { width: 100%; height: auto; display: block; overflow: visible; }
+.pcoil__base { stroke: rgba(255, 255, 255, 0.28); stroke-width: 1; }
+.pcoil__axis { stroke: rgba(255, 61, 79, 0.5); stroke-width: 0.8; stroke-dasharray: 3 3; }
+.pcoil__body { fill: url(#pc-layers); stroke: #eef0f4; stroke-width: 1.4; transition: x 0.45s var(--ease), y 0.45s var(--ease), width 0.45s var(--ease), height 0.45s var(--ease); }
+.pcoil__core { fill: var(--bg); stroke: #aab3bb; stroke-width: 1; transition: x 0.45s var(--ease), y 0.45s var(--ease), width 0.45s var(--ease), height 0.45s var(--ease); }
+.pcoil__t { fill: var(--text-2); font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.06em; transition: x 0.45s var(--ease), y 0.45s var(--ease); }
+.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; }
+.ro { padding: 11px 11px 9px; border: 1px solid var(--line); border-radius: var(--r-s); background: rgba(255, 255, 255, 0.025); transition: opacity 0.3s; }
+.ro.is-na { opacity: 0.45; }
+.ro b { display: block; font-family: var(--f-display); font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.ro b small { font-size: 10.5px; color: var(--text-3); margin-left: 3px; font-family: var(--f-mono); }
+.ro span { display: block; margin-top: 4px; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); }
 .passport__fn { font-size: 12.5px; color: var(--text-3); line-height: 1.5; }
+@media (max-width: 600px) { .passport { padding: 18px; } .passport__grid { grid-template-columns: 96px minmax(0, 1fr); } .readouts { grid-template-columns: 1fr 1fr; } }
 
 /* переваги */
 .adv { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }

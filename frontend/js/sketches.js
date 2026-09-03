@@ -14,10 +14,10 @@ const ARROW = `<marker id="sk-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidt
 const wrap = (label, body, vb = '0 0 230 205') =>
   `<svg class="sketch" viewBox="${vb}" role="img" aria-label="${label}"><defs>${ARROW}</defs>${body}</svg>`;
 
-/** Безшпульний звій — переріз А–А з шарами намотки та розмірами еталона 25 км. */
+/** Безшпульний звій — переріз А–А з шарами намотки та розмірами еталона SFC-30 (30 км). */
 export function coilSketch() {
-  // масштаб ~1,2 px/мм: Ø103,8 → 125, Ø53 → 64, H 215,56 → 150
-  const x0 = 52, x1 = 177, ix0 = 83, ix1 = 146, y0 = 28, y1 = 178;
+  // масштаб ~1,2 px/мм: Ø121 → 145, Ø53 → 64, H 213,8 → 150
+  const x0 = 42, x1 = 187, ix0 = 83, ix1 = 146, y0 = 28, y1 = 178;
   let hatch = '';
   for (let x = x0 + 5; x < ix0; x += 5) hatch += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y1}"/>`;
   for (let x = ix1 + 5; x < x1; x += 5) hatch += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y1}"/>`;
@@ -28,14 +28,14 @@ export function coilSketch() {
   <g class="hair">${hatch}</g>
   <path class="ln" d="M${ix0},${y0 - 6} L${ix0 - 14},${y0 - 20} M${ix1},${y0 - 6} L${ix1 + 14},${y0 - 20}"/>
   <line class="dim" x1="${x0}" y1="18" x2="${x1}" y2="18" marker-end="url(#sk-ar)"/>
-  <text x="114" y="14" text-anchor="middle">Ø103.8</text>
+  <text x="114" y="14" text-anchor="middle">Ø121</text>
   <line class="dim" x1="${ix0}" y1="${y1 + 10}" x2="${ix1}" y2="${y1 + 10}" marker-end="url(#sk-ar)"/>
   <text x="114" y="${y1 + 22}" text-anchor="middle">Ø53</text>
   <line class="dim" x1="${x1 + 12}" y1="${y0}" x2="${x1 + 12}" y2="${y1}" marker-end="url(#sk-ar)"/>
-  <text x="${x1 + 24}" y="106" transform="rotate(-90 ${x1 + 24} 106)" text-anchor="middle">H 215.56</text>
+  <text x="${x1 + 24}" y="106" transform="rotate(-90 ${x1 + 24} 106)" text-anchor="middle">H 213.8</text>
   <line class="dim" x1="${x0 - 10}" y1="${y0}" x2="${x0 - 10}" y2="${ix0 - x0 + y0}"/>
-  <text x="${x0 - 14}" y="${y0 + 20}" transform="rotate(-90 ${x0 - 14} ${y0 + 20})" text-anchor="middle">25.4</text>
-  <text x="8" y="${y1 + 22}">SR-FOC-25 · 1751 ${tx('г', 'g')}</text>
+  <text x="${x0 - 14}" y="${y0 + 20}" transform="rotate(-90 ${x0 - 14} ${y0 + 20})" text-anchor="middle">34</text>
+  <text x="8" y="${y1 + 22}">SFC-30 · 2245 ${tx('г', 'g')}</text>
   <text x="${x1 + 4}" y="${y1 + 22}">${tx('сердечник', 'core')}</text>`);
 }
 
