@@ -13,8 +13,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260903a">
-<link rel="stylesheet" href="css/pages.css?v=20260903a">
+<link rel="stylesheet" href="css/style.css?v=20260903b">
+<link rel="stylesheet" href="css/pages.css?v=20260903b">
+<script>
+  /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
+     Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
+     модулів вміст показується без анімації замість порожньої сторінки.
+     Скрипт синхронний і в <head>, щоб клас стояв до першого рендера. */
+  document.documentElement.classList.add('js-anim');
+  window.__riseGuard = setTimeout(function () {
+    document.documentElement.classList.remove('js-anim');
+  }, 2000);
+</script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
 <body data-page="catalog">
@@ -139,6 +149,6 @@
 <div class="cmp-bar" id="cmp-bar" hidden></div>
 <div class="drawer" id="drawer" hidden></div>
 
-<script type="module" src="js/catalog.js?v=20260903a"></script>
+<script type="module" src="js/catalog.js?v=20260903b"></script>
 </body>
 </html>

@@ -565,8 +565,12 @@ body.menu-open .mnav { display: flex; }
 .foot__bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.1em; color: var(--text-3); }
 
 /* ---------- анімація появи ---------- */
-.rise { opacity: 0; transform: translateY(22px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
-.rise.is-in { opacity: 1; transform: none; }
+/* Ховаємо блоки лише поки .js-anim висить на <html>: клас ставить інлайн-скрипт
+   у <head>, і він же знімає його, якщо site.js не запустився. Без цього будь-яка
+   аварія JS (не згенеровано env.js, недоступний CDN) лишала б сторінку порожньою. */
+.rise { transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+.js-anim .rise { opacity: 0; transform: translateY(22px); }
+.js-anim .rise.is-in { opacity: 1; transform: none; }
 .rise[data-delay="1"] { transition-delay: 0.08s; }
 .rise[data-delay="2"] { transition-delay: 0.16s; }
 .rise[data-delay="3"] { transition-delay: 0.24s; }
@@ -635,7 +639,7 @@ body.menu-open .mnav { display: flex; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .rise { opacity: 1; transform: none; transition: none; }
+  .rise, .js-anim .rise { opacity: 1; transform: none; transition: none; }
   .hero__scroll::after, .status::before { animation: none; }
   .card, .btn, .item, .mosaic img { transition: none; }
 }
