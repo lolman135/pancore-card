@@ -318,15 +318,18 @@ body.menu-open .mnav { display: flex; }
 .wm-wrap {
   position: relative; padding: 18px 18px 16px; overflow: hidden;
   border: 1px solid var(--line); border-radius: var(--r);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 60%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 60%), rgba(7, 8, 11, 0.55);
+  backdrop-filter: blur(6px);
 }
 .wm-host { position: relative; width: 100%; min-height: 120px; }
 .wm { width: 100%; height: auto; display: block; overflow: visible; }
 .wm__dots { fill: none; stroke: rgba(214, 219, 227, 0.2); stroke-width: 2.6; stroke-linecap: round; }
-.wm--crop .wm__dots { stroke-width: 1.4; }
+.wm--crop .wm__dots { stroke-width: 2.1; }
+.wm--narrow .wm__dots { stroke-width: 1.4; }
 /* країни-учасниці яскравіше за решту світу */
 .wm__hi path { fill: none; stroke-width: 2.8; stroke-linecap: round; }
-.wm--crop .wm__hi path { stroke-width: 1.8; }
+.wm--crop .wm__hi path { stroke-width: 2.3; }
+.wm--narrow .wm__hi path { stroke-width: 1.8; }
 .wm__hi--pl { stroke: var(--accent); }
 .wm__hi--ua, .wm__hi--tr { stroke: rgba(255, 255, 255, 0.85); }
 .wm__hi--cn { stroke: rgba(214, 219, 227, 0.62); }
@@ -648,3 +651,10 @@ body.menu-open .mnav { display: flex; }
 .progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 60; background: rgba(255, 255, 255, 0.06); pointer-events: none; }
 .progress i { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); box-shadow: 0 0 10px var(--accent-glow); }
 @media (max-width: 880px) { .progress { display: none; } }
+
+/* ---------- плаваюча кнопка «Зв’язатися» на десктопі (після прокрутки); на телефоні є .fab-bar ---------- */
+.fab-desk { position: fixed; right: 22px; bottom: 22px; z-index: 45; display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px 12px 14px; border-radius: var(--pill); background: var(--accent); color: #fff; font-size: 12.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 14px 40px var(--accent-glow); opacity: 0; transform: translateY(16px); pointer-events: none; transition: opacity 0.3s, transform 0.35s var(--ease), background 0.2s; }
+.fab-desk svg { width: 18px; height: 18px; }
+.fab-desk.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.fab-desk:hover { background: #ff5566; }
+@media (max-width: 880px) { .fab-desk { display: none; } }
