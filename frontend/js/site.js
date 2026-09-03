@@ -222,7 +222,9 @@ if (chipsHost) {
 /* ---------- форма запиту → POST {API_BASE}/api/v1/contact ----------
    Контракт бекенда (backend/app/dto/contact.py):
      запит   { contact: string ≤254 (email | телефон | @telegram), comment: string ≤4000 }
-     200     { status: "ok", contact_type: "email" | "phone" | "telegram" }
+     200     { status: "ok", contact_type: "email" | "phone" | "telegram", mock_status: bool }
+             mock_status приходить із PROD_FLAG бекенда: false = мок-режим,
+             заявку нікуди не надіслано, тож користувачу кажемо про це прямо
      422     { detail: "текст" } — контакт не розпізнано; або список pydantic
    Ім'я, компанія, позиція та сторінка пакуються в comment.
    Адреса бекенда, за спаданням пріоритету:
@@ -242,6 +244,7 @@ const MSG = EN ? {
   sending: 'Sending…',
   ok: 'Your enquiry has been sent. We reply within one business day.',
   okTyped: (label) => `Your enquiry via ${label} has been sent. We reply within one business day.`,
+  paused: 'Submissions through this form are temporarily suspended. Please e-mail us — the address is next to the form.',
   invalid: 'Please check the form fields.',
   contact: 'Enter an e-mail, phone number or @telegram.',
   limit: 'Too many requests from your address. Try again later or write to us by e-mail.',
@@ -250,6 +253,7 @@ const MSG = EN ? {
   sending: 'Надсилаємо…',
   ok: 'Заявку надіслано. Відповімо протягом робочого дня.',
   okTyped: (label) => `Ваш запит на ${label} надіслано. Відповімо протягом робочого дня.`,
+  paused: 'Прийом запитів через форму тимчасово призупинено. Напишіть нам на пошту — адреса поруч із формою.',
   invalid: 'Перевірте поля форми.',
   contact: 'Вкажіть email, телефон або @telegram.',
   limit: 'Забагато запитів із вашої адреси. Спробуйте пізніше або напишіть на пошту.',
@@ -299,9 +303,16 @@ export function initLeadForm(form) {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
-        // 200 { status: "ok", contact_type: "email" | "phone" | "telegram" };
+        // 200 { status: "ok", contact_type: "email" | "phone" | "telegram", mock_status: bool };
         // якщо тіло не прочиталось або тип невідомий — загальне повідомлення
         const j = await res.json().catch(() => null);
+        /* mock_status: false — бекенд у мок-режимі (PROD_FLAG вимкнено): заявку лише
+           залоговано, нікуди не надіслано. Не вдаємо успіх і форму не чистимо, щоб
+           набраний текст лишився. Поля немає (старіший бекенд) — поводимось як раніше. */
+        if (j && j.mock_status === false) {
+          say(MSG.paused, 'err');
+          return;
+        }
         const label = CONTACT_LABEL[j && j.contact_type];
         say(label ? MSG.okTyped(label) : MSG.ok, 'ok');
         form.reset();
