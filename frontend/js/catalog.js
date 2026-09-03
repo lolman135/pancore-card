@@ -7,7 +7,7 @@
    переходом попередня/наступна, адресою #item-NNN · порівняння до трьох
    ============================================================ */
 
-import { prefillRequest, observeRise, reducedMotion } from './site.js';
+import { prefillRequest, observeRise, reducedMotion, headHeight } from './site.js';
 import { CATEGORIES, ITEMS } from './data/catalog.js';
 import { SPECS } from './data/specs.js';
 import { OWN_CATEGORY, OWN_ITEMS, OWN_SPECS } from './data/own.js';
@@ -166,10 +166,19 @@ function setCat(id) {
   if (id !== 'all') openCats.add(id);
   history.replaceState(null, '', location.pathname + location.search + (id === 'all' ? '' : `#${id}`));
   renderNav(); renderFilters(); render();
+  // Тільки горизонтально: scrollIntoView зачепив би й вертикаль — через scroll-padding-top
+  // чіп опинявся б у зоні відступу і сторінка смикалась би вниз.
   const on = chipsHost.querySelector('.is-on');
-  on && on.scrollIntoView({ inline: 'center', block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
+  if (on) {
+    const strip = on.parentElement;
+    strip.scrollTo({ left: on.offsetLeft - (strip.clientWidth - on.offsetWidth) / 2,
+                     behavior: reducedMotion ? 'auto' : 'smooth' });
+  }
+  // Підводимо саму панель під шапку — тому шапка + повітря, без висоти самої панелі.
   const top = document.querySelector('.toolbar--cat');
-  if (top && scrollY > top.offsetTop) scrollTo({ top: top.offsetTop - 70, behavior: reducedMotion ? 'auto' : 'smooth' });
+  if (top && scrollY > top.offsetTop) {
+    scrollTo({ top: top.offsetTop - headHeight() - 8, behavior: reducedMotion ? 'auto' : 'smooth' });
+  }
 }
 [navHost, chipsHost].forEach((h) => h.addEventListener('click', (e) => {
   const b = e.target.closest('[data-cat]'); if (b) setCat(b.dataset.cat);

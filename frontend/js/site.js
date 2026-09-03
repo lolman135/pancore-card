@@ -84,6 +84,26 @@ if (burger) {
   });
 }
 
+/* ---------- відступ для якорів ----------
+   Висота фіксованої шапки плюс липкої панелі (каталог), плюс 8px повітря.
+   Панель каталогу міняє висоту, коли чіпи переносяться на інший рядок,
+   тому стежимо за нею через ResizeObserver, а не задаємо число. */
+export function headHeight() {
+  const head = document.querySelector('.head');
+  return head ? Math.round(head.getBoundingClientRect().height) : 0;
+}
+export function scrollPad() {
+  let pad = headHeight();
+  const bar = document.querySelector('.toolbar');
+  if (bar && getComputedStyle(bar).position === 'sticky') pad += Math.round(bar.getBoundingClientRect().height);
+  return pad + 8;
+}
+const applyScrollPad = () => document.documentElement.style.setProperty('--scroll-pad', `${scrollPad()}px`);
+applyScrollPad();
+addEventListener('resize', applyScrollPad, { passive: true });
+const stickyBar = document.querySelector('.toolbar');
+if (stickyBar && 'ResizeObserver' in window) new ResizeObserver(applyScrollPad).observe(stickyBar);
+
 /* ---------- поява блоків ---------- */
 export function observeRise(root = document) {
   const els = root.querySelectorAll('.rise:not(.is-in)');
