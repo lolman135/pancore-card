@@ -32,6 +32,20 @@ if (head) {
   onScroll();
 }
 
+/* ---------- смуга прокрутки вгорі (є лише на сторінках із розміткою .progress) ---------- */
+const progress = document.querySelector('.progress i');
+if (progress) {
+  let pTick = false;
+  const upd = () => {
+    pTick = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
+  };
+  addEventListener('scroll', () => { if (!pTick) { pTick = true; requestAnimationFrame(upd); } }, { passive: true });
+  addEventListener('resize', upd);
+  upd();
+}
+
 /* ---------- активний пункт меню ---------- */
 const page = document.body.dataset.page || 'home';
 document.querySelectorAll('[data-nav]').forEach((a) => {
