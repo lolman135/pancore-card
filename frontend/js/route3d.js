@@ -18,7 +18,7 @@
 
 import * as THREE from 'three';
 
-const ACCENT = 0xff3d4f;
+export const ACCENT = 0xff3d4f;
 const EN = /^en/i.test(document.documentElement.lang || '');
 const t = (uk, en) => (EN ? en : uk);
 
@@ -88,12 +88,12 @@ function terrainMesh() {
 }
 
 /* ---------- допоміжне: лінії з масиву точок ---------- */
-function lines(points, color, opacity = 1, segments = false) {
+export function lines(points, color, opacity = 1, segments = false) {
   const g = new THREE.BufferGeometry().setFromPoints(points);
   const m = new THREE.LineBasicMaterial({ color, transparent: opacity < 1, opacity });
   return segments ? new THREE.LineSegments(g, m) : new THREE.Line(g, m);
 }
-const V = (x, y, z) => new THREE.Vector3(x, y, z);
+export const V = (x, y, z) => new THREE.Vector3(x, y, z);
 
 /* обрамлення плити: верхній край іде по рельєфу, торець вниз до -3 */
 function slabFrame() {
@@ -234,7 +234,7 @@ function station(x, z) {
 }
 
 /* дрон: корпус, промені, кільця, гвинти (обертаються) */
-function drone() {
+export function drone() {
   const g = new THREE.Group();
   const white = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.95 });
   const body = new THREE.BoxGeometry(1.1, 0.3, 1.1);
@@ -271,7 +271,7 @@ function routeCurve() {
 }
 
 /* світна точка (sprite) для пульсу сигналу */
-function glowSprite(color, size) {
+export function glowSprite(color, size) {
   const c = document.createElement('canvas'); c.width = c.height = 64;
   const ctx = c.getContext('2d');
   const gr = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);

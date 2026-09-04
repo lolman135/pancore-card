@@ -505,6 +505,7 @@
 @media (max-width: 640px) {
   .scene3d { height: 320px; }
   .scene3d__lbl { font-size: 9.5px; padding: 2px 5px; }
+  .scene3d__lbl--minor { display: none; }
   .scene3d__cap, .scene3d__ok { font-size: 10.5px; left: 12px; }
   .scene3d__cap { top: 10px; } .scene3d__ok { bottom: 10px; }
   .scene3d__hint { display: none; }

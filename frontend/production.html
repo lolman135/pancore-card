@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20260903c">
-<link rel="stylesheet" href="css/pages.css?v=20260904c">
+<link rel="stylesheet" href="css/pages.css?v=20260904e">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -192,8 +192,8 @@
           <article class="rise" data-delay="1"><span class="n">02</span><h4>Максимальна щільність укладання</h4><p>Пошарове позиціювання волокна дає +40 % об’ємної ефективності проти традиційних методів намотування.</p></article>
           <article class="rise" data-delay="2"><span class="n">03</span><h4>Контроль геометрії кожного шару</h4><p>Точне позиціювання виключає мікровигини та локальні втрати сигналу по всій довжині.</p></article>
           <article class="rise"><span class="n">04</span><h4>Механічна стабільність волокна</h4><p>Самонесуча геометрія захищає волокно від деформацій і тиску при транспортуванні та зберіганні.</p></article>
-          <article class="rise" data-delay="1"><span class="n">05</span><h4>Реверсивна намотка</h4><p>Контрольоване розгортання та зворотне намотування — повторне використання лінії після передислокації.</p></article>
-          <article class="rise" data-delay="2"><span class="n">06</span><h4>Багатоступеневий контроль</h4><p>Кожен звій після намотки: геометрія штангенциркулем, контроль маси, OTDR-рефлектометрія повної довжини.</p></article>
+          <article class="rise" data-delay="1"><span class="n">05</span><h4>Стабілізація руху</h4><p>Контрольована динаміка розмотування.</p></article>
+          <article class="rise" data-delay="2"><span class="n">06</span><h4>Багатоступеневий контроль</h4><p>Натяг, Геометрія, Вага, OTDR-сканування, довжина.</p></article>
         </div>
       </div>
     </section>
@@ -309,8 +309,8 @@
           </article>
         </div>
 
-        <div class="rule rise" style="margin:56px 0 20px">Схема підключення наземної станції</div>
-        <div class="sk sk--wide rise" data-sketch="hookup" aria-hidden="true" style="margin-bottom:14px"></div>
+        <div class="rule rise" style="margin:56px 0 20px">Як це працює в полі</div>
+        <div class="sk sk--wide sk--scene rise" id="link2d" aria-hidden="true" style="margin-bottom:14px"></div>
         <p class="callout rise" style="margin:0"><b>Порядок підключення:</b> зніміть заглушку з оптичної розетки → під’єднайте конектор звою, дотримуючись співвісності паза та виїмки, і затягніть контргайку до упору → АКБ 2S–6S у роз’єм XT60 → монітор або ПК → пульт RC. На позиції не витягуйте більше 2 м волокна без потреби, під час перевірки — не більше 10 см.</p>
 
         <div class="rule rise" style="margin:56px 0 20px">Застосування</div>
@@ -351,7 +351,7 @@
             <div class="stages">
               <div class="stage"><b>Перемотування</b><span>з транспортних барабанів на оправку з контролем натягу та лічильником довжини</span></div>
               <div class="stage"><b>Стабілізація</b><span>просочення клеєм, сушіння — звій тримає форму без шпулі</span></div>
-              <div class="stage"><b>Корпус</b><span>3D-друк PETG, монтаж трансивера, портів і патчкордів, маркування QR</span></div>
+              <div class="stage"><b>Корпус</b><span>Лиття пластикових деталей під тиском, 3D-друк, монтаж трансивера, портів і патчкордів, маркування QR</span></div>
               <div class="stage"><b>Контроль</b><span>OTDR повної довжини, зважування, геометрія — протокол на кожен звій</span></div>
             </div>
           </div>
@@ -604,6 +604,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
   <span>Зв’язатися</span>
 </a>
-<script type="module" src="js/production.js?v=20260904c"></script>
+<script type="module" src="js/production.js?v=20260904e"></script>
 </body>
 </html>
