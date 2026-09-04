@@ -336,7 +336,7 @@ body.menu-open .mnav { display: flex; }
 .wm__hi path { fill: none; stroke-width: 2.8; stroke-linecap: round; }
 .wm--crop .wm__hi path { stroke-width: 2.3; }
 .wm--narrow .wm__hi path { stroke-width: 1.8; }
-.wm__hi--pl { stroke: var(--accent); }
+.wm__hi--eu { stroke: var(--accent); }
 .wm__hi--ua, .wm__hi--tr { stroke: rgba(255, 255, 255, 0.85); }
 .wm__hi--cn { stroke: rgba(214, 219, 227, 0.62); }
 .wm__route { transition: opacity 0.35s; }
