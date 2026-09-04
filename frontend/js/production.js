@@ -25,7 +25,7 @@ mountSketches();
   let done = false;
   const boot = () => {
     if (done) return; done = true;
-    import('./route3d.js').then((m) => m.createRouteScene(host, { static: reducedMotion })).catch((e) => { console.warn('route3d:', e); fallback(); });
+    import('./route3d.js?v=20260904c').then((m) => m.createRouteScene(host, { static: reducedMotion })).catch((e) => { console.warn('route3d:', e); fallback(); });
   };
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((ents) => { if (ents.some((e) => e.isIntersecting) || !innerHeight) { io.disconnect(); boot(); } }, { rootMargin: '600px 0px' });

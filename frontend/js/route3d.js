@@ -163,35 +163,62 @@ function tree(x, z, s = 1) {
   return g;
 }
 
-/* опора ЛЕП: ґратчаста щогла з траверсою */
+/* опора ЛЕП: ґратчаста щогла (ноги, пояси, розкоси), дві траверси з ізоляторами, пік під грозотрос.
+   Локальна вісь x — уздовж траверс; rot повертає опору поперек лінії. */
 function pylon(x, z, h = 8.5, rot = 0) {
   const g = new THREE.Group();
   const y0 = height(x, z);
-  const b = 1.7, tp = 0.6, arm = 2.8;
+  const b = 1.5, tp = 0.5;
   const pts = [];
   const legs = [[-b, -b], [b, -b], [b, b], [-b, b]];
+  const at = (lx, lz, q) => [lx + (Math.sign(lx) * tp - lx) * q, h * q, lz + (Math.sign(lz) * tp - lz) * q];
+  const N = 5;
   legs.forEach(([lx, lz], i) => {
-    const sx = Math.sign(lx) * tp, sz = Math.sign(lz) * tp;
-    pts.push(V(lx, 0, lz), V(sx, h, sz));
     const [nx, nz] = legs[(i + 1) % 4];
-    for (let k = 1; k <= 3; k++) {
-      const q = k / 4; const yy = h * q;
-      const ax = lx + (Math.sign(lx) * tp - lx) * q, az = lz + (Math.sign(lz) * tp - lz) * q;
-      const bx = nx + (Math.sign(nx) * tp - nx) * q, bz = nz + (Math.sign(nz) * tp - nz) * q;
-      pts.push(V(ax, yy, az), V(bx, yy, bz));
+    pts.push(V(lx, 0, lz), V(Math.sign(lx) * tp, h, Math.sign(lz) * tp));
+    for (let k = 0; k <= N; k++) {
+      const q = k / N;
+      const A = at(lx, lz, q), B = at(nx, nz, q);
+      if (k > 0) pts.push(V(...A), V(...B));                      // пояс
+      if (k < N) {                                                  // розкос (зигзаг)
+        const A2 = at(lx, lz, (k + 1) / N), B2 = at(nx, nz, (k + 1) / N);
+        if (k % 2 === 0) pts.push(V(...A), V(...B2)); else pts.push(V(...B), V(...A2));
+      }
     }
   });
-  pts.push(V(-arm, h * 0.82, 0), V(arm, h * 0.82, 0), V(-arm * 0.7, h * 0.62, 0), V(arm * 0.7, h * 0.62, 0));
-  pts.push(V(0, h, 0), V(0, h + 0.8, 0));
-  g.add(lines(pts, 0xaab3bb, 0.9, true));
+  const arms = [[h * 0.86, 2.4], [h * 0.66, 3.2]];
+  const tips = [];
+  arms.forEach(([ay, aw]) => {
+    pts.push(V(-aw, ay, 0), V(aw, ay, 0));
+    pts.push(V(-aw, ay, 0), V(-aw * 0.45, ay - 0.9, 0), V(aw, ay, 0), V(aw * 0.45, ay - 0.9, 0)); // підкоси траверс
+    [-aw, aw].forEach((ax) => { pts.push(V(ax, ay, 0), V(ax, ay - 0.6, 0)); tips.push(V(ax, ay - 0.6, 0)); }); // ізолятори
+  });
+  pts.push(V(0, h, 0), V(0, h + 1.0, 0)); tips.push(V(0, h + 1.0, 0));                                 // пік під грозотрос
+  g.add(lines(pts, 0xaab3bb, 0.85, true));
   g.position.set(x, y0, z); g.rotation.y = rot;
-  g.userData.tips = [V(-arm, h * 0.82, 0), V(arm, h * 0.82, 0), V(-arm * 0.7, h * 0.62, 0), V(arm * 0.7, h * 0.62, 0)].map((p) => p.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), rot).add(g.position));
+  const ax = new THREE.Vector3(0, 1, 0);
+  g.userData.tips = tips.map((p) => p.clone().applyAxisAngle(ax, rot).add(g.position));
   return g;
 }
-function wire(a, b, sag = 1.1) {
+function wire(a, b, sag = 1.1, opacity = 0.62) {
   const pts = [];
   for (let i = 0; i <= 24; i++) { const k = i / 24; pts.push(V(a.x + (b.x - a.x) * k, a.y + (b.y - a.y) * k - sag * Math.sin(Math.PI * k), a.z + (b.z - a.z) * k)); }
-  return lines(pts, 0xd6dbe3, 0.7);
+  return lines(pts, 0xd6dbe3, opacity);
+}
+/* лінія електропередачі: опори вздовж плити праворуч від дороги, проводи йдуть за її межі */
+function powerLine() {
+  const g = new THREE.Group();
+  const P = [[16.5, -19, 8.6], [19.5, -1, 8.0], [22.5, 17, 8.6]];
+  const dir = Math.atan2(P[2][0] - P[0][0], P[2][2] - P[0][2]);
+  const towers = P.map(([x, z, h]) => pylon(x, z, h, dir));
+  towers.forEach((t) => g.add(t));
+  const span = (A, B) => A.forEach((p, i) => g.add(wire(p, B[i], i === 4 ? 0.6 : 1.0)));
+  span(towers[0].userData.tips, towers[1].userData.tips);
+  span(towers[1].userData.tips, towers[2].userData.tips);
+  // продовження за край плити: до умовних наступних опор
+  const ext = (tips, dz) => tips.forEach((p, i) => g.add(wire(p, V(p.x + Math.sin(dir) * dz, p.y, p.z + Math.cos(dir) * dz), i === 4 ? 0.45 : 0.75, 0.35)));
+  ext(towers[0].userData.tips, -9); ext(towers[2].userData.tips, 9);
+  return g;
 }
 
 /* наземна станція: коробка + антена */
@@ -281,12 +308,9 @@ export function createRouteScene(host, opts = {}) {
   scene.add(slabFrame());
   scene.add(road());
   [[-14, 4, 1.1], [-9, 6, 0.9], [-6, -1, 1.2], [-12, -6, 0.85], [-17, -2, 1.0], [-8, -7.5, 1.0], [-2, 4, 0.9], [-11, 1, 1.15], [-4, -6, 0.8],
-   [-1, -12, 0.9], [1, 13, 0.8], [23, -13, 1.0], [26, -8, 0.85], [20, -16, 0.9], [-24, 14, 0.8], [-20, 10, 1.0], [16, -5, 0.75]]
+   [-1, -12, 0.9], [1, 13, 0.8], [27, -13, 1.0], [27, -6, 0.85], [12, -16, 0.9], [-24, 14, 0.8], [-20, 10, 1.0], [13, -9, 0.75]]
     .forEach(([x, z, s]) => scene.add(tree(x, z, s)));
-  const p1 = pylon(20, 3, 7.6, -0.75), p2 = pylon(6, 18.5, 7, -0.75);
-  scene.add(p1, p2);
-  scene.add(wire(p1.userData.tips[0], p2.userData.tips[0]), wire(p1.userData.tips[1], p2.userData.tips[1]));
-  scene.add(wire(p1.userData.tips[2], p2.userData.tips[2], 0.9), wire(p1.userData.tips[3], p2.userData.tips[3], 0.9));
+  scene.add(powerLine());
 
   const curve = routeCurve();
   const SEGS = 260;
@@ -306,7 +330,7 @@ export function createRouteScene(host, opts = {}) {
     { key: 'st', text: t('наземна станція', 'ground station'), at: curve.getPointAt(0).clone().add(V(0, 1.6, 0)), dy: -8 },
     { key: 'trees', text: t('над деревами', 'over the trees'), at: curve.getPointAt(0.30).clone().add(V(0, 1.2, 0)), dy: -6, when: 0.28 },
     { key: 'road', text: t('над дорогою', 'over the road'), at: curve.getPointAt(0.60).clone().add(V(0, 1.2, 0)), dy: -6, when: 0.58 },
-    { key: 'wires', text: t('під проводами', 'under the wires'), at: curve.getPointAt(0.80).clone().add(V(0, -1.0, 0)), dy: 30, when: 0.78 },
+    { key: 'wires', text: t('під проводами', 'under the wires'), at: curve.getPointAt(0.84).clone().add(V(0, -1.0, 0)), dy: 30, when: 0.82 },
     { key: 'uav', text: t('БпЛА · волокно з борту', 'UAV · fibre paid out from the airframe'), at: null, dy: -16, when: 0.02 },
   ];
   LABELS.forEach((l) => { l.el = document.createElement('span'); l.el.className = 'scene3d__lbl'; l.el.textContent = l.text; l.el.style.opacity = '0'; labelsHost.appendChild(l.el); l.bw = l.el.offsetWidth; l.bh = l.el.offsetHeight; });
