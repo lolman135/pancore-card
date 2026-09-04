@@ -7,7 +7,7 @@
    переходом попередня/наступна, адресою #item-NNN · порівняння до трьох
    ============================================================ */
 
-import { prefillRequest, observeRise, reducedMotion, headHeight } from './site.js';
+import { prefillRequest, observeRise, reducedMotion, swapIn, headHeight } from './site.js';
 import { CATEGORIES, ITEMS } from './data/catalog.js';
 import { SPECS } from './data/specs.js';
 import { OWN_CATEGORY, OWN_ITEMS, OWN_SPECS } from './data/own.js';
@@ -165,7 +165,7 @@ function setCat(id) {
   state.cat = id; state.brand = ''; state.s = ''; state.band = '';
   if (id !== 'all') openCats.add(id);
   history.replaceState(null, '', location.pathname + location.search + (id === 'all' ? '' : `#${id}`));
-  renderNav(); renderFilters(); render();
+  renderNav(); renderFilters(); render(true);
   // Тільки горизонтально: scrollIntoView зачепив би й вертикаль — через scroll-padding-top
   // чіп опинявся б у зоні відступу і сторінка смикалась би вниз.
   const on = chipsHost.querySelector('.is-on');
@@ -198,7 +198,7 @@ function renderFilters() {
 filtersHost.addEventListener('click', (e) => {
   const b = e.target.closest('[data-f]'); if (!b) return;
   state[b.dataset.f] = state[b.dataset.f] === b.dataset.v ? '' : b.dataset.v;
-  renderFilters(); render();
+  renderFilters(); render(true);
 });
 
 /* ---------- пошук ---------- */
@@ -263,8 +263,9 @@ function itemCard(it) {
     </article>`;
 }
 
-/* ---------- рендер списку ---------- */
-function render() {
+/* ---------- рендер списку (animate — плавна поява після зміни категорії чи фільтра) ---------- */
+function render(animate = false) {
+  if (animate) swapIn(host);
   const list = filtered();
   countEl.textContent = `${list.length} із ${ALL.length}`;
   if (!list.length) {
@@ -343,6 +344,7 @@ function openItem(id) {
   const list = filtered();
   const pos = list.findIndex((x) => x.id === id);
   const prev = pos > 0 ? list[pos - 1] : null, next = pos >= 0 && pos < list.length - 1 ? list[pos + 1] : null;
+  const wasOpen = !drawer.hidden;   // перехід між позиціями: панель не виїжджає знову, а плавно змінює вміст
   state.openId = id;
   drawer.classList.remove('drawer--cmp');
   drawer.innerHTML = `
@@ -379,6 +381,7 @@ function openItem(id) {
       </div>
     </div>`;
   drawer.hidden = false;
+  if (wasOpen) swapIn(drawer.querySelector('.drawer__panel'));
   document.body.style.overflow = 'hidden';
   history.replaceState(null, '', `${location.pathname}${location.search}#item-${String(id).padStart(3, '0')}`);
   drawer.querySelector('.drawer__body').scrollTop = 0;

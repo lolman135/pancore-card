@@ -15,6 +15,15 @@
 .sk--wide .sketch { max-height: 160px; }
 /* креслення пропелера: планформа + ступиця/переріз — два SVG поруч, на телефоні один під одним */
 .sketch .dimL { fill: none; stroke: rgba(255, 61, 79, 0.75); stroke-width: 0.8; vector-effect: non-scaling-stroke; }
+/* схеми місцевості та підключення: маршрут волокна, зони ризику, вода, рослинність, підписи */
+.sketch .fiber { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px rgba(255, 61, 79, 0.55)); }
+.sketch .zone { fill: rgba(255, 61, 79, 0.14); stroke: rgba(255, 61, 79, 0.45); stroke-width: 0.75; vector-effect: non-scaling-stroke; }
+.sketch .water { fill: rgba(122, 170, 255, 0.12); stroke: rgba(122, 170, 255, 0.35); stroke-width: 0.75; vector-effect: non-scaling-stroke; }
+.sketch .green { fill: rgba(111, 227, 160, 0.12); stroke: rgba(111, 227, 160, 0.5); stroke-width: 0.75; vector-effect: non-scaling-stroke; }
+.sketch .warn { fill: var(--accent-2); }
+.sketch .warn-ln { fill: none; stroke: var(--accent-2); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.sketch .ok { fill: var(--ok); }
+.sketch .osd { fill: var(--text-2); font-size: 6.6px; letter-spacing: 0.04em; }
 .sketch--prop text { fill: var(--text-2); font-size: 9px; letter-spacing: 0.06em; }
 .sketch--prop .t { fill: var(--text-3); font-size: 7.5px; letter-spacing: 0.18em; }
 .sketch--prop .big { fill: var(--text); font-size: 12px; font-weight: 500; }
@@ -63,18 +72,19 @@
 .passport__km { font-family: var(--f-display); font-size: clamp(38px, 4vw, 54px); font-weight: 600; line-height: 0.95; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 .passport__km small { font-family: var(--f-mono); font-size: 12px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); margin-left: 8px; }
 .passport__tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-.ptag { padding: 5px 10px; border-radius: var(--pill); border: 1px solid var(--line-2); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-2); }
-.ptag[hidden] { display: none; }
+.passport__tags { min-height: 28px; }   /* висота не залежить від того, скільки плашок видно — без стрибка при 30 км */
+.ptag { padding: 5px 10px; border-radius: var(--pill); border: 1px solid var(--line-2); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-2); transition: opacity 0.3s, transform 0.35s var(--ease); }
+.ptag.is-off { opacity: 0; transform: translateY(5px); pointer-events: none; }
 .ptag--std { border-color: rgba(111, 227, 160, 0.4); color: var(--ok); }
 .ptag--ref { border-color: rgba(255, 61, 79, 0.5); color: var(--accent-2); }
 /* рейка: невидимий нативний range зверху (перетягування, клавіатура), візуальна доріжка під ним */
-.rail { position: relative; padding: 12px 8px 30px; }
+.rail { position: relative; padding: 12px 8px 42px; }
 .rail__track { position: relative; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.12); }
 .rail__fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); box-shadow: 0 0 12px var(--accent-glow); transition: width 0.45s var(--ease); }
 .rail__thumb { position: absolute; top: 50%; left: 60%; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px rgba(255, 61, 79, 0.22), 0 0 22px var(--accent-glow); transform: translate(-50%, -50%); transition: left 0.45s var(--ease), box-shadow 0.2s; }
 .rail:hover .rail__thumb, .rail input:focus-visible ~ .rail__track .rail__thumb { box-shadow: 0 0 0 7px rgba(255, 61, 79, 0.28), 0 0 26px var(--accent-glow); }
 .rail__stops { position: absolute; left: 8px; right: 8px; top: 12px; height: 4px; }
-.rail__stops span { position: absolute; left: var(--p); top: 50%; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 12px; }
+.rail__stops span { position: absolute; left: var(--p); top: 50%; transform: translate(-50%, -4px); display: grid; justify-items: center; gap: 22px; }   /* крапка на доріжці, цифра під сяйвом повзунка */
 .rail__stops i { width: 8px; height: 8px; border-radius: 50%; background: var(--bg); border: 1.5px solid rgba(255, 255, 255, 0.35); transition: border-color 0.3s, opacity 0.3s; }
 .rail__stops .is-past i { border-color: var(--accent); background: var(--accent); }
 .rail__stops .is-on i { opacity: 0; }
@@ -91,6 +101,8 @@
 .readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; }
 .ro { padding: 11px 11px 9px; border: 1px solid var(--line); border-radius: var(--r-s); background: rgba(255, 255, 255, 0.025); transition: opacity 0.3s; }
 .ro.is-na { opacity: 0.45; }
+.ro b.is-tick, .passport__km.is-tick { animation: ro-tick 0.4s var(--ease); }
+@keyframes ro-tick { from { opacity: 0.25; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 .ro b { display: block; font-family: var(--f-display); font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .ro b small { font-size: 10.5px; color: var(--text-3); margin-left: 3px; font-family: var(--f-mono); }
 .ro span { display: block; margin-top: 4px; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); }
@@ -281,7 +293,7 @@
 .cat-nav button.is-on { background: var(--panel-2); border-color: var(--line-2); color: #fff; }
 .cat-nav button b { font-family: var(--f-mono); font-size: 11px; font-weight: 500; color: var(--text-3); }
 .cat-nav button.is-own { color: var(--accent-2); }
-.cat-filters { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; padding: 10px 0 14px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.cat-filters { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; padding: 10px 0 14px; border-bottom: 1px solid var(--line); margin-bottom: 8px; animation: swap-in 0.3s var(--ease) both; }
 .cat-filters[hidden] { display: none; }
 .cat-filters .lab { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
 .cat-filters .chips { gap: 6px; }
@@ -386,6 +398,7 @@
 /* порівняння */
 .cmp-bar { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 70; display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 16px; border-radius: var(--pill); background: rgba(12, 14, 19, 0.92); border: 1px solid var(--line-2); backdrop-filter: blur(10px); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; }
 .cmp-bar[hidden] { display: none; }
+.cmp-bar { animation: swap-in 0.3s var(--ease) both; }
 .cmp-bar .x { color: var(--text-3); padding: 6px 8px; }
 .cmp-bar .x:hover { color: #fff; }
 .cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; }

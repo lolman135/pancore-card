@@ -1,7 +1,7 @@
 /* ============================================================
    PANCORE — дизайн-система
    Темна індустріальна тема: графіт + одна сигнальна червона.
-   Шрифти: Unbounded (дисплей), Manrope (текст), JetBrains Mono
+   Шрифти: Montserrat (дисплей), Manrope (текст), JetBrains Mono
    (технічні підписи), Michroma (тільки логотип-слово).
    ============================================================ */
 
@@ -23,10 +23,10 @@
   --accent-soft: rgba(255, 61, 79, 0.12);
   --ok: #6fe3a0;
 
-  --f-display: "Unbounded", "Manrope", system-ui, sans-serif;
+  --f-display: "Montserrat", "Manrope", system-ui, sans-serif;
   --f-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  --f-brand: "Michroma", "Unbounded", sans-serif;
+  --f-brand: "Michroma", "Montserrat", sans-serif;
 
   --r: 18px;
   --r-s: 12px;
@@ -336,29 +336,24 @@ body.menu-open .mnav { display: flex; }
 .wm__hi path { fill: none; stroke-width: 2.8; stroke-linecap: round; }
 .wm--crop .wm__hi path { stroke-width: 2.3; }
 .wm--narrow .wm__hi path { stroke-width: 1.8; }
-.wm__hi--pl { stroke: var(--accent); }
+.wm__hi--eu { stroke: var(--accent); }
 .wm__hi--ua, .wm__hi--tr { stroke: rgba(255, 255, 255, 0.85); }
 .wm__hi--cn { stroke: rgba(214, 219, 227, 0.62); }
 .wm__route { transition: opacity 0.35s; }
 .wm__base { fill: none; stroke-width: 1.1; stroke-linecap: round; opacity: 0.32; }
 .wm__flow { fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-dasharray: 5 9; opacity: 0; transition: opacity 0.6s; }
-.wm__hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
 .is-visible .wm__flow { opacity: 0.95; animation: wm-flow 1.1s linear infinite; }
 .wm__flow.is-static { stroke-dasharray: none; animation: none; opacity: 0.9; }
 .wm__pkt { opacity: 0; }
 .is-visible .wm__pkt { opacity: 1; }
 /* колір «пакета» = колір дуги */
-.wm__route--in .wm__base, .wm__route--in .wm__flow { stroke: var(--accent); }
-.wm__route--in .wm__pkt { fill: var(--accent); }
-.wm__route--out .wm__base, .wm__route--out .wm__flow { stroke: #fff; }
-.wm__route--out .wm__pkt { fill: #fff; }
-/* фільтр: обрана група лишається, інші гаснуть; наведення підсвічує групу */
-.wm-wrap[data-kind="in"] .wm__route--out, .wm-wrap[data-kind="out"] .wm__route--in { opacity: 0.12; }
-.wm-wrap[data-hover="in"] .wm__route--out, .wm-wrap[data-hover="out"] .wm__route--in { opacity: 0.25; }
+/* усі зв’язки одним кольором */
+.wm__base, .wm__flow { stroke: #fff; }
+.wm__pkt { fill: #fff; }
 .wm__dot { fill: #fff; }
 .wm__node--eu .wm__dot { fill: var(--accent); }
 .wm__pulse { fill: none; stroke: var(--accent); stroke-width: 1.1; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.wm__node--ua .wm__pulse, .wm__node--tr .wm__pulse { stroke: #fff; }
+.wm__node:not(.wm__node--eu) .wm__pulse { stroke: #fff; }
 .is-visible .wm__pulse { animation: wm-pulse 2.8s ease-out infinite; animation-delay: calc(var(--i) * 0.4s); }
 @keyframes wm-flow { to { stroke-dashoffset: -14; } }
 @keyframes wm-pulse { 0% { transform: scale(0.25); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
@@ -380,32 +375,10 @@ body.menu-open .mnav { display: flex; }
 .wm-stats { display: flex; flex-wrap: wrap; gap: 14px 36px; margin-bottom: 18px; }
 .wm-stat b { display: block; font-family: var(--f-display); font-size: clamp(22px, 2.4vw, 30px); font-weight: 500; line-height: 1.1; }
 .wm-stat span { display: block; margin-top: 4px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
-.wm-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.wm-legend button {
-  display: inline-flex; align-items: center; gap: 9px; padding: 8px 13px; border-radius: var(--pill);
-  border: 1px solid var(--line); font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3);
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
-}
-.wm-legend button:hover { color: var(--text); border-color: var(--line-2); }
-.wm-legend button.is-on { color: var(--text); border-color: var(--line-2); background: var(--panel-2); }
-.wm-legend i { width: 20px; height: 2px; border-radius: 2px; background: var(--accent); }
-.wm-legend__out { background: #fff !important; }
-.wm-legend__all { background: linear-gradient(90deg, var(--accent), #fff) !important; }
-.wm-routes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
-.wm-route { display: block; width: 100%; padding: 14px 16px; text-align: left; border: 1px solid var(--line); border-radius: var(--r-s); background: var(--panel); transition: border-color 0.25s, background 0.25s; }
-.wm-route:hover { border-color: var(--line-2); }
-.wm-route .k { display: block; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
-.wm-route--out .k { color: var(--text-2); }
-.wm-route b { display: block; margin-top: 6px; font-size: 14.5px; }
-.wm-route small { display: block; margin-top: 4px; font-size: 13px; color: var(--text-2); line-height: 1.5; }
-.wm-wrap[data-kind="in"] .wm-route--in, .wm-wrap[data-kind="out"] .wm-route--out { border-color: rgba(255, 61, 79, 0.5); background: var(--panel-2); }
 .wm-story { margin-top: 18px; max-width: 72ch; font-size: 15px; line-height: 1.6; color: var(--text-2); }
-@media (max-width: 880px) { .wm-routes { grid-template-columns: 1fr; } }
 @media (max-width: 640px) {
   .wm-wrap { padding: 10px 10px 14px; }
   .wm__lbl { font-size: 10px; padding: 3px 6px; letter-spacing: 0.1em; }
-  .wm-legend { gap: 6px; }
-  .wm-legend button { padding: 7px 10px; font-size: 10px; }
 }
 
 /* ---------- пошук у шапці, перемикач мови, плаваюча панель запиту ---------- */
@@ -664,3 +637,20 @@ body.menu-open .mnav { display: flex; }
 .fab-desk.is-on { opacity: 1; transform: none; pointer-events: auto; }
 .fab-desk:hover { background: #ff5566; }
 @media (max-width: 880px) { .fab-desk { display: none; } }
+
+/* ---------- плавна заміна вмісту (swapIn у site.js): коротка поява після перемикання ---------- */
+.swap-in { animation: swap-in 0.32s var(--ease) both; }
+@keyframes swap-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- лоадер: логотип у кільці, ховає перший рендер; без живого JS сторож у <head> знімає .js-anim ---------- */
+.loader { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: var(--bg); transition: opacity 0.5s var(--ease), visibility 0.5s; }
+.loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader__in { position: relative; width: 104px; height: 104px; display: grid; place-items: center; }
+.loader__ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.loader__ring circle { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 302; stroke-dashoffset: 302; animation: loader-ring 1.3s var(--ease) infinite; filter: drop-shadow(0 0 8px var(--accent-glow)); }
+@keyframes loader-ring { 0% { stroke-dashoffset: 302; } 55% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -302; } }
+.loader__mark { width: 52px; height: 52px; color: var(--text); animation: loader-mark 1.3s ease-in-out infinite alternate; }
+@keyframes loader-mark { from { opacity: 0.55; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+.loader__word { position: absolute; left: 50%; top: calc(50% + 74px); transform: translateX(-50%); font-family: var(--f-brand); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
+html:not(.js-anim) .loader { display: none; }
+@media (prefers-reduced-motion: reduce) { .loader { display: none; } }

@@ -19,6 +19,46 @@ export const reducedMotion =
 /* мова сторінки: тексти, що генеруються скриптом, беруться за <html lang> */
 export const EN = /^en/i.test(document.documentElement.lang || '');
 
+/* ---------- плавна заміна вмісту: перезапуск короткої анімації появи на контейнері (.swap-in у style.css) ---------- */
+export function swapIn(el) {
+  if (!el || reducedMotion) return;
+  el.classList.remove('swap-in');
+  void el.offsetWidth;
+  el.classList.add('swap-in');
+}
+
+/* ---------- прокрутка до елемента без «стрибка».
+   scrollIntoView бере bounding box, а ще не показаний .rise зсунутий transform-ом на 22 px —
+   після появи вміст «підстрибував». Тут позиція рахується через offsetTop (transform не враховується),
+   а блоки-цілі одразу позначаються показаними. ---------- */
+export function scrollToEl(el, extra = 16) {
+  if (!el) return;
+  if (el.classList.contains('rise')) el.classList.add('is-in');
+  el.querySelectorAll('.rise:not(.is-in)').forEach((r) => r.classList.add('is-in'));
+  let top = 0;
+  for (let n = el; n; n = n.offsetParent) top += n.offsetTop;
+  const headH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--head-h')) || 74;
+  scrollTo({ top: Math.max(0, top - headH - extra), behavior: reducedMotion ? 'auto' : 'smooth' });
+}
+
+/* ---------- лоадер: логотип із кільцем; зникає після load (мінімум 0,4 с, не довше 1,8 с) ---------- */
+const loader = document.querySelector('.loader');
+if (loader) {
+  if (reducedMotion) loader.remove();
+  else {
+    const t0 = performance.now();
+    let hidden = false;
+    const hide = () => {
+      if (hidden) return;
+      hidden = true;
+      const wait = Math.max(0, 420 - (performance.now() - t0));
+      setTimeout(() => { loader.classList.add('is-done'); setTimeout(() => loader.remove(), 600); }, wait);
+    };
+    if (document.readyState === 'complete') hide(); else addEventListener('load', hide, { once: true });
+    setTimeout(hide, 1800);
+  }
+}
+
 /* ---------- пошук у шапці → каталог; «/» ставить курсор у пошук ---------- */
 document.querySelectorAll('form.hsearch').forEach((f) => f.addEventListener('submit', (e) => {
   if (!f.querySelector('input').value.trim()) e.preventDefault();
@@ -360,7 +400,7 @@ export function prefillRequest(text) {
       ? `${msg.value.replace(/\s+$/, '')}\n${line}`
       : `${line}\n${EN ? 'Quantity: ' : 'Кількість: '}`;
   }
-  form.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
+  scrollToEl(form, 24);
   setTimeout(() => {
     const c = field(form, 'contact');
     c && c.focus({ preventScroll: true });

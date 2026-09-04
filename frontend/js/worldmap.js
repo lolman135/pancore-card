@@ -1,10 +1,9 @@
 /* ============================================================
-   PANCORE — карта світу з анімованими маршрутами
+   PANCORE GROUP — карта групи компаній з анімованими зв’язками
    Точкова карта (один <path>) + підсвітка країн-учасниць, дуги між
-   вузлами, «пакети», що рухаються по дугах (SMIL animateMotion),
-   пульс вузлів. Підписи — HTML поверх SVG (читаються на телефоні).
+   компаніями групи (ЄС — вузол-хаб), «пакети», що рухаються по дугах
+   (SMIL animateMotion), пульс вузлів. Підписи — HTML поверх SVG.
    На вузьких екранах viewBox обрізається до коридору ЄС–Китай.
-   Фільтр маршрутів: легенда-вкладки, картки маршрутів, тап по дузі.
    Дешево для GPU: без SVG-фільтрів, анімації лише stroke-dashoffset
    і transform.
    ============================================================ */
@@ -14,22 +13,28 @@ import { VIEW, NODES, DOTS, DOTS_HI } from './data/worldmap.js';
 const NS = 'http://www.w3.org/2000/svg';
 const EN = /^en/i.test(document.documentElement.lang || '');
 
-/* маршрути: [звідки, куди, тип] — in: сировина/компоненти до ЄС, out: готова продукція */
+/* зв’язки групи: [вузол, вузол]. ЄС — хаб, від нього промінь до кожної компанії;
+   поперечні дуги показують, що регіони зв’язані й між собою, а не лише з майданчиком у ЄС */
 const ROUTES = [
-  ['cn', 'eu', 'in'],
-  ['cn2', 'eu', 'in'],
-  ['eu', 'ua', 'out'],
-  ['eu', 'tr', 'out'],
+  ['eu', 'ua'],
+  ['eu', 'tr'],
+  ['eu', 'ae'],
+  ['ae', 'tr'],
+  ['eu', 'cn'],
+  ['eu', 'hk'],
+  ['cn', 'hk'],
+  ['hk', 'ae'],
 ];
 
 /* підписи вузлів: текст, бік від точки (l/r) і вертикальний зсув у px */
 const LABELS = {
-  uk: { cn: 'Китай', eu: 'ЄС · виробництво', ua: 'Україна', tr: 'Туреччина' },
-  en: { cn: 'China', eu: 'EU · production', ua: 'Ukraine', tr: 'Türkiye' },
+  uk: { eu: 'ЄС · виробництво', ua: 'Україна', tr: 'Туреччина', ae: 'ОАЕ', cn: 'Китай', hk: 'Гонконг' },
+  en: { eu: 'EU · production', ua: 'Ukraine', tr: 'Türkiye', ae: 'UAE', cn: 'China', hk: 'Hong Kong' },
 };
-const PLACE = { cn: ['r', 0], eu: ['l', 0], ua: ['r', -14], tr: ['r', 12] };
-/* на обрізаній карті ЄС стоїть біля лівого краю — підпис іде під точку, Туреччина нижче */
-const PLACE_CROP = { cn: ['r', 0], eu: ['b', 0], ua: ['r', -16], tr: ['r', 26] };
+const PLACE = { eu: ['l', 0], ua: ['r', -14], tr: ['r', 12], ae: ['r', 0], cn: ['r', -10], hk: ['r', 12] };
+/* на обрізаній карті ЄС стоїть біля лівого краю — підпис іде під точку, Туреччина нижче;
+   ОАЕ — під точку, щоб не налізати на Туреччину; Китай і Гонконг біля правого краю — підписи ліворуч */
+const PLACE_CROP = { eu: ['b', 0], ua: ['r', -16], tr: ['r', 30], ae: ['b', 0], cn: ['l', -12], hk: ['l', 14] };
 
 /* Замість усього світу показуємо Євразію: десктоп lon −15…150, lat 72…−10 (Україна по центру, масштаб
    читається); телефон — вужчий коридор ЄС–Китай lon −5…140. Координати сітки: x = (lon+170)/350·1400, y = (78−lat)/134·536 */
@@ -65,14 +70,13 @@ export function mountWorldMap(host, { reduced = false } = {}) {
   const hi = el('g', { class: 'wm__hi' }, svg);
   Object.entries(DOTS_HI).forEach(([k, d]) => el('path', { class: `wm__hi--${k}`, d }, hi));
 
-  // маршрути
+  // зв’язки групи
   const routes = el('g', { class: 'wm__routes' }, svg);
-  ROUTES.forEach(([from, to, kind], i) => {
+  ROUTES.forEach(([from, to], i) => {
     const d = arcPath(NODES[from], NODES[to]);
-    const g = el('g', { class: `wm__route wm__route--${kind}`, 'data-kind': kind, style: `--i:${i}` }, routes);
+    const g = el('g', { class: 'wm__route', style: `--i:${i}` }, routes);
     el('path', { class: 'wm__base', d }, g);
     const flow = el('path', { class: 'wm__flow', d }, g);
-    el('path', { class: 'wm__hit', d }, g);   // широка невидима зона для наведення / тапу
     if (!reduced) {
       const pkt = el('circle', { class: 'wm__pkt', r: 3.2 }, g);
       const am = el('animateMotion', { dur: `${(4.5 + (i % 3) * 0.9).toFixed(1)}s`, repeatCount: 'indefinite', begin: `${(i * 0.7).toFixed(1)}s`, path: d, rotate: 'auto' }, pkt);
@@ -82,9 +86,9 @@ export function mountWorldMap(host, { reduced = false } = {}) {
     }
   });
 
-  // вузли
+  // вузли: компанії групи; ЄС — хаб
   const nodes = el('g', { class: 'wm__nodes' }, svg);
-  ['cn', 'cn2', 'eu', 'ua', 'tr'].forEach((key, i) => {
+  ['eu', 'ua', 'tr', 'ae', 'cn', 'hk'].forEach((key, i) => {
     const n = NODES[key];
     const g = el('g', { class: `wm__node wm__node--${key}`, transform: `translate(${n.x} ${n.y})`, style: `--i:${i}` }, nodes);
     if (L[key]) el('circle', { class: 'wm__pulse', r: 11 }, g);
@@ -125,29 +129,6 @@ export function mountWorldMap(host, { reduced = false } = {}) {
   }
   layout();
   narrow.addEventListener('change', layout);
-
-  // фільтр маршрутів: легенда-вкладки та картки (data-kind-btn), тап по дузі
-  const wrap = host.closest('.wm-wrap') || host;
-  const setKind = (kind) => {
-    wrap.dataset.kind = kind;
-    wrap.querySelectorAll('[data-kind-btn]').forEach((b) => {
-      const on = b.dataset.kindBtn === kind;
-      b.classList.toggle('is-on', on);
-      if (b.getAttribute('role') === 'tab') b.setAttribute('aria-selected', String(on));
-    });
-  };
-  wrap.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-kind-btn]');
-    if (!b) return;
-    const k = b.dataset.kindBtn;
-    setKind(k !== 'all' && wrap.dataset.kind === k ? 'all' : k);   // повторний клік знімає фільтр
-  });
-  routes.querySelectorAll('.wm__route').forEach((g) => {
-    g.addEventListener('pointerenter', () => { wrap.dataset.hover = g.dataset.kind; });
-    g.addEventListener('pointerleave', () => { delete wrap.dataset.hover; });
-    g.addEventListener('click', () => setKind(wrap.dataset.kind === g.dataset.kind ? 'all' : g.dataset.kind));
-  });
-  setKind('all');
 
   // анімації запускаємо, коли карта в кадрі (економимо GPU поза екраном)
   if ('IntersectionObserver' in window) {

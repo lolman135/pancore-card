@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PANCORE — виробництво та компоненти для безпілотних систем</title>
-<meta name="description" content="PANCORE — виробничо-інженерна компанія в ЄС: оптоволоконні системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих для БпЛА.">
+<title>PANCORE GROUP — виробництво та компоненти для безпілотних систем</title>
+<meta name="description" content="PANCORE GROUP — міжнародна група компаній: розробка, виробництво в ЄС і постачання компонентів для безпілотних систем. Оптоволоконні системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих для БпЛА.">
 <meta name="theme-color" content="#07080b">
 <meta name="api-base" content="">
-<meta property="og:title" content="PANCORE — виробництво та компоненти для безпілотних систем">
+<meta property="og:title" content="PANCORE GROUP — виробництво та компоненти для безпілотних систем">
 <meta property="og:description" content="Безшпульна котушка оптоволокна G.657.A2, пропелери 10″/15″, карбон, електроніка. Виробництво в ЄС, постачання в Україну.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="uk_UA">
@@ -18,8 +18,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260903b">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20260903c">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -41,6 +41,22 @@
     box-shadow: 0 28px 60px -28px rgba(255, 61, 79, 0.45);
   }
   @media (prefers-reduced-motion: reduce) { #why .card:hover { transform: none; } }
+
+  /* Підзаголовки секцій без червоної риски зліва. */
+  .eyebrow::before { content: none; }
+
+  /* Заголовок героя: три рядки без переносу. Найдовший рядок «для безпілотних систем»
+     в Unbounded 600 займало 18.1em (Montserrat вужчий, запас лишається), тому кегль обмежуємо шириною колонки —
+     інакше третій рядок ламався на «…безпілотних / систем». */
+  .hero__grid > div:first-child { container-type: inline-size; }
+  .hero__title { font-size: min(clamp(32px, 5vw, 70px), calc(100cqw / 18.4)); }
+  .hero__title b { white-space: nowrap; }
+  @media (max-width: 600px) {
+    /* На телефоні три рядки не вміщаються (18.1em), тому чотири: «для безпілотних» / «систем».
+       Кегль обмежуємо так, щоб «для безпілотних» (12.3em) не ламався ще раз. */
+    .hero__title { font-size: min(clamp(26px, 8.6vw, 40px), calc(100cqw / 12.4)); }
+    .hero__title b { white-space: normal; }
+  }
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
@@ -65,14 +81,21 @@
 </div>
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" aria-hidden="true"><i></i></div>
+<div class="loader" aria-hidden="true">
+  <div class="loader__in">
+    <svg class="loader__ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/></svg>
+    <svg class="loader__mark" viewBox="0 0 200 200"><use href="#pc-logo"/></svg>
+    <span class="loader__word">Pancore</span>
+  </div>
+</div>
 
 <div class="page">
 
   <header class="head" id="head">
     <div class="wrap head__in">
-      <a class="brand" href="index.html" aria-label="PANCORE — на головну">
+      <a class="brand" href="index.html" aria-label="PANCORE GROUP — на головну">
         <svg class="brand__mark" viewBox="0 0 200 200" aria-hidden="true"><use href="#pc-logo"/></svg>
-        <span class="brand__word">Pancore</span>
+        <span class="brand__word">Pancore Group</span>
       </a>
       <nav class="nav" aria-label="Основна навігація">
         <a href="index.html" data-nav="home">Головна</a>
@@ -94,7 +117,7 @@
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
     <a href="#contact" data-nav="contact">Зв’язатися</a>
-    <p class="mnav__foot">PANCORE · MADE IN EU</p>
+    <p class="mnav__foot">PANCORE GROUP · MADE IN EU</p>
   </nav>
 
   <main>
@@ -104,16 +127,16 @@
       <div class="wrap hero__in">
         <div class="hero__grid">
           <div>
-            <p class="eyebrow rise">Виробництво · Європейський Союз</p>
+            <p class="eyebrow rise">PANCORE GROUP · група компаній · виробництво в ЄС</p>
             <h1 class="h-display h1 hero__title rise" data-delay="1">
               <b>Виробництво</b>
               <b>та компоненти</b>
               <b class="metal">для безпілотних систем</b>
             </h1>
             <p class="lead hero__lead rise" data-delay="2">
-              PANCORE — виробничо-інженерна компанія в Європейському Союзі: оптоволоконні
-              системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих
-              для БпЛА з власним контролем якості.
+              PANCORE GROUP — міжнародна група компаній: розробка, виробництво в Європейському
+              Союзі та постачання для безпілотних систем. Оптоволоконні системи зв’язку, композити,
+              полімерне лиття та понад 160 позицій комплектуючих для БпЛА з власним контролем якості.
             </p>
             <div class="hero__cta rise" data-delay="3">
               <a class="btn btn--primary" href="catalog.html">Асортимент</a>
@@ -128,11 +151,12 @@
     <section class="sec" id="about">
       <div class="wrap">
         <div class="sec__head">
-          <p class="eyebrow rise">Про компанію</p>
-          <h2 class="h-display h2 rise" data-delay="1">Повний цикл: від сировини до готового виробу</h2>
+          <p class="eyebrow rise">Про групу</p>
+          <h2 class="h-display h2 rise" data-delay="1">Одна група — повний цикл: від розробки до постачання</h2>
           <p class="lead rise" data-delay="2">
-            Ми запускаємо власні виробничі лінії в Європейському Союзі і поєднуємо їх із мережею
-            перевірених виробників компонентів. Замовник отримує одного постачальника, єдину
+            PANCORE GROUP об’єднує компанії в Європейському Союзі, Китаї, Гонконзі, ОАЕ, Туреччині
+            та Україні в одну групу. Кожна закриває свою ланку — розробку, сировину й компоненти,
+            виробництво, логістику та постачання, — а замовник отримує одного постачальника, єдину
             відповідальність за якість і документи, готові до митного оформлення та технічного приймання.
           </p>
         </div>
@@ -195,9 +219,9 @@
           <p class="eyebrow rise">Виробництво</p>
           <h2 class="h-display h2 rise" data-delay="1">Власні лінії в ЄС</h2>
           <p class="lead rise" data-delay="2">
-            Перемотування та стабілізація оптоволокна, 3D-друк корпусів, лиття під тиском,
-            обробка композитів. Кожна партія проходить вимірювання — довжина, маса, загасання —
-            і фіксується у протоколі якості.
+            Забезпечення стабільності оптоволокна шляхом контрольованого перемотування,
+            3D-проєктування, Лиття під тиском, Виготовлення та обробка композитних матеріалів.
+            Кожна партія проходить ретельний контроль якості.
           </p>
           <a class="btn btn--primary rise" data-delay="3" href="production.html">Про виробництво</a>
         </div>
@@ -214,7 +238,7 @@
     <section class="sec sec--line" id="why">
       <div class="wrap">
         <div class="sec__head">
-          <p class="eyebrow rise">Чому PANCORE</p>
+          <p class="eyebrow rise">Чому PANCORE GROUP</p>
           <h2 class="h-display h2 rise" data-delay="1">Зроблено так, щоб не було питань</h2>
         </div>
         <div class="grid grid--3">
@@ -232,28 +256,18 @@
     <section class="sec sec--line" id="geo">
       <div class="wrap">
         <div class="sec__head">
-          <p class="eyebrow rise">Географія</p>
-          <h2 class="h-display h2 rise" data-delay="1">Сировина зі сходу, продукція з ЄС</h2>
-          <p class="lead rise" data-delay="2">Компоненти та сировина з Китаю надходять на наш виробничий майданчик у Європейському Союзі. Готові вироби й комплекти відвантажуємо в Україну та Туреччину.</p>
+          <p class="eyebrow rise">Група компаній</p>
+          <h2 class="h-display h2 rise" data-delay="1">Одна група — шість регіонів</h2>
+          <p class="lead rise" data-delay="2">PANCORE GROUP об’єднує компанії в Європейському Союзі, Китаї, Гонконзі, ОАЕ, Туреччині та Україні. Розробка, сировина й компоненти, виробництво, логістика та постачання — усі ланки всередині однієї групи, під одним брендом.</p>
         </div>
         <div class="wm-stats rise" data-delay="2">
-          <div class="wm-stat"><b>3</b><span>напрями поставок</span></div>
+          <div class="wm-stat"><b>6</b><span>регіонів присутності</span></div>
+          <div class="wm-stat"><b>3</b><span>континенти · Європа, Азія, Близький Схід</span></div>
           <div class="wm-stat"><b>20 000 м²</b><span>виробнича площадка в ЄС</span></div>
-          <div class="wm-stat"><b>5–60 км</b><span>лінійка котушок на відвантаження</span></div>
         </div>
-        <div class="wm-wrap rise" data-delay="2" data-kind="all">
+        <div class="wm-wrap rise" data-delay="2">
           <div id="worldmap" class="wm-host"></div>
-          <div class="wm-legend" role="tablist" aria-label="Групи маршрутів">
-            <button type="button" role="tab" data-kind-btn="all" class="is-on" aria-selected="true"><i class="wm-legend__all"></i>Усі маршрути</button>
-            <button type="button" role="tab" data-kind-btn="in" aria-selected="false"><i></i>Компоненти та сировина → ЄС</button>
-            <button type="button" role="tab" data-kind-btn="out" aria-selected="false"><i class="wm-legend__out"></i>Готова продукція → Україна, Туреччина</button>
-          </div>
-          <div class="wm-routes">
-            <button type="button" class="wm-route wm-route--in" data-kind-btn="in"><span class="k">Китай → ЄС</span><b>Оптоволокно, гранулят, клей, обладнання</b><small>Одномодове волокно G.657.A2, армовані поліаміди, термопластавтомати та лінії для композитів.</small></button>
-            <button type="button" class="wm-route wm-route--out" data-kind-btn="out"><span class="k">ЄС → Україна</span><b>Котушки, пропелери, карбон, комплекти</b><small>Готова продукція з сертифікатом походження ЄС і EUR.1, консолідовані партії зі складу в ЄС.</small></button>
-            <button type="button" class="wm-route wm-route--out" data-kind-btn="out"><span class="k">ЄС → Туреччина</span><b>Котушки та компоненти для платформ</b><small>Оптоволоконні лінії й комплектуючі під платформи замовника, документи для технічного приймання.</small></button>
-          </div>
-          <p class="wm-story">На майданчику в ЄС ми перемотуємо та стабілізуємо волокно, ллємо пропелери й корпуси, збираємо комплекти і перевіряємо кожну партію. Тому на виході — продукція європейського походження з повним набором документів для митниці та приймання.</p>
+          <p class="wm-story">Компоненти й сировина з Азії надходять на виробничий майданчик групи в ЄС, де ми перемотуємо та стабілізуємо волокно, ллємо пропелери й корпуси, збираємо комплекти і перевіряємо кожну партію. Логістика через ОАЕ, збут і сервіс — в Україні та Туреччині. На виході — продукція європейського походження з повним набором документів.</p>
         </div>
       </div>
     </section>
@@ -306,7 +320,7 @@
 
   <footer class="foot">
     <div class="wrap">
-      <div class="foot__bottom"><span>© 2026 PANCORE · виробництво та склад у ЄС</span><span>MADE IN EU</span></div>
+      <div class="foot__bottom"><span>© 2026 PANCORE GROUP · виробництво та склад у ЄС</span><span>MADE IN EU</span></div>
     </div>
   </footer>
 
@@ -321,6 +335,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
   <span>Зв’язатися</span>
 </a>
-<script type="module" src="js/site.js?v=20260903b"></script>
+<script type="module" src="js/site.js?v=20260903c"></script>
 </body>
 </html>

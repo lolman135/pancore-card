@@ -5,7 +5,7 @@
    точки-навігація по блоках
    ============================================================ */
 
-import { reducedMotion } from './site.js';
+import { reducedMotion, swapIn, scrollToEl } from './site.js';
 import { mountSketches, propSketch, propScaleSketch } from './sketches.js';
 
 const EN = /^en/i.test(document.documentElement.lang || '');
@@ -46,8 +46,10 @@ if (pass) {
     ro('kg').firstChild.textContent = kgf(RANGE.kg[i]);
     ro('kgc').firstChild.textContent = RANGE.kgc[i] != null ? kgf(RANGE.kgc[i]) : '—';
     ro('kgc').closest('.ro').classList.toggle('is-na', RANGE.kgc[i] == null);
-    ro('std').hidden = !RANGE.std[i];
-    ro('ref').hidden = i !== RANGE.ref;
+    // плашки не зникають із потоку (інакше рядок стрибав би), а гаснуть
+    ro('std').classList.toggle('is-off', !RANGE.std[i]);
+    ro('ref').classList.toggle('is-off', i !== RANGE.ref);
+    if (!reducedMotion) pass.querySelectorAll('.ro b, .passport__km').forEach((b) => { b.classList.remove('is-tick'); void b.offsetWidth; b.classList.add('is-tick'); });
     slider.value = i;
     slider.setAttribute('aria-valuetext', `${RANGE.km[i]} ${t('км', 'km')}`);
     const p = `${(i / last) * 100}%`;
@@ -122,6 +124,7 @@ if (otdr) {
       `Auto OTDR, ${wl} nm, ${d.date}. The trace is uniform over the whole length: no splices, breaks or local losses.`,
     );
     otdr.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('is-on', Number(b.dataset.wl) === wl));
+    swapIn(plot); swapIn(stats);
 
     // наведення: перехрестя + підказка (значення на лінійній ділянці)
     const svg = plot.querySelector('svg'), hov = svg.querySelector('.hover');
@@ -189,15 +192,17 @@ if (propBox) {
       curInch = Number(key);
       const p = PROPS[curInch];
       q('[data-sketch="prop"]').innerHTML = propSketch(curInch);
-      q('[data-p="title"]').textContent = `${t('Пропелер PANCORE', 'PANCORE propeller')} ${p.name}`;
+      q('[data-p="title"]').textContent = `${t('Пропелер PANCORE GROUP', 'PANCORE GROUP propeller')} ${p.name}`;
       ['d', 'pitch', 'ang', 'hub', 'chord', 'force'].forEach((k) => { q(`[data-p="${k}"]`).textContent = p[k]; });
       propBox.querySelectorAll('[data-c]').forEach((td, i) => { td.textContent = p.chords[i]; });
       q('[data-p="link"]').href = `catalog.html#item-${p.item}`;
     }
     propBox.querySelectorAll('.toggle button').forEach((b) => b.classList.toggle('is-on', b.dataset.inch === String(key)));
+    swapIn(q('[data-sketch="prop"]')); swapIn(q('.propdeck__spec'));
   };
   const setMat = (key) => {
     q('[data-p="mat"]').innerHTML = MATS[key].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+    swapIn(q('[data-p="mat"]'));
     propBox.querySelectorAll('.mat__opt').forEach((b) => { const on = b.dataset.mat === key; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
   };
   q('.toggle').addEventListener('click', (e) => { const b = e.target.closest('[data-inch]'); if (b) set(b.dataset.inch); });
@@ -216,7 +221,7 @@ if (propBox) {
     let x = 20;
     const inner = parts.map((p) => { const s = `<svg x="${x}" y="16" width="${p.w}" height="${p.h}" viewBox="${p.vb}">${p.html}</svg>`; x += p.w + 20; return s; }).join('');
     const cap = view === 'scale' ? t('пропелери 10″ і 15″ в одному масштабі', 'propellers 10″ and 15″ to the same scale') : `${t('пропелер', 'propeller')} ${PROPS[curInch].name}`;
-    const title = `<text class="t" x="20" y="${H - 12}">PANCORE · ${cap} · ${t('розміри у мм · обмір серійних зразків 02.09.2026', 'dimensions in mm · measured on production samples 02.09.2026')}</text>`;
+    const title = `<text class="t" x="20" y="${H - 12}">PANCORE GROUP · ${cap} · ${t('розміри у мм · обмір серійних зразків 02.09.2026', 'dimensions in mm · measured on production samples 02.09.2026')}</text>`;
     return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${W * 2}" height="${H * 2}" viewBox="0 0 ${W} ${H}"><style>${DL_STYLE}</style><rect width="100%" height="100%" fill="#0c0e13"/>${inner}${title}</svg>`;
   }
   const save = (name, blob) => {
@@ -269,6 +274,6 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('cli
   const tg = document.querySelector(a.getAttribute('href'));
   if (!tg) return;
   e.preventDefault();
-  tg.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+  scrollToEl(tg, 8);
   history.replaceState(null, '', a.getAttribute('href'));
 }));
