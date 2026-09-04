@@ -263,9 +263,111 @@ export function linkSketch() {
   <text x="472" y="46">${tx('окуляри', 'goggles')}</text><text x="472" y="69">${tx('монітор', 'monitor')}</text><text x="472" y="92">${tx('пульт RC', 'RC transmitter')}</text>`, '0 0 520 120');
 }
 
+/** Схема підключення наземної станції (за польовою інструкцією): борт зі звоєм → конектор →
+    оптична розетка S-R · АКБ у XT60 · монітор/ПК · пульт RC. */
+export function hookupSketch() {
+  const osd = (x, y, t) => `<text class="osd" x="${x}" y="${y}">${t}</text>`;
+  return wrap(tx('Схема підключення наземної станції', 'Ground station hook-up'), `
+  <g class="hair"><path d="M22,22 l16,16 M38,22 l-16,16"/><circle cx="22" cy="22" r="3"/><circle cx="38" cy="22" r="3"/><circle cx="22" cy="38" r="3"/><circle cx="38" cy="38" r="3"/></g>
+  <rect class="ln" x="25" y="25" width="10" height="10" rx="2"/>
+  <text x="46" y="26">${tx('БпЛА · sky S-T', 'UAV · sky S-T')}</text><text x="46" y="36">${tx('звій на борту', 'coil on board')}</text>
+  <path class="ln2 fillDim" d="M14,58 h50 a4,4 0 0 1 4,4 v10 l10,4 v8 l-10,4 v10 a4,4 0 0 1 -4,4 h-50 a4,4 0 0 1 -4,-4 v-36 a4,4 0 0 1 4,-4 z"/>
+  <path class="hair" d="M18,66 h42 M18,72 h42 M18,78 h42 M18,84 h42 M18,90 h42"/>
+  <rect class="ln" x="80" y="74" width="12" height="10" rx="1"/><path class="hair" d="M83,74 v10 M86,74 v10 M89,74 v10"/>
+  <text x="12" y="112">${tx('звій у корпусі', 'coil in casing')}</text><text x="12" y="121">${tx('twist-lock · PETG', 'twist-lock · PETG')}</text>
+  <path class="fiber" d="M92,79 C120,79 140,79 168,79"/>
+  <text x="98" y="70">${tx('конектор', 'connector')}</text>
+  <text class="warn" x="98" y="112">${tx('співвісність паза та виїмки', 'align key and notch')}</text>
+  <text class="warn" x="98" y="121">${tx('контргайка — до упору', 'lock-nut fully tight')}</text>
+  <rect class="ln2 fillDim" x="170" y="52" width="120" height="54" rx="5"/>
+  <circle class="ln2" cx="170" cy="79" r="5"/><circle class="hair" cx="170" cy="79" r="2"/>
+  <text x="176" y="66">GROUND STATION</text><text x="176" y="76">S-R</text>
+  <text x="176" y="93">${tx('оптична розетка', 'optical socket')}</text><text x="176" y="102">${tx('1310/1550 нм · ≤ 80 км', '1310/1550 nm · ≤ 80 km')}</text>
+  <rect class="ln" x="222" y="46" width="14" height="6"/><path class="ln" d="M229,46 v-14"/>
+  <rect class="ln2 fillDim" x="206" y="12" width="46" height="20" rx="3"/><text x="212" y="25">XT60 · 2S–6S</text>
+  <rect class="ln" x="290" y="62" width="6" height="8"/><rect class="ln" x="290" y="86" width="6" height="8"/>
+  <path class="ln" d="M296,66 h34"/><path class="ln" d="M296,90 C320,90 330,124 360,124 h80"/>
+  <text x="296" y="59">V1 / V2</text>
+  <rect class="ln2" x="330" y="40" width="112" height="70" rx="4"/><rect class="fillDim" x="336" y="46" width="100" height="56"/>
+  <path class="ln" d="M370,110 v8 M402,110 v8 M360,118 h52"/>
+  ${osd(341, 56, 'ACRO · 00:00 · alt 1.1 m')}${osd(341, 66, 'link-ok · rx −3.6 · tx −0.1')}${osd(341, 76, '26.9V · 4.48V · 0.5 A')}${osd(341, 86, '99 % · FPS 30')}${osd(341, 96, 'FW 2.18 · SN 12345678')}
+  <text x="330" y="132">${tx('монітор / ПК · відео і телеметрія', 'monitor / PC · video and telemetry')}</text>
+  <rect class="ln2 fillDim" x="448" y="82" width="62" height="40" rx="8"/>
+  <circle class="ln" cx="464" cy="102" r="7"/><circle class="hair" cx="464" cy="102" r="2.5"/><circle class="ln" cx="494" cy="102" r="7"/><circle class="hair" cx="494" cy="102" r="2.5"/>
+  <path class="ln" d="M479,82 v-22"/><circle class="hair" cx="479" cy="58" r="2"/>
+  <text x="420" y="144">${tx('пульт RC · CRSF/PPM', 'RC · CRSF/PPM')}</text>
+  <text class="warn" x="12" y="140">${tx('на позиції не витягуйте > 2 м волокна без потреби · при перевірці — не більше 10 см', 'do not pull > 2 m of fibre at the position · ≤ 10 cm when testing')}</text>`, '0 0 520 150');
+}
+
+/* Ізометрична плитка місцевості: точка (u, v) на площині 0…1 → координати SVG. */
+const isoP = (u, v) => [115 + (u - v) * 96, 42 + (u + v) * 50];
+const isoPts = (...uv) => uv.map(([u, v]) => isoP(u, v).map((n) => n.toFixed(1)).join(',')).join(' ');
+const isoSlab = () => `<polygon class="ln2 fillDim" points="${isoPts([0, 0], [1, 0], [1, 1], [0, 1])}"/>
+  <path class="hair" d="M${isoP(0, 1).join(',')} v7 L${isoP(1, 1)[0]},${isoP(1, 1)[1] + 7} L${isoP(1, 0)[0]},${isoP(1, 0)[1] + 7} v-7 M${isoP(1, 1).join(',')} v7"/>`;
+const tree = (u, v, k = 1) => { const [x, y] = isoP(u, v); return `<path class="green" d="M${(x - 5 * k).toFixed(1)},${y.toFixed(1)} l${5 * k},${-11 * k} l${5 * k},${11 * k} z"/><path class="hair" d="M${x.toFixed(1)},${y.toFixed(1)} v${3 * k}"/>`; };
+const drone = (u, v, lift = 0) => { const [x, y0] = isoP(u, v); const y = y0 - lift; return `<g class="ln"><path d="M${(x - 5).toFixed(1)},${(y - 5).toFixed(1)} l10,10 M${(x + 5).toFixed(1)},${(y - 5).toFixed(1)} l-10,10"/><circle cx="${(x - 5).toFixed(1)}" cy="${(y - 5).toFixed(1)}" r="2"/><circle cx="${(x + 5).toFixed(1)}" cy="${(y - 5).toFixed(1)}" r="2"/><circle cx="${(x - 5).toFixed(1)}" cy="${(y + 5).toFixed(1)}" r="2"/><circle cx="${(x + 5).toFixed(1)}" cy="${(y + 5).toFixed(1)}" r="2"/></g>`; };
+const at = (u, v, dy = 0) => { const [x, y] = isoP(u, v); return `${x.toFixed(1)},${(y + dy).toFixed(1)}`; };
+
+/** Прокладання волокна на місцевості — плитки за польовою інструкцією: ЛЕП, річка, дорога, обстріли. */
+export function routeSketch(kind = 'power') {
+  const T = {
+    power: () => `
+      ${isoSlab()}
+      <polygon class="zone" points="${isoPts([0.06, 0.3], [0.94, 0.3], [0.94, 0.42], [0.06, 0.42])}"/>
+      <path class="ln2" d="M${at(0.08, 0.36)} v-34 M${at(0.92, 0.36)} v-34"/>
+      <path class="ln" d="M${at(0.08, 0.36, -34)} L${at(0.92, 0.36, -34)} M${at(0.08, 0.36, -30)} L${at(0.92, 0.36, -30)}"/>
+      <path class="hair" d="M${at(0.08, 0.36, -34)} h-6 h12 M${at(0.92, 0.36, -34)} h-6 h12"/>
+      <path class="fiber" d="M${at(0.55, 0.96)} C${at(0.52, 0.7)} ${at(0.5, 0.5)} ${at(0.5, 0.36)} S${at(0.46, 0.1)} ${at(0.45, 0.04)}"/>
+      ${drone(0.45, 0.04, 6)}
+      <text x="12" y="20">${tx('ЛЕП: під проводами', 'power line: under the wires')}</text>
+      <text class="warn" x="12" y="172">${tx('по проводах — перегин і розрив', 'over the wires — kink and break')}</text>
+      <text class="ok" x="12" y="186">${tx('r вигину 7,5 мм — тримає', 'bend r 7.5 mm — holds')}</text>`,
+    river: () => `
+      ${isoSlab()}
+      <polygon class="water" points="${isoPts([0, 0.42], [1, 0.42], [1, 0.6], [0, 0.6])}"/>
+      <path class="hair" d="M${at(0.15, 0.51)} q6,-3 12,0 t12,0 t12,0 M${at(0.6, 0.51)} q6,-3 12,0 t12,0"/>
+      <path class="hair" d="M${at(0.88, 0.47)} L${at(0.96, 0.47)}"/><text x="180" y="88">${tx('течія', 'current')}</text>
+      ${tree(0.44, 0.38)}${tree(0.52, 0.37, 0.8)}${tree(0.46, 0.66)}${tree(0.55, 0.65, 0.8)}
+      <path class="fiber" d="M${at(0.5, 0.96)} L${at(0.5, 0.68, -6)} L${at(0.5, 0.36, -8)} L${at(0.72, 0.16, -4)}"/>
+      <path class="dim" d="M${at(0.5, 0.52, -8)} v-14"/><text x="118" y="100">5 ${tx('м', 'm')}</text>
+      <text x="126" y="120">90°</text><text x="160" y="64">45° ${tx('за течією', 'downstream')}</text>
+      ${drone(0.72, 0.16, 6)}
+      <text x="12" y="20">${tx('річка: на дерева, поперек, 45°', 'river: onto trees, across, 45°')}</text>
+      <text class="ok" x="12" y="186">${tx('лягає на воду без обриву', 'settles on water, no break')}</text>`,
+    road: () => `
+      ${isoSlab()}
+      <polygon class="zone" points="${isoPts([0.54, 0], [0.68, 0], [0.68, 1], [0.54, 1])}"/>
+      <g class="ln"><rect x="${(isoP(0.61, 0.5)[0] - 8).toFixed(1)}" y="${(isoP(0.61, 0.5)[1] - 5).toFixed(1)}" width="16" height="9" rx="1.5"/><circle cx="${isoP(0.61, 0.5)[0].toFixed(1)}" cy="${(isoP(0.61, 0.5)[1] - 1).toFixed(1)}" r="2.5"/><path d="M${at(0.61, 0.5, -1)} l9,-3"/></g>
+      ${tree(0.47, 0.3)}${tree(0.5, 0.36, 0.8)}${tree(0.74, 0.3)}${tree(0.77, 0.36, 0.8)}
+      <path class="fiber" d="M${at(0.06, 0.32)} L${at(0.47, 0.3, -10)} C${at(0.55, 0.3, -14)} ${at(0.66, 0.3, -14)} ${at(0.74, 0.3, -10)} L${at(0.95, 0.3)}"/>
+      ${drone(0.95, 0.3, 6)}
+      <text x="12" y="20">${tx('дорога: тільки навісом на дерева', 'road: only hung on trees')}</text>
+      <text class="warn" x="12" y="172">${tx('на полотні техніка порве', 'on the surface vehicles tear it')}</text>
+      <text class="ok" x="12" y="186">${tx('тримає підвіс і вітер', 'holds suspension and wind')}</text>`,
+    fire: () => `
+      ${isoSlab()}
+      <ellipse class="zone" cx="${isoP(0.62, 0.42)[0].toFixed(1)}" cy="${isoP(0.62, 0.42)[1].toFixed(1)}" rx="46" ry="24"/>
+      <g class="hair"><ellipse cx="${isoP(0.58, 0.4)[0].toFixed(1)}" cy="${isoP(0.58, 0.4)[1].toFixed(1)}" rx="9" ry="4.5"/><ellipse cx="${isoP(0.58, 0.4)[0].toFixed(1)}" cy="${isoP(0.58, 0.4)[1].toFixed(1)}" rx="4" ry="2"/><ellipse cx="${isoP(0.72, 0.5)[0].toFixed(1)}" cy="${isoP(0.72, 0.5)[1].toFixed(1)}" rx="7" ry="3.5"/><ellipse cx="${isoP(0.72, 0.5)[0].toFixed(1)}" cy="${isoP(0.72, 0.5)[1].toFixed(1)}" rx="3" ry="1.5"/></g>
+      <path class="warn-ln" d="M${at(0.66, 0.3)} l-3,-9 l4,4 l2,-7 l3,8 l3,-3 l-1,7"/>
+      <path class="fiber" d="M${at(0.06, 0.92)} C${at(0.2, 0.6)} ${at(0.18, 0.2)} ${at(0.38, 0.12)} S${at(0.8, 0.02)} ${at(0.94, 0.06)}"/>
+      ${drone(0.94, 0.06, 6)}
+      <text x="12" y="20">${tx('обстріли й вогонь: в обхід', 'shelling and fire: go around')}</text>
+      <text class="warn" x="12" y="172">${tx('осколки й тління обривають', 'fragments and embers cut it')}</text>
+      <text class="ok" x="12" y="186">${tx('5–60 км — є запас на обхід', '5–60 km — margin for a detour')}</text>`,
+  };
+  const labels = {
+    power: tx('Волокно під лінією електропередачі', 'Fibre under a power line'),
+    river: tx('Перетин річки', 'River crossing'),
+    road: tx('Перетин дороги', 'Road crossing'),
+    fire: tx('Обхід зони обстрілів', 'Detour around a shelled area'),
+  };
+  return wrap(labels[kind] || labels.power, (T[kind] || T.power)());
+}
+
 export const SKETCHES = {
   coil: coilSketch, casing: casingSketch, sky: skySketch, ground: groundSketch,
   prop: propSketch, propScale: propScaleSketch, sheet: sheetSketch, tube: tubeSketch, smt: smtSketch, link: linkSketch,
+  hookup: hookupSketch, route: routeSketch,
 };
 
 /* Підставити ескізи у всі [data-sketch="ключ"] (data-arg передається аргументом). */

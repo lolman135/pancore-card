@@ -192,7 +192,7 @@ if (propBox) {
       curInch = Number(key);
       const p = PROPS[curInch];
       q('[data-sketch="prop"]').innerHTML = propSketch(curInch);
-      q('[data-p="title"]').textContent = `${t('Пропелер PANCORE', 'PANCORE propeller')} ${p.name}`;
+      q('[data-p="title"]').textContent = `${t('Пропелер PANCORE GROUP', 'PANCORE GROUP propeller')} ${p.name}`;
       ['d', 'pitch', 'ang', 'hub', 'chord', 'force'].forEach((k) => { q(`[data-p="${k}"]`).textContent = p[k]; });
       propBox.querySelectorAll('[data-c]').forEach((td, i) => { td.textContent = p.chords[i]; });
       q('[data-p="link"]').href = `catalog.html#item-${p.item}`;
@@ -221,7 +221,7 @@ if (propBox) {
     let x = 20;
     const inner = parts.map((p) => { const s = `<svg x="${x}" y="16" width="${p.w}" height="${p.h}" viewBox="${p.vb}">${p.html}</svg>`; x += p.w + 20; return s; }).join('');
     const cap = view === 'scale' ? t('пропелери 10″ і 15″ в одному масштабі', 'propellers 10″ and 15″ to the same scale') : `${t('пропелер', 'propeller')} ${PROPS[curInch].name}`;
-    const title = `<text class="t" x="20" y="${H - 12}">PANCORE · ${cap} · ${t('розміри у мм · обмір серійних зразків 02.09.2026', 'dimensions in mm · measured on production samples 02.09.2026')}</text>`;
+    const title = `<text class="t" x="20" y="${H - 12}">PANCORE GROUP · ${cap} · ${t('розміри у мм · обмір серійних зразків 02.09.2026', 'dimensions in mm · measured on production samples 02.09.2026')}</text>`;
     return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${W * 2}" height="${H * 2}" viewBox="0 0 ${W} ${H}"><style>${DL_STYLE}</style><rect width="100%" height="100%" fill="#0c0e13"/>${inner}${title}</svg>`;
   }
   const save = (name, blob) => {

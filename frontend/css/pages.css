@@ -15,6 +15,15 @@
 .sk--wide .sketch { max-height: 160px; }
 /* креслення пропелера: планформа + ступиця/переріз — два SVG поруч, на телефоні один під одним */
 .sketch .dimL { fill: none; stroke: rgba(255, 61, 79, 0.75); stroke-width: 0.8; vector-effect: non-scaling-stroke; }
+/* схеми місцевості та підключення: маршрут волокна, зони ризику, вода, рослинність, підписи */
+.sketch .fiber { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px rgba(255, 61, 79, 0.55)); }
+.sketch .zone { fill: rgba(255, 61, 79, 0.14); stroke: rgba(255, 61, 79, 0.45); stroke-width: 0.75; vector-effect: non-scaling-stroke; }
+.sketch .water { fill: rgba(122, 170, 255, 0.12); stroke: rgba(122, 170, 255, 0.35); stroke-width: 0.75; vector-effect: non-scaling-stroke; }
+.sketch .green { fill: rgba(111, 227, 160, 0.12); stroke: rgba(111, 227, 160, 0.5); stroke-width: 0.75; vector-effect: non-scaling-stroke; }
+.sketch .warn { fill: var(--accent-2); }
+.sketch .warn-ln { fill: none; stroke: var(--accent-2); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.sketch .ok { fill: var(--ok); }
+.sketch .osd { fill: var(--text-2); font-size: 6.6px; letter-spacing: 0.04em; }
 .sketch--prop text { fill: var(--text-2); font-size: 9px; letter-spacing: 0.06em; }
 .sketch--prop .t { fill: var(--text-3); font-size: 7.5px; letter-spacing: 0.18em; }
 .sketch--prop .big { fill: var(--text); font-size: 12px; font-weight: 500; }
