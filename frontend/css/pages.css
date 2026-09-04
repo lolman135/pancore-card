@@ -178,7 +178,8 @@
 .apps p { margin-top: 6px; font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
 
 /* блоки сторінки: спільна шапка + точки-навігація праворуч */
-.blk { scroll-margin-top: calc(var(--head-h) + 8px); }
+/* scroll-margin-top прибрано: html має scroll-padding-top, і разом вони б додались
+   (82 + 82 = 164px) — блок сідав би надто низько. */
 .blk__head { max-width: 780px; margin-bottom: 28px; }
 .blk__head .lead { margin-top: 12px; }
 .blk__head .status { display: inline-block; margin-top: 14px; }
