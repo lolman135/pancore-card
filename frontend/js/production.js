@@ -28,8 +28,10 @@ mountSketches();
     import('./route3d.js').then((m) => m.createRouteScene(host, { static: reducedMotion })).catch((e) => { console.warn('route3d:', e); fallback(); });
   };
   if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((ents) => { if (ents.some((e) => e.isIntersecting)) { io.disconnect(); boot(); } }, { rootMargin: '600px 0px' });
+    const io = new IntersectionObserver((ents) => { if (ents.some((e) => e.isIntersecting) || !innerHeight) { io.disconnect(); boot(); } }, { rootMargin: '600px 0px' });
     io.observe(host);
+    /* фонова вкладка / прихована панель: спостерігач може не спрацювати — стартуємо, якщо блок близько */
+    setTimeout(() => { const r = host.getBoundingClientRect(); if (!innerHeight || r.top < innerHeight + 1200) { io.disconnect(); boot(); } }, 1500);
   } else boot();
 })();
 

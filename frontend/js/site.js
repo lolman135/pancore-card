@@ -163,6 +163,22 @@ export function observeRise(root = document) {
 }
 observeRise();
 
+/* Страховка: IntersectionObserver мовчить у фоновій вкладці, після переходу за якорем
+   (#system) до першої прокрутки та при нульовому viewport прихованої панелі прев’ю —
+   сторінка виглядала порожньою. Тому все, що вже в кадрі (або вище нього), показуємо примусово. */
+export function revealVisible() {
+  const vh = innerHeight || document.documentElement.clientHeight || 0;
+  document.querySelectorAll('.rise:not(.is-in)').forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (!vh || (r.top < vh + 80 && r.bottom > -4000)) el.classList.add('is-in');
+  });
+}
+[300, 1200, 2600].forEach((ms) => setTimeout(revealVisible, ms));
+addEventListener('load', () => setTimeout(revealVisible, 50));
+addEventListener('hashchange', () => setTimeout(revealVisible, 60));
+addEventListener('resize', revealVisible, { passive: true });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(revealVisible, 60); });
+
 /* ---------- підсвітка карток за курсором ---------- */
 export function bindCardGlow(root = document) {
   root.querySelectorAll('.card').forEach((card) => {
