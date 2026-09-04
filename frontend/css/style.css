@@ -1,7 +1,7 @@
 /* ============================================================
    PANCORE — дизайн-система
    Темна індустріальна тема: графіт + одна сигнальна червона.
-   Шрифти: Unbounded (дисплей), Manrope (текст), JetBrains Mono
+   Шрифти: Montserrat (дисплей), Manrope (текст), JetBrains Mono
    (технічні підписи), Michroma (тільки логотип-слово).
    ============================================================ */
 
@@ -23,10 +23,10 @@
   --accent-soft: rgba(255, 61, 79, 0.12);
   --ok: #6fe3a0;
 
-  --f-display: "Unbounded", "Manrope", system-ui, sans-serif;
+  --f-display: "Montserrat", "Manrope", system-ui, sans-serif;
   --f-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  --f-brand: "Michroma", "Unbounded", sans-serif;
+  --f-brand: "Michroma", "Montserrat", sans-serif;
 
   --r: 18px;
   --r-s: 12px;
