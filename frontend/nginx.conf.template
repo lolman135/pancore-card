@@ -38,9 +38,26 @@ server {
     gzip_types text/css application/javascript image/svg+xml application/json;
 
     # Статика фронта. SPA-роутінгу немає — сторінки це окремі файли.
+    location /index.html {
+        return 301 /main
+    }
+
+    location /index {
+        return 301 /main
+    }
+
+    location /main {
+        try_files /index.html =404
+    }
+
+    locatin '^/(.+)\.html' {
+        return 301 /$1
+    }
+
     location / {
         try_files $uri $uri.html $uri/ =404;
     }
+
 
     # Службові файли репозиторію в роздачу не потрапляють.
     location ~* \.(template|md)$ {
