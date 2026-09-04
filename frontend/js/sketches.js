@@ -296,78 +296,54 @@ export function hookupSketch() {
   <circle class="ln" cx="464" cy="102" r="7"/><circle class="hair" cx="464" cy="102" r="2.5"/><circle class="ln" cx="494" cy="102" r="7"/><circle class="hair" cx="494" cy="102" r="2.5"/>
   <path class="ln" d="M479,82 v-22"/><circle class="hair" cx="479" cy="58" r="2"/>
   <text x="420" y="144">${tx('пульт RC · CRSF/PPM', 'RC · CRSF/PPM')}</text>
-  <text class="warn" x="12" y="140">${tx('на позиції не витягуйте > 2 м волокна без потреби · при перевірці — не більше 10 см', 'do not pull > 2 m of fibre at the position · ≤ 10 cm when testing')}</text>`, '0 0 520 150');
+  <text class="warn" x="12" y="140">${tx('на позиції не витягуйте більше 2 м волокна · при перевірці — до 10 см', 'do not pull out more than 2 m of fibre · up to 10 cm when testing')}</text>`, '0 0 520 150');
 }
 
-/* Ізометрична плитка місцевості: точка (u, v) на площині 0…1 → координати SVG. */
-const isoP = (u, v) => [115 + (u - v) * 96, 42 + (u + v) * 50];
-const isoPts = (...uv) => uv.map(([u, v]) => isoP(u, v).map((n) => n.toFixed(1)).join(',')).join(' ');
-const isoSlab = () => `<polygon class="ln2 fillDim" points="${isoPts([0, 0], [1, 0], [1, 1], [0, 1])}"/>
-  <path class="hair" d="M${isoP(0, 1).join(',')} v7 L${isoP(1, 1)[0]},${isoP(1, 1)[1] + 7} L${isoP(1, 0)[0]},${isoP(1, 0)[1] + 7} v-7 M${isoP(1, 1).join(',')} v7"/>`;
-const tree = (u, v, k = 1) => { const [x, y] = isoP(u, v); return `<path class="green" d="M${(x - 5 * k).toFixed(1)},${y.toFixed(1)} l${5 * k},${-11 * k} l${5 * k},${11 * k} z"/><path class="hair" d="M${x.toFixed(1)},${y.toFixed(1)} v${3 * k}"/>`; };
-const drone = (u, v, lift = 0) => { const [x, y0] = isoP(u, v); const y = y0 - lift; return `<g class="ln"><path d="M${(x - 5).toFixed(1)},${(y - 5).toFixed(1)} l10,10 M${(x + 5).toFixed(1)},${(y - 5).toFixed(1)} l-10,10"/><circle cx="${(x - 5).toFixed(1)}" cy="${(y - 5).toFixed(1)}" r="2"/><circle cx="${(x + 5).toFixed(1)}" cy="${(y - 5).toFixed(1)}" r="2"/><circle cx="${(x - 5).toFixed(1)}" cy="${(y + 5).toFixed(1)}" r="2"/><circle cx="${(x + 5).toFixed(1)}" cy="${(y + 5).toFixed(1)}" r="2"/></g>`; };
-const at = (u, v, dy = 0) => { const [x, y] = isoP(u, v); return `${x.toFixed(1)},${(y + dy).toFixed(1)}`; };
+/* Ізометрична сітка: точка (u, v) на площині 0…1 → координати SVG. */
+function isoGrid(cx, cy, sx, sy) {
+  const P = (u, v) => [cx + (u - v) * sx, cy + (u + v) * sy];
+  const at = (u, v, dy = 0) => { const [x, y] = P(u, v); return `${x.toFixed(1)},${(y + dy).toFixed(1)}`; };
+  const pts = (...uv) => uv.map(([u, v]) => at(u, v)).join(' ');
+  const slab = () => `<polygon class="ln2 fillDim" points="${pts([0, 0], [1, 0], [1, 1], [0, 1])}"/>
+  <path class="hair" d="M${at(0, 1)} v8 L${at(1, 1, 8)} L${at(1, 0, 8)} v-8 M${at(1, 1)} v8"/>`;
+  const tree = (u, v, k = 1) => { const [x, y] = P(u, v); return `<path class="green" d="M${(x - 5 * k).toFixed(1)},${y.toFixed(1)} l${5 * k},${-12 * k} l${5 * k},${12 * k} z"/><path class="hair" d="M${x.toFixed(1)},${y.toFixed(1)} v${3 * k}"/>`; };
+  const drone = (u, v, lift = 0) => { const [x, y0] = P(u, v); const y = y0 - lift; const c = (dx, dy) => `<circle cx="${(x + dx).toFixed(1)}" cy="${(y + dy).toFixed(1)}" r="2.2"/>`; return `<g class="ln"><path d="M${(x - 5).toFixed(1)},${(y - 5).toFixed(1)} l10,10 M${(x + 5).toFixed(1)},${(y - 5).toFixed(1)} l-10,10"/>${c(-5, -5)}${c(5, -5)}${c(-5, 5)}${c(5, 5)}</g>`; };
+  return { P, at, pts, slab, tree, drone };
+}
 
-/** Прокладання волокна на місцевості — плитки за польовою інструкцією: ЛЕП, річка, дорога, обстріли. */
-export function routeSketch(kind = 'power') {
-  const T = {
-    power: () => `
-      ${isoSlab()}
-      <polygon class="zone" points="${isoPts([0.06, 0.3], [0.94, 0.3], [0.94, 0.42], [0.06, 0.42])}"/>
-      <path class="ln2" d="M${at(0.08, 0.36)} v-34 M${at(0.92, 0.36)} v-34"/>
-      <path class="ln" d="M${at(0.08, 0.36, -34)} L${at(0.92, 0.36, -34)} M${at(0.08, 0.36, -30)} L${at(0.92, 0.36, -30)}"/>
-      <path class="hair" d="M${at(0.08, 0.36, -34)} h-6 h12 M${at(0.92, 0.36, -34)} h-6 h12"/>
-      <path class="fiber" d="M${at(0.55, 0.96)} C${at(0.52, 0.7)} ${at(0.5, 0.5)} ${at(0.5, 0.36)} S${at(0.46, 0.1)} ${at(0.45, 0.04)}"/>
-      ${drone(0.45, 0.04, 6)}
-      <text x="12" y="20">${tx('ЛЕП: під проводами', 'power line: under the wires')}</text>
-      <text class="warn" x="12" y="172">${tx('по проводах — перегин і розрив', 'over the wires — kink and break')}</text>
-      <text class="ok" x="12" y="186">${tx('r вигину 7,5 мм — тримає', 'bend r 7.5 mm — holds')}</text>`,
-    river: () => `
-      ${isoSlab()}
-      <polygon class="water" points="${isoPts([0, 0.42], [1, 0.42], [1, 0.6], [0, 0.6])}"/>
-      <path class="hair" d="M${at(0.15, 0.51)} q6,-3 12,0 t12,0 t12,0 M${at(0.6, 0.51)} q6,-3 12,0 t12,0"/>
-      <path class="hair" d="M${at(0.88, 0.47)} L${at(0.96, 0.47)}"/><text x="180" y="88">${tx('течія', 'current')}</text>
-      ${tree(0.44, 0.38)}${tree(0.52, 0.37, 0.8)}${tree(0.46, 0.66)}${tree(0.55, 0.65, 0.8)}
-      <path class="fiber" d="M${at(0.5, 0.96)} L${at(0.5, 0.68, -6)} L${at(0.5, 0.36, -8)} L${at(0.72, 0.16, -4)}"/>
-      <path class="dim" d="M${at(0.5, 0.52, -8)} v-14"/><text x="118" y="100">5 ${tx('м', 'm')}</text>
-      <text x="126" y="120">90°</text><text x="160" y="64">45° ${tx('за течією', 'downstream')}</text>
-      ${drone(0.72, 0.16, 6)}
-      <text x="12" y="20">${tx('річка: на дерева, поперек, 45°', 'river: onto trees, across, 45°')}</text>
-      <text class="ok" x="12" y="186">${tx('лягає на воду без обриву', 'settles on water, no break')}</text>`,
-    road: () => `
-      ${isoSlab()}
-      <polygon class="zone" points="${isoPts([0.54, 0], [0.68, 0], [0.68, 1], [0.54, 1])}"/>
-      <g class="ln"><rect x="${(isoP(0.61, 0.5)[0] - 8).toFixed(1)}" y="${(isoP(0.61, 0.5)[1] - 5).toFixed(1)}" width="16" height="9" rx="1.5"/><circle cx="${isoP(0.61, 0.5)[0].toFixed(1)}" cy="${(isoP(0.61, 0.5)[1] - 1).toFixed(1)}" r="2.5"/><path d="M${at(0.61, 0.5, -1)} l9,-3"/></g>
-      ${tree(0.47, 0.3)}${tree(0.5, 0.36, 0.8)}${tree(0.74, 0.3)}${tree(0.77, 0.36, 0.8)}
-      <path class="fiber" d="M${at(0.06, 0.32)} L${at(0.47, 0.3, -10)} C${at(0.55, 0.3, -14)} ${at(0.66, 0.3, -14)} ${at(0.74, 0.3, -10)} L${at(0.95, 0.3)}"/>
-      ${drone(0.95, 0.3, 6)}
-      <text x="12" y="20">${tx('дорога: тільки навісом на дерева', 'road: only hung on trees')}</text>
-      <text class="warn" x="12" y="172">${tx('на полотні техніка порве', 'on the surface vehicles tear it')}</text>
-      <text class="ok" x="12" y="186">${tx('тримає підвіс і вітер', 'holds suspension and wind')}</text>`,
-    fire: () => `
-      ${isoSlab()}
-      <ellipse class="zone" cx="${isoP(0.62, 0.42)[0].toFixed(1)}" cy="${isoP(0.62, 0.42)[1].toFixed(1)}" rx="46" ry="24"/>
-      <g class="hair"><ellipse cx="${isoP(0.58, 0.4)[0].toFixed(1)}" cy="${isoP(0.58, 0.4)[1].toFixed(1)}" rx="9" ry="4.5"/><ellipse cx="${isoP(0.58, 0.4)[0].toFixed(1)}" cy="${isoP(0.58, 0.4)[1].toFixed(1)}" rx="4" ry="2"/><ellipse cx="${isoP(0.72, 0.5)[0].toFixed(1)}" cy="${isoP(0.72, 0.5)[1].toFixed(1)}" rx="7" ry="3.5"/><ellipse cx="${isoP(0.72, 0.5)[0].toFixed(1)}" cy="${isoP(0.72, 0.5)[1].toFixed(1)}" rx="3" ry="1.5"/></g>
-      <path class="warn-ln" d="M${at(0.66, 0.3)} l-3,-9 l4,4 l2,-7 l3,8 l3,-3 l-1,7"/>
-      <path class="fiber" d="M${at(0.06, 0.92)} C${at(0.2, 0.6)} ${at(0.18, 0.2)} ${at(0.38, 0.12)} S${at(0.8, 0.02)} ${at(0.94, 0.06)}"/>
-      ${drone(0.94, 0.06, 6)}
-      <text x="12" y="20">${tx('обстріли й вогонь: в обхід', 'shelling and fire: go around')}</text>
-      <text class="warn" x="12" y="172">${tx('осколки й тління обривають', 'fragments and embers cut it')}</text>
-      <text class="ok" x="12" y="186">${tx('5–60 км — є запас на обхід', '5–60 km — margin for a detour')}</text>`,
-  };
-  const labels = {
-    power: tx('Волокно під лінією електропередачі', 'Fibre under a power line'),
-    river: tx('Перетин річки', 'River crossing'),
-    road: tx('Перетин дороги', 'Road crossing'),
-    fire: tx('Обхід зони обстрілів', 'Detour around a shelled area'),
-  };
-  return wrap(labels[kind] || labels.power, (T[kind] || T.power)());
+/** Волокно на складному маршруті — за мотивами польової інструкції: пагорб із деревами,
+    дорога, опора ЛЕП; лінія проходить над усім цим без обриву. Без тактики — лише про якість волокна. */
+export function terrainSketch() {
+  const g = isoGrid(262, 64, 200, 58);
+  const { at, pts, slab, tree, drone } = g;
+  const [hx, hy] = g.P(0.28, 0.5);
+  const [tx0, ty0] = g.P(0.86, 0.42);
+  const hill = [[72, 27], [48, 18], [26, 10]].map(([rx, ry]) => `<ellipse class="hair" cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" rx="${rx}" ry="${ry}"/>`).join('');
+  const tower = `<g class="ln"><path d="M${(tx0 - 7).toFixed(1)},${ty0.toFixed(1)} L${(tx0 - 2).toFixed(1)},${(ty0 - 42).toFixed(1)} M${(tx0 + 7).toFixed(1)},${ty0.toFixed(1)} L${(tx0 + 2).toFixed(1)},${(ty0 - 42).toFixed(1)} M${(tx0 - 10).toFixed(1)},${(ty0 - 30).toFixed(1)} h20"/></g>
+  <g class="hair"><path d="M${(tx0 - 5.5).toFixed(1)},${(ty0 - 12).toFixed(1)} h11 M${(tx0 - 4).toFixed(1)},${(ty0 - 24).toFixed(1)} h8 M${(tx0 - 3).toFixed(1)},${(ty0 - 36).toFixed(1)} h6"/></g>
+  <path class="ln" d="M${(tx0 - 10).toFixed(1)},${(ty0 - 30).toFixed(1)} L${(tx0 - 62).toFixed(1)},${(ty0 - 58).toFixed(1)} M${(tx0 + 10).toFixed(1)},${(ty0 - 30).toFixed(1)} L${(tx0 + 58).toFixed(1)},${(ty0 - 50).toFixed(1)}"/>`;
+  return wrap(tx('Волокно на складному маршруті', 'Fibre over difficult terrain'), `
+  ${slab()}
+  ${hill}
+  <polygon class="road" points="${pts([0.57, 0], [0.67, 0], [0.67, 1], [0.57, 1])}"/>
+  <path class="hair" stroke-dasharray="4 4" d="M${at(0.62, 0.04)} L${at(0.62, 0.96)}"/>
+  ${tree(0.2, 0.44, 1.1)}${tree(0.27, 0.36, 0.9)}${tree(0.33, 0.47, 1.2)}${tree(0.24, 0.56, 0.8)}${tree(0.36, 0.58, 1)}${tree(0.5, 0.28, 0.9)}${tree(0.72, 0.3, 0.9)}${tree(0.76, 0.62, 1.1)}
+  ${tower}
+  <path class="fiber" d="M${at(0.03, 0.93)} C${at(0.1, 0.72)} ${at(0.18, 0.5, -20)} ${at(0.28, 0.44, -24)} S${at(0.46, 0.3, -6)} ${at(0.57, 0.3, -12)} S${at(0.7, 0.28, -12)} ${at(0.8, 0.26, -2)} S${at(0.9, 0.16)} ${at(0.94, 0.06, -6)}"/>
+  ${drone(0.94, 0.06, 8)}
+  <text x="12" y="20">${tx('волокно на складному маршруті', 'fibre over difficult terrain')}</text>
+  <text x="12" y="30">${tx('пагорб · дерева · дорога · ЛЕП', 'hill · trees · road · power line')}</text>
+  <text x="${(hx - 34).toFixed(1)}" y="${(hy - 44).toFixed(1)}">${tx('над деревами', 'over the trees')}</text>
+  <text x="${(g.P(0.62, 0.3)[0] - 28).toFixed(1)}" y="${(g.P(0.62, 0.3)[1] - 34).toFixed(1)}">${tx('над дорогою', 'over the road')}</text>
+  <text x="${(tx0 + 14).toFixed(1)}" y="${(ty0 + 6).toFixed(1)}">${tx('під проводами', 'under the wires')}</text>
+  <text class="ok" x="12" y="196">${tx('G.657.A2 · радіус вигину 7,5 мм · 5–60 км без з’єднань', 'G.657.A2 · bend radius 7.5 mm · 5–60 km without splices')}</text>
+  <text class="ok" x="12" y="206">${tx('тримає натяг, вітер і перепади висот — без обриву й втрат сигналу', 'holds tension, wind and elevation changes — no break, no signal loss')}</text>`, '0 0 520 212');
 }
 
 export const SKETCHES = {
   coil: coilSketch, casing: casingSketch, sky: skySketch, ground: groundSketch,
   prop: propSketch, propScale: propScaleSketch, sheet: sheetSketch, tube: tubeSketch, smt: smtSketch, link: linkSketch,
-  hookup: hookupSketch, route: routeSketch,
+  hookup: hookupSketch, terrain: terrainSketch,
 };
 
 /* Підставити ескізи у всі [data-sketch="ключ"] (data-arg передається аргументом). */
