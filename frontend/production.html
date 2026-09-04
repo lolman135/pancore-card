@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20260903c">
-<link rel="stylesheet" href="css/pages.css?v=20260903c">
+<link rel="stylesheet" href="css/pages.css?v=20260904a">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -323,7 +323,13 @@
           <article class="rise" data-delay="2"><span class="n">06</span><h4>Резервні лінії та передислокація</h4><p>Реверсивна намотка: згорнути лінію, перемістити, розгорнути знову.</p></article>
         </div>
         <div class="rule rise" style="margin:56px 0 20px">Волокно на складному маршруті</div>
-        <div class="sk sk--wide sk--scene rise" data-sketch="terrain" aria-hidden="true" style="margin-bottom:14px"></div>
+        <div class="scene3d rise" id="route3d" aria-hidden="true" style="margin-bottom:14px">
+          <canvas></canvas>
+          <div class="scene3d__cap">волокно на складному маршруті<br>пагорб · дерева · дорога · ЛЕП</div>
+          <div class="scene3d__ok">G.657.A2 · радіус вигину 7,5 мм · 5–60 км без з’єднань<br>тримає натяг, вітер і перепади висот — без обриву й втрат сигналу</div>
+          <div class="scene3d__labels"></div>
+          <div class="scene3d__hint">↔ обертати</div>
+        </div>
         <p class="callout rise" style="margin:0"><b>Волокно, яке витримує складний маршрут:</b> одномодове G.657.A2 з радіусом вигину 7,5 мм проходить над деревами, дорогами, водою й перепадами рельєфу без обриву та без втрат сигналу. Кожен звій стабілізований без перетяжок і перевірений OTDR на всій довжині — лінія на 5–60 км тримає натяг, вітер і рельєф від першого до останнього метра.</p>
         <div class="rise" style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
           <a class="btn btn--primary" href="catalog.html#item-901">Специфікація звою в асортименті <span class="arr">→</span></a>
@@ -598,6 +604,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
   <span>Зв’язатися</span>
 </a>
-<script type="module" src="js/production.js?v=20260903c"></script>
+<script type="module" src="js/production.js?v=20260904a"></script>
 </body>
 </html>

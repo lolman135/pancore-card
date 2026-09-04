@@ -485,3 +485,27 @@
   body.is-printing .drawer__body { overflow: visible; padding: 10px 0; }
   body.is-printing .drawer__body::after { content: "PANCORE · info@pancore.tech · Made in EU"; display: block; margin-top: 18px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; color: #444; }
 }
+
+/* ---------- 3D-сцена «Волокно на складному маршруті» (js/route3d.js) ---------- */
+.scene3d { position: relative; height: clamp(320px, 44vw, 540px); border: 1px solid var(--line); border-radius: var(--r-s); overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 40%, rgba(255, 61, 79, 0.05), transparent 60%), linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%);
+  touch-action: pan-y; cursor: grab; user-select: none; --scene-fade: 1; }
+.scene3d.is-drag { cursor: grabbing; }
+.scene3d canvas { display: block; width: 100%; height: 100%; opacity: var(--scene-fade); }
+.scene3d__labels { position: absolute; inset: 0; pointer-events: none; opacity: var(--scene-fade); }
+.scene3d__lbl { position: absolute; left: 0; top: 0; white-space: nowrap; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-2); padding: 3px 7px; background: rgba(7, 8, 11, 0.62); border: 1px solid var(--line); border-radius: 3px; transition: opacity 0.4s; will-change: transform; }
+.scene3d__cap, .scene3d__ok { position: absolute; left: 18px; font-family: var(--f-mono); font-size: 12px; line-height: 1.55; letter-spacing: 0.06em; pointer-events: none; }
+.scene3d__cap { top: 16px; color: var(--text-3); }
+.scene3d__ok { bottom: 16px; color: var(--ok); }
+.scene3d__hint { position: absolute; right: 14px; bottom: 14px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); opacity: 0.7; pointer-events: none; }
+.scene3d.is-fallback { height: auto; cursor: default; padding: 18px; }
+.scene3d.is-fallback canvas, .scene3d.is-fallback .scene3d__cap, .scene3d.is-fallback .scene3d__ok, .scene3d.is-fallback .scene3d__hint, .scene3d.is-fallback .scene3d__labels { display: none; }
+.scene3d.is-fallback .sketch { max-height: 340px; }
+@media (max-width: 640px) {
+  .scene3d { height: 320px; }
+  .scene3d__lbl { font-size: 9.5px; padding: 2px 5px; }
+  .scene3d__cap, .scene3d__ok { font-size: 10.5px; left: 12px; }
+  .scene3d__cap { top: 10px; } .scene3d__ok { bottom: 10px; }
+  .scene3d__hint { display: none; }
+}

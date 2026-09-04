@@ -6,13 +6,32 @@
    ============================================================ */
 
 import { reducedMotion, swapIn, scrollToEl } from './site.js';
-import { mountSketches, propSketch, propScaleSketch } from './sketches.js';
+import { mountSketches, propSketch, propScaleSketch, terrainSketch } from './sketches.js';
 
 const EN = /^en/i.test(document.documentElement.lang || '');
 const LOC = EN ? 'en-GB' : 'uk-UA';
 const t = (uk, en) => (EN ? en : uk);
 
 mountSketches();
+
+/* ---------- 3D-сцена маршруту волокна: вантажимо модуль, коли блок наближається до кадру;
+   без WebGL або при помилці — статичний SVG-ескіз ---------- */
+(() => {
+  const host = document.getElementById('route3d');
+  if (!host) return;
+  const fallback = () => { host.classList.add('is-fallback'); host.innerHTML = terrainSketch(); };
+  const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
+  if (!gl) { fallback(); return; }
+  let done = false;
+  const boot = () => {
+    if (done) return; done = true;
+    import('./route3d.js').then((m) => m.createRouteScene(host, { static: reducedMotion })).catch((e) => { console.warn('route3d:', e); fallback(); });
+  };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((ents) => { if (ents.some((e) => e.isIntersecting)) { io.disconnect(); boot(); } }, { rootMargin: '600px 0px' });
+    io.observe(host);
+  } else boot();
+})();
 
 /* ---------- паспорт звою: лінійка 5–60 км за КП SFC від 03.09.2026 ----------
    Маса kg — звій без корпусу та модулів, kgc — у корпусі без модулів (40/60 км: корпус під замовлення).
