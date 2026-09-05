@@ -104,6 +104,8 @@ jobs:
             MAIL_TO=${{ secrets.MAIL_TO }}
             MAIL_FROM_PASSWORD=${{ secrets.MAIL_FROM_PASSWORD }}
             PROD_FLAG=${{ vars.PROD_FLAG }}
+            UMAMI_DB_PASSWORD=${{ secrets.UMAMI_DB_PASSWORD }}
+            UMAMI_APP_SECRET=${{ secrets.UMAMI_APP_SECRET }}
             ENVFILE
             BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/pancore/backend:${{ github.run_number }} \
             FRONTEND_IMAGE=ghcr.io/${{ github.repository_owner }}/pancore/frontend:${{ github.run_number }} \

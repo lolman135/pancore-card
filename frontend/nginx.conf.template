@@ -1,10 +1,5 @@
-# Шаблон для nginx:alpine — envsubst підставляє ${BACKEND_PORT} з .env
-# і кладе результат у /etc/nginx/conf.d/default.conf при старті контейнера.
-
 limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
 
-# HTTP → HTTPS. Certbot ходить standalone з зупинкою контейнера,
-# тому ACME-виключення тут не потрібне.
 server {
     listen 80;
     server_name pancore.eu www.pancore.eu;
@@ -16,7 +11,6 @@ server {
     http2 on;
     server_name pancore.eu www.pancore.eu;
 
-    # Сертифікати з хоста, змонтовані read-only у compose.
     ssl_certificate     /etc/letsencrypt/live/pancore.eu/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/pancore.eu/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -25,8 +19,6 @@ server {
 
     add_header Strict-Transport-Security "max-age=31536000" always;
 
-    # DNS Docker: ім'я сервіса бекенда резолвиться в рантаймі, тому nginx
-    # піднімається навіть коли бекенд ще не готовий.
     resolver 127.0.0.11 valid=30s;
 
     root /usr/share/nginx/html;
@@ -37,36 +29,51 @@ server {
     gzip_min_length 1024;
     gzip_types text/css application/javascript image/svg+xml application/json;
 
-    # Статика фронта. SPA-роутінгу немає — сторінки це окремі файли.
-    location / {
-        try_files $uri $uri/ =404;
+    location = / {
+        return 301 /main;
     }
 
-    # Службові файли репозиторію в роздачу не потрапляють.
+    location = /index.html {
+        return 301 /main;
+    }
+
+    location = /index {
+        return 301 /main;
+    }
+
+    location = /catalog {
+        return 301 /main;
+    }
+
+    location = /main {
+        expires -1;
+        try_files /index.html =404;
+    }
+
+    location ~ ^/(.+)\.html$ {
+        return 301 /$1;
+    }
+
     location ~* \.(template|md)$ {
         return 404;
     }
 
-    # Хешів у назвах немає, тож кеш короткий; HTML завжди свіжий.
     location ~* \.(css|js|svg|webp|woff2?)$ {
         add_header Cache-Control "no-cache";
     }
 
-    location ~* \.html$ {
+    location / {
         expires -1;
+        try_files $uri $uri.html $uri/ =404;
     }
 
-    # ^~ щоб регулярки вище не перехопили API.
     location ^~ /api/ {
         limit_req zone=api_limit burst=20 nodelay;
         limit_req_status 429;
 
-        # Змінна в proxy_pass → адреса резолвиться на кожен запит (див. resolver).
-        # Без URI-частини оригінальний шлях іде до бекенда як є: /api/v1/contact.
         set $backend_url http://backend:${BACKEND_PORT};
         proxy_pass $backend_url;
 
-        # Ключ додається на проксі, щоб не світити його у публічному env.js.
         proxy_set_header X-API-Key "${API_KEY}";
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -75,6 +82,41 @@ server {
 
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+}
+
+server {
+    listen 80;
+    server_name stats.pancore.eu;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name stats.pancore.eu;
+
+    ssl_certificate     /etc/letsencrypt/live/pancore.eu/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/pancore.eu/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    resolver 127.0.0.11 valid=30s;
+
+    location / {
+        set $umami_url http://umami:3000;
+        proxy_pass $umami_url;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+
+        proxy_http_version 1.1;
         proxy_read_timeout 60s;
     }
 }

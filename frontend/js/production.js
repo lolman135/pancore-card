@@ -6,7 +6,7 @@
    ============================================================ */
 
 import { reducedMotion, swapIn, scrollToEl } from './site.js';
-import { mountSketches, propSketch, propScaleSketch, terrainSketch } from './sketches.js';
+import { mountSketches, propSketch, propScaleSketch, terrainSketch, hookupSketch } from './sketches.js';
 
 const EN = /^en/i.test(document.documentElement.lang || '');
 const LOC = EN ? 'en-GB' : 'uk-UA';
@@ -14,23 +14,42 @@ const t = (uk, en) => (EN ? en : uk);
 
 mountSketches();
 
-/* ---------- 3D-сцена маршруту волокна: вантажимо модуль, коли блок наближається до кадру;
-   без WebGL або при помилці — статичний SVG-ескіз ---------- */
-(() => {
-  const host = document.getElementById('route3d');
+/* ---------- 3D-сцени: модуль вантажиться, коли блок наближається до кадру;
+   без WebGL або при помилці — статичний SVG-ескіз.
+   ⚠ версія в import має збігатися з версією в link3d.js (спільний route3d.js) ---------- */
+const WEBGL = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
+function boot3d(id, load, sketch) {
+  const host = document.getElementById(id);
   if (!host) return;
-  const fallback = () => { host.classList.add('is-fallback'); host.innerHTML = terrainSketch(); };
-  const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
-  if (!gl) { fallback(); return; }
+  const fallback = () => { host.classList.add('is-fallback'); host.innerHTML = sketch(); };
+  if (!WEBGL) { fallback(); return; }
   let done = false;
   const boot = () => {
     if (done) return; done = true;
-    import('./route3d.js?v=20260904c').then((m) => m.createRouteScene(host, { static: reducedMotion })).catch((e) => { console.warn('route3d:', e); fallback(); });
+    load().then((create) => create(host, { static: reducedMotion })).catch((e) => { console.warn(id + ':', e); fallback(); });
   };
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((ents) => { if (ents.some((e) => e.isIntersecting) || !innerHeight) { io.disconnect(); boot(); } }, { rootMargin: '600px 0px' });
     io.observe(host);
     /* фонова вкладка / прихована панель: спостерігач може не спрацювати — стартуємо, якщо блок близько */
+    setTimeout(() => { const r = host.getBoundingClientRect(); if (!innerHeight || r.top < innerHeight + 1200) { io.disconnect(); boot(); } }, 1500);
+  } else boot();
+}
+boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createRouteScene), terrainSketch);
+/* 2D-схема роботи каналу: звичайний SVG, тому без перевірки WebGL — вантажимо одразу,
+   коли блок наближається до кадру; prefers-reduced-motion → статичний кадр */
+(() => {
+  const host = document.getElementById('link2d');
+  if (!host) return;
+  let done = false;
+  const boot = () => {
+    if (done) return; done = true;
+    import('./link2d.js?v=20260904e').then((m) => m.createLinkScene(host, { static: reducedMotion }))
+      .catch((e) => { console.warn('link2d:', e); host.innerHTML = hookupSketch(); });
+  };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((ents) => { if (ents.some((e) => e.isIntersecting) || !innerHeight) { io.disconnect(); boot(); } }, { rootMargin: '600px 0px' });
+    io.observe(host);
     setTimeout(() => { const r = host.getBoundingClientRect(); if (!innerHeight || r.top < innerHeight + 1200) { io.disconnect(); boot(); } }, 1500);
   } else boot();
 })();
