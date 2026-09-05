@@ -115,7 +115,12 @@ ul { margin: 0; padding: 0; list-style: none; }
   transition: border-color 0.3s, background 0.3s;
 }
 .head.is-scrolled { border-bottom-color: var(--line); background: rgba(7, 8, 11, 0.82); }
-.head__in { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.head__in {
+  width: 100%; display: grid; align-items: center; gap: 24px;
+  grid-template-columns: 1fr auto 1fr; /* nav по центру незалежно від ширини бренду та CTA */
+}
+.head__in > .brand { justify-self: start; }
+.head__in > .head__cta { justify-self: end; }
 
 .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--text); }
 .brand__mark { width: 30px; height: 30px; color: var(--text); flex: none; }
