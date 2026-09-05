@@ -340,38 +340,47 @@ export function terrainSketch() {
   <text class="ok" x="12" y="206">${tx('тримає натяг, вітер і перепади висот — без обриву й втрат сигналу', 'holds tension, wind and elevation changes — no break, no signal loss')}</text>`, '0 0 520 212');
 }
 
-/** Рама БпЛА — ізометрія: дві пластини на стійках, чотири промені, мотори на кінцях. Без розмірів — для асортименту. */
+/** Рама FPV-БпЛА — вигляд зверху, спрощено за фото рами класу 7–10″: довге тіло з двох пластин
+    (верхня з поздовжніми слотами, нижня з майданчиком під АКБ), чотири промені хрестом
+    із майданчиками моторів, гвинти на стиках, кронштейн камери спереду. Без розмірів. */
 export function frameSketch() {
-  const c30 = Math.cos(Math.PI / 6), s30 = 0.5;
-  const P = (x, y, z = 0) => [115 + (x - y) * c30, 118 + (x + y) * s30 - z];
-  const pt = (x, y, z = 0) => { const [px, py] = P(x, y, z); return `${px.toFixed(1)},${py.toFixed(1)}`; };
-  const quad = (pts, z, cls) => `<polygon class="${cls}" points="${pts.map(([x, y]) => pt(x, y, z)).join(' ')}"/>`;
-  // пластини — восьмикутник у плані
-  const oct = (a, b) => [[-a, -b], [a, -b], [b, -a], [b, a], [a, b], [-a, b], [-b, a], [-b, -a]];
-  const plate = oct(14, 30);
-  const arms = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
-  const L = 72;
-  const cyl = (x, y, r, z0, h, cls) => {
-    const [cx0, cy0] = P(x, y, z0), [cx1, cy1] = P(x, y, z0 + h);
-    return `<ellipse class="${cls}" cx="${cx0.toFixed(1)}" cy="${cy0.toFixed(1)}" rx="${r * 1.7}" ry="${r}"/>
-      <path class="ln" d="M${(cx0 - r * 1.7).toFixed(1)},${cy0.toFixed(1)} V${cy1.toFixed(1)} M${(cx0 + r * 1.7).toFixed(1)},${cy0.toFixed(1)} V${cy1.toFixed(1)}"/>
-      <ellipse class="ln2 fillDim" cx="${cx1.toFixed(1)}" cy="${cy1.toFixed(1)}" rx="${r * 1.7}" ry="${r}"/>`;
+  const f1 = (v) => v.toFixed(1);
+  const C = [115, 104];
+  // майданчик мотора: кільце, центральний отвір, 4 болти, полегшувальний отвір з боку променя
+  const mount = (x, y, ang) => {
+    const bolts = [0, 90, 180, 270].map((d) => { const r = (ang + d) * Math.PI / 180; return `<circle class="hair" cx="${f1(x + Math.cos(r) * 5.2)}" cy="${f1(y + Math.sin(r) * 5.2)}" r="0.9"/>`; }).join('');
+    const rl = (ang + 180) * Math.PI / 180;
+    return `<circle class="ln2 fillDim" cx="${f1(x)}" cy="${f1(y)}" r="8.6"/><circle class="ln" cx="${f1(x)}" cy="${f1(y)}" r="2.4"/>${bolts}
+      <circle class="hair" cx="${f1(x + Math.cos(rl) * 11.5)}" cy="${f1(y + Math.sin(rl) * 11.5)}" r="1.6"/>`;
   };
-  const armsSvg = arms.map(([sx, sy]) => {
-    const [ax, ay] = [sx * 24, sy * 24], [bx, by] = [sx * L, sy * L];
-    return `<path class="ln2" d="M${pt(ax, ay, 6)} L${pt(bx, by, 6)}"/><path class="hair" d="M${pt(ax, ay, 2)} L${pt(bx, by, 2)}"/>`;
-  }).join('');
-  const motors = arms.map(([sx, sy]) => cyl(sx * L, sy * L, 6, 6, 12, 'ln')).join('');
-  const props = arms.map(([sx, sy]) => { const [mx, my] = P(sx * L, sy * L, 20); return `<ellipse class="hair" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" rx="30" ry="9"/>`; }).join('');
-  const posts = [[-10, -22], [10, -22], [-10, 22], [10, 22]].map(([x, y]) => `<path class="hair" d="M${pt(x, y, 6)} L${pt(x, y, 30)}"/>`).join('');
-  return wrap(tx('Рама БпЛА', 'UAV frame'), `
-  ${quad(plate, 6, 'ln2 fillDim')}
-  ${armsSvg}${motors}${posts}
-  ${quad(oct(12, 24), 30, 'ln2 fillDim')}
-  <rect class="ln" x="${P(0, 0, 40)[0] - 9}" y="${P(0, 0, 40)[1] - 5}" width="18" height="10" rx="1.5"/>
-  ${props}
-  <text x="12" y="20">${tx('рама · пластини, промені, стійки', 'frame · plates, arms, standoffs')}</text>
-  <text x="12" y="30">${tx('карбон + друковані деталі', 'carbon + printed parts')}</text>`);
+  // промінь: плоска смуга від тіла до майданчика, трохи вужча біля мотора
+  const arm = (x0, y0, x1, y1) => {
+    const dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy), nx = -dy / L, ny = dx / L;
+    const w0 = 4.2, w1 = 3.4;
+    const pts = [[x0 + nx * w0, y0 + ny * w0], [x1 + nx * w1, y1 + ny * w1], [x1 - nx * w1, y1 - ny * w1], [x0 - nx * w0, y0 - ny * w0]];
+    return `<polygon class="ln2 fillDim" points="${pts.map(([x, y]) => `${f1(x)},${f1(y)}`).join(' ')}"/>`;
+  };
+  const screws = (pts) => pts.map(([x, y]) => `<circle class="ln" cx="${x}" cy="${y}" r="1.4"/><circle class="hair" cx="${x}" cy="${y}" r="0.5"/>`).join('');
+  const slot = (x, y, w, h) => `<rect class="hair" x="${f1(x - w / 2)}" y="${f1(y - h / 2)}" width="${w}" height="${h}" rx="${w / 2}"/>`;
+  const M = [[52, 52, 30], [178, 52, -30], [46, 156, -30], [184, 156, 30]];   // мотори: x, y, кут болтів
+  const A = [[104, 92, 52, 52], [126, 92, 178, 52], [106, 122, 46, 156], [124, 122, 184, 156]];
+  return wrap(tx('Рама БпЛА · вигляд зверху', 'UAV frame · top view'), `
+  ${A.map(([x0, y0, x1, y1]) => arm(x0, y0, x1, y1)).join('')}
+  ${M.map(([x, y, a]) => mount(x, y, a)).join('')}
+  <!-- нижня пластина з майданчиком під АКБ -->
+  <rect class="ln fillDim" x="103" y="82" width="24" height="46" rx="3"/>
+  <rect class="ln2" x="106" y="84" width="18" height="40" rx="2"/>
+  <path class="hair" d="M108,90 h14 M108,96 h14 M108,102 h14 M108,108 h14 M108,114 h14 M108,120 h14"/>
+  <!-- верхня пластина: передня і задня секції зі слотами -->
+  <path class="ln2 fillDim" d="M105,42 h20 a4,4 0 0 1 4,4 v36 h-28 v-36 a4,4 0 0 1 4,-4 z"/>
+  ${slot(115, 62, 4.5, 20)}
+  <path class="ln2 fillDim" d="M103,128 h24 v30 l-5,9 h-14 l-5,-9 z"/>
+  ${slot(115, 140, 4.5, 16)}<circle class="ln" cx="115" cy="155" r="2.6"/>
+  <!-- кронштейн камери спереду -->
+  <path class="ln" d="M107,42 v-6 h16 v6"/><path class="hair" d="M110,36 v-4 M120,36 v-4"/>
+  ${screws([[107, 80], [123, 80], [107, 130], [123, 130], [108, 46], [122, 46], [109, 158], [121, 158]])}
+  <text x="12" y="20">${tx('рама FPV · вигляд зверху', 'FPV frame · top view')}</text>
+  <text x="12" y="30">${tx('дві карбонові пластини · промені змінні', 'two carbon plates · replaceable arms')}</text>`);
 }
 
 export const SKETCHES = {
