@@ -19,8 +19,14 @@ const list = (items) => `<ul class="plist">${items.map((i, k) => `<li style="--i
 /* ---------- зміст: чипи-якорі на категорії ---------- */
 const toc = document.getElementById('toc');
 if (toc) toc.innerHTML = ASSORTMENT.map((c) => `<a class="chip" href="#oth-${c.id}">${esc(c.name)}</a>`).join('');
+/* українська множина: 1 позиція · 2–4 позиції · 5+ позицій (11–14 — як 5+) */
+const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; return (m10 === 1 && m100 !== 11) ? one : (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) ? few : many; };
 const total = document.getElementById('total');
-if (total) total.textContent = `${ASSORTMENT.reduce((a, c) => a + c.items.length, 0)} ${t('позицій', 'items')} · ${ASSORTMENT.length} ${t('категорій', 'categories')}`;
+if (total) {
+  const n = ASSORTMENT.reduce((a, c) => a + c.items.length, 0), k = ASSORTMENT.length;
+  total.textContent = EN ? `${n} items · ${k} categories`
+    : `${n} ${plural(n, 'позиція', 'позиції', 'позицій')} · ${k} ${plural(k, 'категорія', 'категорії', 'категорій')}`;
+}
 
 /* ---------- категорії: акордеон з анімацією висоти ---------- */
 const host = document.getElementById('assortment-items');
