@@ -659,3 +659,37 @@ body.menu-open .mnav { display: flex; }
 .loader__word { position: absolute; left: 50%; top: calc(50% + 74px); transform: translateX(-50%); font-family: var(--f-brand); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
 html:not(.js-anim) .loader { display: none; }
 @media (prefers-reduced-motion: reduce) { .loader { display: none; } }
+
+/* ---------- сповіщення про обробку персональних даних (розмітку створює js/consent.js, поки немає cookie) ----------
+   Праворуч унизу: вміст усіх сторінок притиснутий ліворуч, а там картка накривала б CTA героя.
+   Поки картка відкрита (body.consent-open), плаваюча .fab-desk (якщо є на сторінці) на тому ж місці ховається; на телефоні картка стоїть над .fab-bar.
+   z-index між плаваючими кнопками (45) і .cmp-bar/.drawer (70/80).
+   Переходи на .is-on — поява (повільніше, каскадом), на базовому класі — зникнення. */
+.consent {
+  position: fixed; right: 22px; bottom: 22px; z-index: 60;
+  width: min(380px, calc(100vw - 44px));
+  padding: 18px 20px 20px; border-radius: var(--r); overflow: hidden;
+  background: rgba(12, 14, 19, 0.92); border: 1px solid var(--line-2);
+  backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  opacity: 0; transform: translateY(18px) scale(0.97); pointer-events: none;
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.consent.is-on { opacity: 1; transform: none; pointer-events: auto; transition: opacity 0.5s var(--ease), transform 0.7s var(--ease); }
+/* червона риска згори «домальовується» зліва направо вже після появи картки (як у .stat::before) */
+.consent::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 1px; background: linear-gradient(90deg, var(--accent), transparent 70%); box-shadow: 0 0 10px var(--accent-glow); transform: scaleX(0); transform-origin: left; transition: transform 0.2s var(--ease); }
+.consent.is-on::before { transform: scaleX(1); transition: transform 0.9s var(--ease) 0.2s; }
+.consent__k { display: flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+.consent__k svg { width: 16px; height: 16px; flex: none; filter: drop-shadow(0 0 6px var(--accent-glow)); }
+.consent__t { margin-top: 10px; font-size: 14.5px; line-height: 1.55; color: var(--text-2); }
+.consent__foot { margin-top: 14px; display: flex; align-items: center; gap: 12px; }
+/* вміст піднімається каскадом слідом за карткою (як .rise з data-delay) */
+.consent__k, .consent__t, .consent__foot { opacity: 0; transform: translateY(8px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease); }
+.consent.is-on .consent__k, .consent.is-on .consent__t, .consent.is-on .consent__foot { opacity: 1; transform: none; transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+.consent.is-on .consent__k { transition-delay: 0.1s; }
+.consent.is-on .consent__t { transition-delay: 0.18s; }
+.consent.is-on .consent__foot { transition-delay: 0.26s; }
+body.menu-open .consent { opacity: 0; transform: translateY(18px) scale(0.97); pointer-events: none; }
+body.consent-open .fab-desk { opacity: 0; transform: translateY(16px); pointer-events: none; }
+@media (max-width: 880px) { .consent { left: 12px; right: 12px; bottom: 84px; width: auto; } }
+@media (prefers-reduced-motion: reduce) { .consent, .consent::before, .consent__k, .consent__t, .consent__foot { transition: none; } }
