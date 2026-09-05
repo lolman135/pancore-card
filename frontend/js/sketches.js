@@ -340,10 +340,44 @@ export function terrainSketch() {
   <text class="ok" x="12" y="206">${tx('тримає натяг, вітер і перепади висот — без обриву й втрат сигналу', 'holds tension, wind and elevation changes — no break, no signal loss')}</text>`, '0 0 520 212');
 }
 
+/** Рама БпЛА — ізометрія: дві пластини на стійках, чотири промені, мотори на кінцях. Без розмірів — для асортименту. */
+export function frameSketch() {
+  const c30 = Math.cos(Math.PI / 6), s30 = 0.5;
+  const P = (x, y, z = 0) => [115 + (x - y) * c30, 118 + (x + y) * s30 - z];
+  const pt = (x, y, z = 0) => { const [px, py] = P(x, y, z); return `${px.toFixed(1)},${py.toFixed(1)}`; };
+  const quad = (pts, z, cls) => `<polygon class="${cls}" points="${pts.map(([x, y]) => pt(x, y, z)).join(' ')}"/>`;
+  // пластини — восьмикутник у плані
+  const oct = (a, b) => [[-a, -b], [a, -b], [b, -a], [b, a], [a, b], [-a, b], [-b, a], [-b, -a]];
+  const plate = oct(14, 30);
+  const arms = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+  const L = 72;
+  const cyl = (x, y, r, z0, h, cls) => {
+    const [cx0, cy0] = P(x, y, z0), [cx1, cy1] = P(x, y, z0 + h);
+    return `<ellipse class="${cls}" cx="${cx0.toFixed(1)}" cy="${cy0.toFixed(1)}" rx="${r * 1.7}" ry="${r}"/>
+      <path class="ln" d="M${(cx0 - r * 1.7).toFixed(1)},${cy0.toFixed(1)} V${cy1.toFixed(1)} M${(cx0 + r * 1.7).toFixed(1)},${cy0.toFixed(1)} V${cy1.toFixed(1)}"/>
+      <ellipse class="ln2 fillDim" cx="${cx1.toFixed(1)}" cy="${cy1.toFixed(1)}" rx="${r * 1.7}" ry="${r}"/>`;
+  };
+  const armsSvg = arms.map(([sx, sy]) => {
+    const [ax, ay] = [sx * 24, sy * 24], [bx, by] = [sx * L, sy * L];
+    return `<path class="ln2" d="M${pt(ax, ay, 6)} L${pt(bx, by, 6)}"/><path class="hair" d="M${pt(ax, ay, 2)} L${pt(bx, by, 2)}"/>`;
+  }).join('');
+  const motors = arms.map(([sx, sy]) => cyl(sx * L, sy * L, 6, 6, 12, 'ln')).join('');
+  const props = arms.map(([sx, sy]) => { const [mx, my] = P(sx * L, sy * L, 20); return `<ellipse class="hair" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" rx="30" ry="9"/>`; }).join('');
+  const posts = [[-10, -22], [10, -22], [-10, 22], [10, 22]].map(([x, y]) => `<path class="hair" d="M${pt(x, y, 6)} L${pt(x, y, 30)}"/>`).join('');
+  return wrap(tx('Рама БпЛА', 'UAV frame'), `
+  ${quad(plate, 6, 'ln2 fillDim')}
+  ${armsSvg}${motors}${posts}
+  ${quad(oct(12, 24), 30, 'ln2 fillDim')}
+  <rect class="ln" x="${P(0, 0, 40)[0] - 9}" y="${P(0, 0, 40)[1] - 5}" width="18" height="10" rx="1.5"/>
+  ${props}
+  <text x="12" y="20">${tx('рама · пластини, промені, стійки', 'frame · plates, arms, standoffs')}</text>
+  <text x="12" y="30">${tx('карбон + друковані деталі', 'carbon + printed parts')}</text>`);
+}
+
 export const SKETCHES = {
   coil: coilSketch, casing: casingSketch, sky: skySketch, ground: groundSketch,
   prop: propSketch, propScale: propScaleSketch, sheet: sheetSketch, tube: tubeSketch, smt: smtSketch, link: linkSketch,
-  hookup: hookupSketch, terrain: terrainSketch,
+  hookup: hookupSketch, terrain: terrainSketch, frame: frameSketch,
 };
 
 /* Підставити ескізи у всі [data-sketch="ключ"] (data-arg передається аргументом). */

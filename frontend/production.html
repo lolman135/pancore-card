@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Виробництво — PANCORE GROUP</title>
-<meta name="description" content="Власне виробництво PANCORE GROUP в ЄС: безшпульна котушка оптоволокна G.657.A2 у польовому корпусі, пропелери 10″ і 15″ литтям під тиском, композити, SMT. Паспорт виробу, OTDR-контроль, креслення, документи для замовника.">
+<meta name="description" content="Власне виробництво PANCORE GROUP в ЄС: безшпульна оптоволоконна котушка G.657.A2 у польовому корпусі, пропелери 10″ і 15″ литтям під тиском, композити, SMT. Паспорт виробу, OTDR-контроль, креслення, документи для замовника.">
 <meta name="theme-color" content="#07080b">
 <!-- База API. Порожньо = той самий origin (бекенд роздає фронт або стоїть за одним проксі).
      Окремий домен API: content="https://api.pancore.example" -->
@@ -18,8 +18,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260903c">
-<link rel="stylesheet" href="css/pages.css?v=20260904e">
+<link rel="stylesheet" href="css/style.css?v=20260905a">
+<link rel="stylesheet" href="css/pages.css?v=20260905a">
 <script defer src="https://stats.pancore.eu/script.js" data-website-id="670ea9c6-207d-4c48-9eb3-26bb5b644a6b"></script>
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
@@ -67,13 +67,9 @@
       <nav class="nav" aria-label="Основна навігація">
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
-<!--        <a href="catalog.html" data-nav="catalog">Асортимент</a>-->
+<a href="products.html" data-nav="products">Асортимент</a>
       </nav>
       <div class="head__cta">
-<!--        <form class="hsearch" action="catalog.html" method="get" role="search">-->
-<!--          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>-->
-<!--          <input name="q" type="search" placeholder="Пошук у каталозі" aria-label="Пошук у каталозі" autocomplete="off">-->
-<!--        </form>-->
         <a class="btn btn--primary btn--sm" href="#request">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
@@ -82,7 +78,7 @@
   <nav class="mnav" id="mnav" aria-label="Мобільна навігація">
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
-    <a href="catalog.html" data-nav="catalog">Асортимент</a>
+    <a href="products.html" data-nav="products">Асортимент</a>
     <a href="#request" data-nav="contact">Зв’язатися</a>
     <p class="mnav__foot">PANCORE GROUP · MADE IN EU</p>
   </nav>
@@ -130,8 +126,8 @@
       <div class="wrap">
         <div class="blk__head">
           <p class="eyebrow rise">02 · Флагманський продукт · власне виробництво</p>
-          <h2 class="h-display h2 rise" data-delay="1">Безшпульна котушка оптоволокна G.657.A2</h2>
-          <p class="lead rise" data-delay="2">Самонесуча прецизійна намотка без шпулі: менша маса, менший об’єм, реверсивне розгортання. Розроблено для тактичних волоконних ліній і мереж зв’язку, що розгортаються в польових умовах.</p>
+          <h2 class="h-display h2 rise" data-delay="1">Безшпульна оптоволоконна котушка G.657.A2</h2>
+          <p class="lead rise" data-delay="2">Для захищеної волоконно-оптичної лінії між БпЛА і наземним пунктом керування: відео та дані керування йдуть одним волокном. Оптичний канал не створює радіовипромінювання, не пеленгується і не піддається РЕБ — це властивість середовища передачі, а не опція виробу. Самонесуча прецизійна намотка без шпулі: менша маса, менший об’єм, контрольоване розмотування. Постачається виключно у зібраному вигляді.</p>
           <div class="chips chips--tags rise" data-delay="3" style="margin-top:20px">
             <span class="chip">ITU-T G.657.A2</span><span class="chip">стандарт 20 · 30 км</span><span class="chip">5–60 км під замовлення</span><span class="chip">сердечник Ø53 / Ø64</span><span class="chip">−35…+70 °C</span><span class="chip">IP41 · опція IP67</span>
           </div>
@@ -180,10 +176,20 @@
                   <div class="ro"><b data-ro="kgc">2,795<small>кг</small></b><span>маса в корпусі</span></div>
                 </div>
               </div>
-              <p class="passport__fn">Маса котушки — без корпусу та модулів, маса в корпусі — без модулів; для 40 і 60 км корпус розробляється під замовлення. Проміжні довжини 15, 25, 35, 45, 50, 55 км — під замовлення. Фактична довжина кожної котушки фіксується OTDR-сканером. Дані: специфікація SRT-SFC-30-K/2026 і КП від 03.09.2026.</p>
+              <p class="passport__fn">Маса котушки — без корпусу та модулів, маса в корпусі — без модулів; для 40 і 60 км корпус розробляється під замовлення. Стандартні одиниці постачання — 20 і 30 км; довжини 5, 10, 15, 25, 35, 40, 45, 50, 55, 60 км виготовляються під замовлення. Фактична довжина кожної котушки фіксується OTDR-сканером.</p>
             </div>
             <div class="sk" data-sketch="coil" aria-hidden="true"></div>
           </div>
+        </div>
+
+        <div class="rule rise" style="margin:56px 0 20px">Склад виробу · постачається лише у зборі</div>
+        <div class="adv">
+          <article class="rise"><span class="n">01</span><h4>Безшпульна котушка</h4><p>Оптоволокно ITU-T G.657.A2; довжина — за замовленням, стандартні одиниці 20 і 30 км.</p></article>
+          <article class="rise" data-delay="1"><span class="n">02</span><h4>Захисний полімерний корпус</h4><p>PETG, 3D-друк: кришка twist-lock, відсік оптичного модуля, вузол кріплення на платформу носія.</p></article>
+          <article class="rise" data-delay="2"><span class="n">03</span><h4>Оптичні модулі Opticallink</h4><p>Бортовий S-T і наземний S-R: відео та дані керування — в оптичний сигнал і назад.</p></article>
+          <article class="rise"><span class="n">04</span><h4>Кабель даних GH 1,25 мм 5P</h4><p>Приєднання відео та каналу даних до бортового модуля; 310 мм у комплекті.</p></article>
+          <article class="rise" data-delay="1"><span class="n">05</span><h4>Два патчкорди FC/UPC</h4><p>Інтегровані оптичні виводи, зварені на виробництві та захищені термоусадними гільзами.</p></article>
+          <article class="rise" data-delay="2"><span class="n">06</span><h4>Монтажно-приєднувальний комплект</h4><p>Кабелі, адаптери, кріплення — усе, щоб поставити виріб на носій без пошуку дрібниць.</p></article>
         </div>
 
         <div class="rule rise" style="margin:56px 0 20px">Технологія безшпульної намотки</div>
@@ -266,7 +272,7 @@
             <figure class="photo photo--sq" style="margin:0"><img src="assets/img/coil-cap.webp" alt="Кришка twist-lock корпусу" loading="lazy"><figcaption class="photo__cap">Кришка twist-lock</figcaption></figure>
             <figure class="photo photo--sq" style="margin:0"><img src="assets/img/coil-port-fc.webp" alt="Оптичний FC-конектор у порту корпусу" loading="lazy"><figcaption class="photo__cap">Порт · FC-конектор</figcaption></figure>
             <figure class="photo photo--sq" style="margin:0"><img src="assets/img/coil-fiber-exit.webp" alt="Вихід волокна через верхній конус" loading="lazy"><figcaption class="photo__cap">Вивід волокна</figcaption></figure>
-            <figure class="photo photo--sq" style="margin:0"><img src="assets/img/coil-casing-mount.webp" alt="Корпус із кріпленням ластівчин хвіст" loading="lazy"><figcaption class="photo__cap">Кріплення на носії</figcaption></figure>
+            <figure class="photo photo--sq" style="margin:0"><img src="assets/img/coil-casing-mount.webp" alt="Корпус зі швидкознімним універсальним кріпленням" loading="lazy"><figcaption class="photo__cap">Кріплення на носії</figcaption></figure>
             <figure class="photo photo--wide" style="margin:0"><img src="assets/img/coil-cad.webp" alt="CAD-модель корпусу з ложементом трансивера" loading="lazy"><figcaption class="photo__cap">CAD · конструкція корпусу</figcaption></figure>
           </div>
         </div>
@@ -297,10 +303,6 @@
         <div class="sk sk--wide sk--scene rise" id="link2d" aria-hidden="true" style="margin-bottom:14px"></div>
         <p class="callout rise" style="margin:0"><b>Порядок підключення:</b> зніміть заглушку з оптичної розетки → під’єднайте конектор котушки, дотримуючись співвісності паза та виїмки, і затягніть контргайку до упору → АКБ 2S–6S у роз’єм XT60 → монітор або ПК → пульт RC. На позиції не витягуйте більше 2 м волокна без потреби, під час перевірки — не більше 10 см.</p>
 
-        <div class="rule rise" style="margin:56px 0 20px">Схема підключення наземної станції</div>
-        <div class="sk sk--wide rise" data-sketch="hookup" data-plain aria-hidden="true" style="margin-bottom:14px"></div>
-        <p class="callout rise" style="margin:0"><b>Порядок підключення:</b> зніміть заглушку з оптичної розетки → під’єднайте конектор котушки, дотримуючись співвісності паза та виїмки, і затягніть контргайку до упору → АКБ 2S–6S у роз’єм XT60 → монітор або ПК → пульт RC. На позиції не витягуйте більше 2 м волокна без потреби, під час перевірки — не більше 10 см.</p>
-
         <div class="rule rise" style="margin:56px 0 20px">Застосування</div>
         <div class="apps">
           <article class="is-prio rise"><span class="n">01 <i>пріоритет</i></span><h4>Волоконні канали БпЛА / FPV</h4><p>Керування та відео по волокну: нульова радіосигнатура, не пеленгується, несприйнятливе до РЕБ.</p></article>
@@ -318,9 +320,9 @@
           <div class="scene3d__labels"></div>
           <div class="scene3d__hint">↔ обертати</div>
         </div>
-        <p class="callout rise" style="margin:0"><b>Волокно, яке витримує складний маршрут:</b> одномодове G.657.A2 з радіусом вигину 7,5 мм проходить над деревами, дорогами, водою й перепадами рельєфу без обриву та без втрат сигналу. Кожна котушка стабілізована без перетяжок і перевірена OTDR на всій довжині — лінія на 5–60 км тримає натяг, вітер і рельєф від першого до останнього метра.</p>
+        <p class="callout rise" style="margin:0"><b>Волокно, яке витримує складний маршрут:</b> одномодове G.657.A2 з радіусом вигину 7,5 мм проходить над деревами, дорогами, водою й перепадами рельєфу без обриву та без втрат сигналу. Кожна котушка стабілізована без перетяжок і перевірений OTDR на всій довжині — лінія на 5–60 км тримає натяг, вітер і рельєф від першого до останнього метра.</p>
         <div class="rise" style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
-<!--          <a class="btn btn&#45;&#45;primary" href="catalog.html#item-901">Специфікація котушки в асортименті <span class="arr">→</span></a>-->
+          <a class="btn btn--primary" href="products.html#coil">Котушка в асортименті <span class="arr">→</span></a>
           <a class="btn btn--ghost" href="#request">Запит зразків та умов</a>
         </div>
       </div>
@@ -356,8 +358,8 @@
           </div>
           <div class="dos__block rise"><h4>Що виробляємо</h4>
             <div class="prods">
-<!--              <a class="prod" href="catalog.html#item-901"><div class="sk" data-sketch="coil" data-plain aria-hidden="true"></div><b>Безшпульна котушка G.657.A2</b><p>5–60 км у польовому корпусі, з трансивером і патчкордами.</p><span class="go">Специфікація →</span></a>-->
-<!--              <a class="prod" href="catalog.html#optic"><div class="sk" data-sketch="sky" data-plain aria-hidden="true"></div><b>Sky + Ground station</b><p>Оптичний канал відео та керування до 80 км.</p><span class="go">Позиції →</span></a>-->
+              <a class="prod" href="products.html#coil"><div class="sk" data-sketch="coil" aria-hidden="true"></div><b>Безшпульна котушка G.657.A2</b><p>Готова до встановлення: у корпусі, з бортовим модулем, патчкордами та монтажним комплектом.</p><span class="go">Специфікація →</span></a>
+              <a class="prod" href="products.html#link"><div class="sk" data-sketch="sky" aria-hidden="true"></div><b>Sky + Ground station</b><p>Відео та керування одним волокном: бортовий модуль і наземний термінал.</p><span class="go">Позиції →</span></a>
             </div>
           </div>
         </div>
@@ -376,9 +378,9 @@
         <div class="dos">
           <div class="dos__block rise"><h4>Що виробляємо</h4>
             <div class="prods">
-<!--              <a class="prod" href="catalog.html#carbon"><div class="sk" data-sketch="sheet" aria-hidden="true"></div><b>Карбонові листи</b><p>600 × 500 мм · 2 / 3 / 5 / 6 / 7 / 8 мм; 1000 × 1000 мм · 3 / 7 мм.</p><span class="go">У каталозі →</span></a>-->
-<!--              <a class="prod" href="catalog.html#carbon"><div class="sk" data-sketch="tube" aria-hidden="true"></div><b>Карбонові труби</b><p>16 × 12 × 2000 мм, інші перерізи за запитом.</p><span class="go">У каталозі →</span></a>-->
-<!--              <a class="prod" href="catalog.html#frames"><div class="sk" data-sketch="sheet" aria-hidden="true"></div><b>Рами БпЛА 10″…18″</b><p>Карбонові пластини + 3D-друковані вузли, комплект кріплення.</p><span class="go">У каталозі →</span></a>-->
+              <a class="prod" href="products.html#carbon"><div class="sk" data-sketch="sheet" aria-hidden="true"></div><b>Карбонові листи</b><p>Листи різної товщини під розкрій і фрезерування за кресленням замовника.</p><span class="go">У каталозі →</span></a>
+              <a class="prod" href="products.html#carbon"><div class="sk" data-sketch="tube" aria-hidden="true"></div><b>Карбонові труби</b><p>Для променів і несучих елементів; інші перерізи — за запитом.</p><span class="go">У каталозі →</span></a>
+              <a class="prod" href="products.html#frames"><div class="sk" data-sketch="frame" aria-hidden="true"></div><b>Рами БпЛА 10″…18″</b><p>Рамні комплекти під задачу та корисне навантаження; комплектуємо електронікою.</p><span class="go">У каталозі →</span></a>
             </div>
           </div>
           <div class="dos__block rise"><h4>Як</h4>
@@ -450,7 +452,7 @@
               <button type="button" class="mat__opt" data-mat="pa6" aria-pressed="false"><b>PA6 · GF40</b><span>стандарт</span></button>
             </div>
             <dl class="kv kv--mat" data-p="mat"></dl>
-<!--            <a class="btn btn&#45;&#45;ghost btn&#45;&#45;sm" data-p="link" href="catalog.html#item-902">Специфікація в асортименті →</a>-->
+            <a class="btn btn--ghost btn--sm" data-p="link" href="products.html#props">Пропелери в асортименті →</a>
           </div>
         </div>
 
@@ -476,18 +478,6 @@
               </tbody>
             </table>
           </div>
-          <div class="dos__block rise"><h4>Наступні вироби</h4>
-            <div class="prods prods--solo">
-<!--              <a class="prod prod&#45;&#45;row" href="catalog.html#item-901">-->
-<!--                <div class="prod__fig"><div class="sk" data-sketch="casing" aria-hidden="true"></div></div>-->
-<!--                <div class="prod__txt">-->
-<!--                  <b>Корпуси котушок</b>-->
-<!--                  <p>PETG, 3D-друк; серійна версія — лиття під тиском.</p>-->
-<!--                  <span class="go">Специфікація</span>-->
-<!--                </div>-->
-<!--              </a>-->
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -509,17 +499,6 @@
               <div class="stage"><b>Установлення</b><span>високошвидкісний + багатофункціональний установники</span></div>
               <div class="stage"><b>Оплавлення</b><span>багатозонна конвекційна піч</span></div>
               <div class="stage"><b>AOI · X-Ray</b><span>оптична інспекція, рентген BGA</span></div>
-            </div>
-          </div>
-          <div class="dos__block rise"><h4>Що виробляємо</h4>
-            <div class="prods prods--solo">
-              <div class="prod prod--row">
-                <div class="prod__fig"><div class="sk" data-sketch="smt" aria-hidden="true"></div></div>
-                <div class="prod__txt">
-                  <b>Монтаж плат для бортової електроніки</b>
-                  <p>Компоненти від 0201 до QFP / BGA. Запуск після введення площадки.</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -592,6 +571,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
   <span>Зв’язатися</span>
 </a>
-<script type="module" src="js/production.js?v=20260904e"></script>
+<script type="module" src="js/production.js?v=20260905a"></script>
 </body>
 </html>
