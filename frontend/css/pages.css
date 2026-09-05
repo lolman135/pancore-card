@@ -510,3 +510,42 @@
   .scene3d__cap { top: 10px; } .scene3d__ok { bottom: 10px; }
   .scene3d__hint { display: none; }
 }
+
+/* ---------- Асортимент (products.html): блоки позицій без теххарактеристик ---------- */
+.ptop { padding: calc(var(--head-h) + 40px) 0 10px; }
+.ptop h1 { font-size: clamp(28px, 3.6vw, 44px); }
+.ptop .lead { margin-top: 12px; max-width: 760px; }
+.ptop .chips { margin-top: 22px; }
+.pitem { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 36px; align-items: center; padding: 48px 0; border-top: 1px solid var(--line); }
+.pitem:first-child { border-top: 0; }
+.pitem__fig { display: grid; gap: 12px; }
+.pitem__fig--two { grid-template-columns: 1fr 1fr; align-items: stretch; }
+.pitem__fig--two .pitem__photo img { height: 100%; object-fit: cover; }
+.pitem__sk .sketch { max-height: 300px; }
+.pitem__fig--two .pitem__sk .sketch { max-height: 220px; }
+.pitem__photo img { display: block; width: 100%; border-radius: var(--r-s); }
+.pitem__txt .lead { margin: 12px 0 0; }
+.pitem__cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.plist__ttl { margin: 20px 0 8px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-3); }
+.plist { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.plist li { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); font-size: 13px; line-height: 1.3; }
+.plist li i { font-style: normal; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; color: var(--accent-2); white-space: nowrap; }
+/* в асортименті ескізи без розмірів і виносок */
+.pitem .sketch .dim, .pitem .sketch .dimL, .pitem .sketch .spec, .pitem .sketch--prop text, .pitem .sketch--prop .dim { display: none; }
+/* «Інше» — категорії-акордеони */
+.oth { border: 1px solid var(--line); border-radius: var(--r-s); background: var(--panel); margin-bottom: 8px; }
+.oth summary { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 18px; cursor: pointer; list-style: none; }
+.oth summary::-webkit-details-marker { display: none; }
+.oth summary b { font-size: 15px; font-weight: 700; }
+.oth summary b::before { content: "+"; display: inline-block; width: 18px; color: var(--accent); font-weight: 500; }
+.oth[open] summary b::before { content: "–"; }
+.oth__meta { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--text-3); text-align: right; }
+.oth .plist { padding: 4px 18px 16px; }
+.oth__cta { padding: 0 18px 16px; }
+@media (max-width: 900px) {
+  .pitem { grid-template-columns: 1fr; gap: 22px; padding: 36px 0; }
+  .pitem__fig--two { grid-template-columns: 1fr 1fr; }
+  .oth summary { flex-direction: column; gap: 4px; }
+  .oth__meta { text-align: left; }
+}
+@media (max-width: 560px) { .pitem__fig--two { grid-template-columns: 1fr; } }

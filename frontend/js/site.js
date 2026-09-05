@@ -261,20 +261,6 @@ function animateCounters() {
 }
 animateCounters();
 
-/* ---------- чипи категорій на головній ---------- */
-const chipsHost = document.getElementById('cat-chips');
-if (chipsHost) {
-  import('./data/catalog.js').then(({ CATEGORIES, ITEMS }) => {
-    const counts = {};
-    ITEMS.forEach((it) => { counts[it.cat] = (counts[it.cat] || 0) + 1; });
-    chipsHost.innerHTML = CATEGORIES.map(
-      (c) => `<a class="chip" href="catalog.html#${c.id}">${c.name} <b>${counts[c.id] || 0}</b></a>`,
-    ).join('');
-    const total = document.getElementById('cat-total');
-    if (total) total.textContent = ITEMS.length;
-  });
-}
-
 /* ---------- форма запиту → POST {API_BASE}/api/v1/contact ----------
    Контракт бекенда (backend/app/dto/contact.py):
      запит   { contact: string ≤254 (email | телефон | @telegram), comment: string ≤4000 }

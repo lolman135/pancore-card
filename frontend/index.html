@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260903c">
+<link rel="stylesheet" href="css/style.css?v=20260905a">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -102,13 +102,9 @@
       <nav class="nav" aria-label="Основна навігація">
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
-<!--        <a href="catalog.html" data-nav="catalog">Асортимент</a>-->
+<a href="products.html" data-nav="products">Асортимент</a>
       </nav>
       <div class="head__cta">
-<!--        <form class="hsearch" action="catalog.html" method="get" role="search">-->
-<!--          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>-->
-<!--          <input name="q" type="search" placeholder="Пошук у каталозі" aria-label="Пошук у каталозі" autocomplete="off">-->
-<!--        </form>-->
         <a class="btn btn--primary btn--sm" href="#contact">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
@@ -117,7 +113,7 @@
   <nav class="mnav" id="mnav" aria-label="Мобільна навігація">
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
-<!--    <a href="catalog.html" data-nav="catalog">Асортимент</a>-->
+<a href="products.html" data-nav="products">Асортимент</a>
     <a href="#contact" data-nav="contact">Зв’язатися</a>
     <p class="mnav__foot">PANCORE GROUP · MADE IN EU</p>
   </nav>
@@ -141,7 +137,7 @@
               полімерне лиття та понад 160 позицій комплектуючих для БпЛА з власним контролем якості.
             </p>
             <div class="hero__cta rise" data-delay="3">
-<!--              <a class="btn btn&#45;&#45;primary" href="catalog.html">Асортимент</a>-->
+              <a class="btn btn--primary" href="products.html">Асортимент</a>
               <a class="btn btn--ghost" href="production.html">Виробництво</a>
             </div>
           </div>
@@ -203,13 +199,13 @@
             <p>Пропелери 10″ та 15″, корпуси й деталі з армованих поліамідів на термопластавтоматах 3200 / 3800 kN із роботизованим зніманням.</p>
             <span class="card__go">Докладніше</span>
           </a>
-<!--          <a class="card card&#45;&#45;link rise" data-delay="3" href="catalog.html">-->
-<!--            <span class="card__code">04</span>-->
-<!--            <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="11" y="11" width="18" height="18" rx="2"/><rect x="16" y="16" width="8" height="8"/><path d="M15 11V6M20 11V6M25 11V6M15 34v-5M20 34v-5M25 34v-5M11 15H6M11 20H6M11 25H6M34 15h-5M34 20h-5M34 25h-5"/></svg></span>-->
-<!--            <h3 class="h3">Електроніка та компоненти</h3>-->
-<!--            <p>Двигуни, регулятори, польотні контролери, відеозв’язок, камери й тепловізори, автопілоти — 20 категорій під один контракт.</p>-->
-<!--            <span class="card__go">До асортименту</span>-->
-<!--          </a>-->
+          <a class="card card--link rise" data-delay="3" href="products.html">
+            <span class="card__code">04</span>
+            <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="11" y="11" width="18" height="18" rx="2"/><rect x="16" y="16" width="8" height="8"/><path d="M15 11V6M20 11V6M25 11V6M15 34v-5M20 34v-5M25 34v-5M11 15H6M11 20H6M11 25H6M34 15h-5M34 20h-5M34 25h-5"/></svg></span>
+            <h3 class="h3">Асортимент</h3>
+            <p>Власні вироби та компоненти перевірених марок: котушки, оптичний канал, пропелери, карбон, рами, двигуни, камери, автопілоти — під один контракт.</p>
+            <span class="card__go">До асортименту</span>
+          </a>
         </div>
       </div>
     </section>
@@ -274,19 +270,18 @@
     </section>
 
     <!-- ════════ АСОРТИМЕНТ (тизер) ════════ -->
-<!--    <section class="sec sec&#45;&#45;line" id="catalog">-->
-<!--      <div class="wrap">-->
-<!--        <div class="sec__head sec__head&#45;&#45;row">-->
-<!--          <div>-->
-<!--            <p class="eyebrow rise">Асортимент</p>-->
-<!--            <h2 class="h-display h2 rise" data-delay="1">163 позиції у 20 категоріях</h2>-->
-<!--            <p class="lead rise" data-delay="2">Власні вироби та компоненти перевірених виробників: від оптоволокна і карбону до двигунів, камер і автопілотів. Документація — на кожну позицію з позначкою, решта надається за запитом.</p>-->
-<!--          </div>-->
-<!--          <a class="btn btn&#45;&#45;primary rise" data-delay="2" href="catalog.html">Відкрити асортимент</a>-->
-<!--        </div>-->
-<!--        <div class="chips rise" id="cat-chips" data-delay="1"></div>-->
-<!--      </div>-->
-<!--    </section>-->
+    <section class="sec sec--line" id="products">
+      <div class="wrap">
+        <div class="sec__head sec__head--row">
+          <div>
+            <p class="eyebrow rise">Асортимент</p>
+            <h2 class="h-display h2 rise" data-delay="1">Основні позиції та компоненти</h2>
+            <p class="lead rise" data-delay="2">Власні вироби PANCORE — котушка, оптичний канал, пропелери, карбон — і компоненти для БпЛА перевірених марок. Назви позицій і марки, без технічних таблиць; специфікації та зразки — на запит.</p>
+          </div>
+          <a class="btn btn--primary rise" data-delay="2" href="products.html">Відкрити асортимент</a>
+        </div>
+      </div>
+    </section>
 
     <!-- ════════ КОНТАКТИ ════════ -->
     <section class="sec sec--line" id="contact">
@@ -336,6 +331,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
   <span>Зв’язатися</span>
 </a>
-<script type="module" src="js/site.js?v=20260904b"></script>
+<script type="module" src="js/site.js?v=20260905a"></script>
 </body>
 </html>

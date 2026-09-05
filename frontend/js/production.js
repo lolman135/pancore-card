@@ -54,7 +54,7 @@ boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createR
   } else boot();
 })();
 
-/* ---------- паспорт котушки: лінійка 5–60 км за КП SFC від 03.09.2026 ----------
+/* ---------- паспорт котушки: лінійка 5–60 км за специфікацією SRT-SFC-30-K/2026 і КП від 03.09.2026 ----------
    Маса kg — котушка без корпусу та модулів, kgc — у корпусі без модулів (40/60 км: корпус під замовлення).
    Еталон SFC-30: 30,212 км за OTDR, 2 245 г. */
 const RANGE = {
@@ -62,7 +62,7 @@ const RANGE = {
   od:  [110, 110, 100.2, 121, 128, 150],
   id:  [53, 53, 53, 53, 64, 64],
   h:   [51, 102, 213.8, 213.8, 241, 241],
-  kg:  [0.38, 0.70, 1.459, 2.245, 2.96, 4.20],
+  kg:  [0.365, 0.70, 1.459, 2.245, 2.96, 4.20],
   kgc: [0.605, 1.094, 1.853, 2.795, null, null],
   std: [false, false, true, true, false, false],
   ref: 3,
@@ -235,7 +235,7 @@ if (propBox) {
       q('[data-p="title"]').textContent = `${t('Пропелер PANCORE GROUP', 'PANCORE GROUP propeller')} ${p.name}`;
       ['d', 'pitch', 'ang', 'hub', 'chord', 'force'].forEach((k) => { q(`[data-p="${k}"]`).textContent = p[k]; });
       propBox.querySelectorAll('[data-c]').forEach((td, i) => { td.textContent = p.chords[i]; });
-      q('[data-p="link"]').href = `catalog.html#item-${p.item}`;
+      q('[data-p="link"]').href = 'products.html#props';
     }
     propBox.querySelectorAll('.toggle button').forEach((b) => b.classList.toggle('is-on', b.dataset.inch === String(key)));
     swapIn(q('[data-sketch="prop"]')); swapIn(q('.propdeck__spec'));
