@@ -1,8 +1,8 @@
 /* ============================================================
    PANCORE — «Як це працює в полі»: жива 2D-схема каналу (SVG)
 
-   Не інструкція складання, а показ роботи: дрон зі звоєм висить у
-   повітрі (гвинти крутяться, апарат похитується), звій розмотується,
+   Не інструкція складання, а показ роботи: дрон із котушкою висить у
+   повітрі (гвинти крутяться, апарат похитується), котушка розмотується,
    волокно живою дугою — з провисом і коливанням — приходить в оптичну
    розетку наземної станції. Кабелі живлення, відео та пульта так само
    провисають і гойдаються. По волокну біжать імпульси: вниз — відео і
@@ -22,9 +22,9 @@ const EN = /^en/i.test(document.documentElement.lang || '');
 const t = (uk, en) => (EN ? en : uk);
 const n1 = (v) => Math.round(v * 10) / 10;
 
-/* точки з'єднань: звій → розетка станції, АКБ → станція, станція → монітор, пульт → монітор */
+/* точки з'єднань: котушка → розетка станції, АКБ → станція, станція → монітор, пульт → монітор */
 const P = {
-  exit: [112, 104],     // вихід волокна зі звою
+  exit: [112, 104],     // вихід волокна із котушки
   sock: [252, 176],     // оптична розетка станції
   batt: [236, 226], pwr: [296, 206],
   vidA: [372, 184], vidB: [524, 152],
@@ -45,7 +45,7 @@ function markup() {
   const T = (x, y, s, cls = '') => `<text${cls ? ` class="${cls}"` : ''} x="${x}" y="${y}">${s}</text>`;
   const osd = (x, y, id) => `<text class="osd" id="${id}" x="${x}" y="${y}"></text>`;
   return `<svg class="sketch" viewBox="0 0 720 272" xmlns="http://www.w3.org/2000/svg" role="img"
-   aria-label="${t('Схема роботи оптичного каналу: дрон зі звоєм, волокно, наземна станція, монітор і пульт',
+   aria-label="${t('Схема роботи оптичного каналу: дрон із котушкою, волокно, наземна станція, монітор і пульт',
                    'How the optical link works: drone with the coil, fibre, ground station, monitor and RC')}">
   <defs>
     <radialGradient id="lk-glow"><stop offset="0" stop-color="rgba(255,61,79,0.85)"/><stop offset="1" stop-color="rgba(255,61,79,0)"/></radialGradient>
@@ -53,9 +53,9 @@ function markup() {
   </defs>
 
   ${T(14, 16, t('як це працює в полі', 'how it works in the field'))}
-  ${T(14, 26, t('звій на борту · одне волокно · наземна станція', 'coil on board · one fibre · ground station'))}
+  ${T(14, 26, t('котушка на борту · одне волокно · наземна станція', 'coil on board · one fibre · ground station'))}
 
-  <!-- дрон зі звоєм -->
+  <!-- дрон із котушкою -->
   <g id="lk-uav">
     <path class="ln" d="M90,58 L60,46 M134,58 L164,46"/>
     <rect class="ln2 fillDim" x="90" y="50" width="44" height="15" rx="3"/>
@@ -64,15 +64,15 @@ function markup() {
     <ellipse class="hair" id="lk-p2" cx="164" cy="40" rx="24" ry="2.6"/>
     <rect class="ln" x="100" y="42" width="18" height="8" rx="1"/>
     ${T(122, 40, 'sky S-T')}
-    <!-- звій: обичайка + витки, що біжать -->
+    <!-- котушка: обичайка + витки, що біжать -->
     <ellipse class="ln" cx="112" cy="72" rx="17" ry="4"/>
     <path class="ln" d="M95,72 v24 M129,72 v24"/>
     <ellipse class="ln" cx="112" cy="96" rx="17" ry="4"/>
     <path class="dimL" id="lk-wind" stroke-dasharray="5 3" d="M96,78 h32 M96,83 h32 M96,88 h32 M96,93 h32"/>
     <circle class="hair" cx="112" cy="102" r="1.8"/>
   </g>
-  ${T(186, 52, t('БпЛА · sky S-T зі звоєм на борту', 'UAV · sky S-T with the coil on board'))}
-  ${T(186, 62, t('звій розмотується у польоті', 'the coil pays out in flight'))}
+  ${T(186, 52, t('БпЛА · sky S-T із котушкою на борту', 'UAV · sky S-T with the coil on board'))}
+  ${T(186, 62, t('котушка розмотується у польоті', 'the coil pays out in flight'))}
 
   <!-- волокно -->
   <path class="fiber" id="lk-fib" d=""/>
