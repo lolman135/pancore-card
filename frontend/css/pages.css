@@ -558,3 +558,33 @@
   .oth__head { grid-template-columns: 1fr 18px; }
   .oth__meta { grid-column: 1; text-align: left; }
 }
+
+/* ---------- асортимент: поява карток без накладання; мобільна верстка ---------- */
+/* картки списку виїжджають збоку, а не знизу — інакше під час каскаду сусідні рядки накладалися */
+.js-anim .oth.rise { transform: translateX(-14px); }
+.js-anim .oth.rise.is-in { transform: none; }
+/* активна категорія у змісті */
+#toc .chip.is-on { border-color: var(--accent); color: #fff; background: var(--accent-soft); }
+@media (max-width: 700px) {
+  .band--assort { min-height: auto; padding: calc(var(--head-h) + 26px) 0 22px; }
+  /* .wrap у .band — flex-елемент: без min-width:0 стрічка чипів розтягує його за екран і підводка обрізається */
+  .band--assort .wrap { min-width: 0; width: 100%; }
+  .band--assort .h1 { font-size: clamp(30px, 9vw, 40px); }
+  .band--assort .lead { font-size: 15px; line-height: 1.5; margin-top: 10px; }
+  .band--assort #total { margin-top: 12px; }
+  /* зміст — одна стрічка з прокруткою, а не 20 рядків чипів */
+  #toc { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    margin: 12px -18px 0; padding: 2px 18px 6px; gap: 6px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 28px), transparent); }
+  #toc::-webkit-scrollbar { display: none; }
+  #toc .chip { flex: none; scroll-snap-align: start; font-size: 11px; padding: 7px 11px; }
+  .sec--assort { padding-top: 18px; }
+  .oth { margin-bottom: 6px; }
+  .oth__head { padding: 12px 14px; gap: 4px 12px; }
+  .oth__head b { font-size: 14px; }
+  .oth__meta { font-size: 10px; }
+  .oth .plist { padding: 2px 12px 12px; gap: 5px; }
+  .oth__cta { padding: 0 12px 12px; }
+  .plist li { font-size: 12.5px; padding: 6px 9px; gap: 6px; }
+  .plist li i { font-size: 10px; }
+}
