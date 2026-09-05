@@ -532,20 +532,41 @@
 .plist li i { font-style: normal; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; color: var(--accent-2); white-space: nowrap; }
 /* в асортименті ескізи без розмірів і виносок */
 .pitem .sketch .dim, .pitem .sketch .dimL, .pitem .sketch .spec, .pitem .sketch--prop text, .pitem .sketch--prop .dim { display: none; }
-/* «Інше» — категорії-акордеони */
-.oth { border: 1px solid var(--line); border-radius: var(--r-s); background: var(--panel); margin-bottom: 8px; }
-.oth summary { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 18px; cursor: pointer; list-style: none; }
-.oth summary::-webkit-details-marker { display: none; }
-.oth summary b { font-size: 15px; font-weight: 700; }
-.oth summary b::before { content: "+"; display: inline-block; width: 18px; color: var(--accent); font-weight: 500; }
-.oth[open] summary b::before { content: "–"; }
+/* смуга з полем граней над «Інше» */
+.sec--other { padding-top: 0; }
+.oband { position: relative; height: clamp(200px, 30vw, 360px); margin: 0 0 22px; overflow: hidden; background: var(--bg); }
+.oband .mesh-stage { position: absolute; inset: 0; }
+.oband::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 46%; background: linear-gradient(180deg, transparent, var(--bg)); pointer-events: none; }
+/* «Інше» — категорії-акордеони: висота анімується через grid-template-rows, чипи з’являються каскадом */
+.oth { border: 1px solid var(--line); border-radius: var(--r-s); background: var(--panel); margin-bottom: 8px; transition: border-color 0.3s, transform 0.3s var(--ease); }
+.oth:hover { border-color: rgba(255, 61, 79, 0.35); }
+.oth.is-open { border-color: rgba(255, 61, 79, 0.45); }
+.oth__head { display: grid; grid-template-columns: 1fr auto 18px; align-items: center; gap: 16px; width: 100%; padding: 14px 18px; background: none; border: 0; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+.oth__head b { font-size: 15px; font-weight: 700; transition: color 0.25s; }
+.oth__head:hover b, .oth.is-open .oth__head b { color: #fff; }
 .oth__meta { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--text-3); text-align: right; }
+.oth__x { position: relative; width: 14px; height: 14px; justify-self: end; }
+.oth__x::before, .oth__x::after { content: ""; position: absolute; left: 0; top: 6px; width: 14px; height: 2px; background: var(--accent); border-radius: 1px; transition: transform 0.4s var(--ease); }
+.oth__x::after { transform: rotate(90deg); }
+.oth.is-open .oth__x::after { transform: rotate(0deg); }
+.oth__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s var(--ease); }
+.oth.is-open .oth__body { grid-template-rows: 1fr; }
+.oth__in { min-height: 0; overflow: hidden; }
 .oth .plist { padding: 4px 18px 16px; }
 .oth__cta { padding: 0 18px 16px; }
+.oth .plist li { opacity: 0; }
+.oth .plist li.is-anim { animation: chipIn 0.45s var(--ease) both; animation-delay: calc(var(--i, 0) * 14ms); }
+@keyframes chipIn { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: none; } }
+.plist li { transition: border-color 0.25s, transform 0.25s var(--ease), background 0.25s; }
+.plist li:hover { border-color: rgba(255, 61, 79, 0.45); background: rgba(255, 61, 79, 0.06); transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) {
+  .oth .plist li { opacity: 1; animation: none; }
+  .oth__body { transition: none; }
+}
 @media (max-width: 900px) {
   .pitem { grid-template-columns: 1fr; gap: 22px; padding: 36px 0; }
   .pitem__fig--two { grid-template-columns: 1fr 1fr; }
-  .oth summary { flex-direction: column; gap: 4px; }
-  .oth__meta { text-align: left; }
+  .oth__head { grid-template-columns: 1fr 18px; }
+  .oth__meta { grid-column: 1; text-align: left; }
 }
 @media (max-width: 560px) { .pitem__fig--two { grid-template-columns: 1fr; } }

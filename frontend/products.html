@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20260905a">
-<link rel="stylesheet" href="css/pages.css?v=20260905a">
+<link rel="stylesheet" href="css/pages.css?v=20260905b">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -93,14 +93,17 @@
     <div class="wrap" id="main-items"></div>
 
     <!-- ════════ ІНШЕ (js/data/products.js → OTHER) ════════ -->
-    <section class="sec sec--line" id="other">
-      <div class="wrap">
-        <div class="sec__head">
-          <p class="eyebrow rise">Інше</p>
-          <h2 class="h-display h2 rise" data-delay="1">Компоненти під один контракт</h2>
-          <p class="lead rise" data-delay="2">Двигуни, регулятори, польотні контролери, відеозв’язок, камери, сервоприводи, авіоніка та силові установки — <span id="other-count"></span>. Лише назви й марки; характеристики та документи на позицію — на запит.</p>
+    <section class="sec sec--line sec--other" id="other">
+      <!-- те саме поле граней, що в герої головної: монтує site.js по canvas#mesh -->
+      <div class="oband" aria-hidden="true">
+        <div class="mesh-stage is-band">
+          <canvas id="mesh"></canvas>
+          <div class="mesh-fog"></div>
+          <div class="mesh-vignette"></div>
         </div>
-        <div class="rise" id="other-items" data-delay="2"></div>
+      </div>
+      <div class="wrap">
+        <div id="other-items"></div>
       </div>
     </section>
 
@@ -153,6 +156,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
   <span>Зв’язатися</span>
 </a>
-<script type="module" src="js/products.js?v=20260905a"></script>
+<script type="module" src="js/products.js?v=20260905b"></script>
 </body>
 </html>
