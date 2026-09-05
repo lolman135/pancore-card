@@ -12,13 +12,14 @@ import { ASSORTMENT } from './data/products.js';
 const EN = /^en/i.test(document.documentElement.lang || '');
 const t = (uk, en) => (EN ? en : uk);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+const phone = matchMedia('(max-width: 700px)');
 
 /* --i — порядковий номер для каскадної появи чипів (CSS animation-delay) */
 const list = (items) => `<ul class="plist">${items.map((i, k) => `<li style="--i:${k}"><span>${esc(i.n)}</span>${i.b ? `<i>${esc(i.b)}</i>` : ''}</li>`).join('')}</ul>`;
 
 /* ---------- зміст: чипи-якорі на категорії ---------- */
 const toc = document.getElementById('toc');
-if (toc) toc.innerHTML = ASSORTMENT.map((c) => `<a class="chip" href="#oth-${c.id}">${esc(c.name)}</a>`).join('');
+if (toc) toc.innerHTML = ASSORTMENT.map((c) => `<a class="chip" href="#oth-${c.id}" data-cat="${c.id}">${esc(c.name)}</a>`).join('');
 /* українська множина: 1 позиція · 2–4 позиції · 5+ позицій (11–14 — як 5+) */
 const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; return (m10 === 1 && m100 !== 11) ? one : (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) ? few : many; };
 const total = document.getElementById('total');
@@ -33,7 +34,7 @@ const host = document.getElementById('assortment-items');
 if (host) {
   host.innerHTML = ASSORTMENT.map((c, k) => {
     const brands = [...new Set(c.items.map((i) => i.b).filter(Boolean))];
-    return `<article class="oth rise" data-delay="${k % 4}" id="oth-${c.id}">
+    return `<article class="oth rise" data-delay="${k % 4}" id="oth-${c.id}" data-cat="${c.id}">
       <button class="oth__head" type="button" aria-expanded="false" aria-controls="oth-${c.id}-body">
         <b>${esc(c.name)}</b>
         <span class="oth__meta">${c.items.length} ${t('поз.', 'items')}${brands.length ? ' · ' + esc(brands.slice(0, 4).join(', ')) + (brands.length > 4 ? '…' : '') : ''}</span>
@@ -45,10 +46,23 @@ if (host) {
       </div></div>
     </article>`;
   }).join('');
+
+  /* підсвітити чип відкритої категорії у змісті; на телефоні стрічка сама підкрутиться до нього */
+  const markChip = () => {
+    if (!toc) return;
+    const openIds = [...host.querySelectorAll('.oth.is-open')].map((c) => c.dataset.cat);
+    toc.querySelectorAll('.chip').forEach((ch) => ch.classList.toggle('is-on', openIds.includes(ch.dataset.cat)));
+    const last = openIds[openIds.length - 1];
+    const chip = last && toc.querySelector(`.chip[data-cat="${last}"]`);
+    if (chip && phone.matches) toc.scrollTo({ left: chip.offsetLeft - (toc.clientWidth - chip.offsetWidth) / 2, behavior: 'smooth' });
+  };
   const open = (card, on) => {
+    /* на телефоні відкрита лише одна категорія — інакше сторінку довго гортати */
+    if (on && phone.matches) host.querySelectorAll('.oth.is-open').forEach((c) => { if (c !== card) open(c, false); });
     card.classList.toggle('is-open', on);
     card.querySelector('.oth__head').setAttribute('aria-expanded', String(on));
     if (on) card.querySelectorAll('.plist li').forEach((li) => { li.classList.remove('is-anim'); void li.offsetWidth; li.classList.add('is-anim'); });
+    markChip();
   };
   host.addEventListener('click', (e) => {
     const head = e.target.closest('.oth__head');
