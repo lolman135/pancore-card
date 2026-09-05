@@ -44,7 +44,7 @@ boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createR
   let done = false;
   const boot = () => {
     if (done) return; done = true;
-    import('./link2d.js?v=20260904e').then((m) => m.createLinkScene(host, { static: reducedMotion }))
+    import('./link2d.js?v=20260905a').then((m) => m.createLinkScene(host, { static: reducedMotion }))
       .catch((e) => { console.warn('link2d:', e); host.innerHTML = hookupSketch(); });
   };
   if ('IntersectionObserver' in window) {
@@ -136,7 +136,7 @@ if (otdr) {
     for (let km = 0; km <= xMax; km += stepX) xt.push(km);
     for (let db = 0; db >= yMin + 2; db -= 4) yt.push(db);
     plot.innerHTML = `
-      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('Рефлектограма OTDR', 'OTDR trace')}, ${wl} ${t('нм', 'nm')}">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('Рефлектограма OTDR', 'OTDR trace')}, ${wl} ${t('нм', 'nm')}" style="touch-action:pan-y">
         <defs><linearGradient id="otdr-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,61,79,0.28)"/><stop offset="1" stop-color="rgba(255,61,79,0)"/></linearGradient></defs>
         <g class="grid">${yt.map((db) => `<line x1="${L}" x2="${W - R}" y1="${sy(db).toFixed(1)}" y2="${sy(db).toFixed(1)}"/>`).join('')}${xt.map((km) => `<line y1="${T}" y2="${H - B}" x1="${sx(km).toFixed(1)}" x2="${sx(km).toFixed(1)}"/>`).join('')}</g>
         <path class="area" d="${area}"/>
@@ -150,8 +150,9 @@ if (otdr) {
           ${yt.map((db) => `<text x="${L - 6}" y="${(sy(db) + 3).toFixed(1)}" text-anchor="end">${db}</text>`).join('')}
           <text x="${L - 6}" y="${T - 2}" text-anchor="end">${t('дБ', 'dB')}</text>
         </g>
-        <g class="hover" hidden><line class="cross" y1="${T}" y2="${H - B}"/><circle class="dot" r="4"/></g>
+        <g class="hover" visibility="hidden"><line class="cross" y1="${T}" y2="${H - B}"/><circle class="dot" r="4"/></g>
       </svg>`;
+    plot.appendChild(tip);   // innerHTML вище зніс підказку з DOM — повертаємо той самий вузол
     const stats = otdr.querySelector('.otdr__stats');
     stats.innerHTML = [
       [fmt(d.km, 3) + `<small> ${t('км', 'km')}</small>`, t('довжина волокна', 'fibre length')],
@@ -166,22 +167,53 @@ if (otdr) {
     otdr.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('is-on', Number(b.dataset.wl) === wl));
     swapIn(plot); swapIn(stats);
 
-    // наведення: перехрестя + підказка (значення на лінійній ділянці)
+    // живі показання: значення беруться з самої кривої (кусково-лінійна інтерполяція між точками траси)
+    const live = otdr.querySelector('.otdr__live');
+    const perKm = d.loss / d.km;
+    const idleText = t('наведіть курсор на криву — покажемо загасання у точці', 'hover over the trace to read the attenuation at a point');
+    const setLive = (km, db) => {
+      if (km == null) { live.innerHTML = `<span class="otdr__hint">${idleText}</span>`; return; }
+      const zone = km < 0.3 ? t('імпульс запуску', 'launch pulse') : km > d.km ? t('за торцем · відбиття та шум', 'beyond the end · reflection and noise') : t('лінійна ділянка', 'linear section');
+      live.innerHTML = [
+        [fmt(km, 2), t('км', 'km'), t('відстань', 'distance')],
+        [fmt(db, 2), t('дБ', 'dB'), t('загасання у точці', 'attenuation at point')],
+        [fmt(perKm, 3), t('дБ/км', 'dB/km'), t('питоме загасання', 'attenuation per km')],
+      ].map(([v, u, k]) => `<div><b>${v}<small> ${u}</small></b><span>${k}</span></div>`).join('') + `<div class="otdr__zone"><b>${zone}</b><span>${t('ділянка траси', 'trace section')}</span></div>`;
+    };
+    const traceDb = (km) => {
+      for (let i = 1; i < pts.length; i++) {
+        const [k0, v0] = pts[i - 1], [k1, v1] = pts[i];
+        if (km <= k1) return k1 === k0 ? v1 : v0 + ((km - k0) / (k1 - k0)) * (v1 - v0);
+      }
+      return pts[pts.length - 1][1];
+    };
+    setLive(null);
+
+    // наведення: перехрестя + підказка біля курсора + рядок показань
     const svg = plot.querySelector('svg'), hov = svg.querySelector('.hover');
+    const cross = hov.querySelector('.cross'), dot = hov.querySelector('.dot');
     const move = (e) => {
       const r = svg.getBoundingClientRect();
       const x = ((e.clientX - r.left) / r.width) * W;
-      const km = Math.max(0, Math.min(d.km, ((x - L) / (W - L - R)) * xMax));
-      const db = -(km * d.loss / d.km);
-      hov.hidden = false;
-      hov.querySelector('.cross').setAttribute('x1', sx(km)); hov.querySelector('.cross').setAttribute('x2', sx(km));
-      hov.querySelector('.dot').setAttribute('cx', sx(km)); hov.querySelector('.dot').setAttribute('cy', sy(db));
+      const km = Math.max(0, Math.min(xMax, ((x - L) / (W - L - R)) * xMax));
+      const db = traceDb(km);
+      const px = sx(km), py = sy(db);
+      hov.setAttribute('visibility', 'visible');
+      cross.setAttribute('x1', px.toFixed(1)); cross.setAttribute('x2', px.toFixed(1));
+      dot.setAttribute('cx', px.toFixed(1)); dot.setAttribute('cy', py.toFixed(1));
       tip.hidden = false;
-      tip.style.left = `${(sx(km) / W) * 100}%`; tip.style.top = `${(sy(db) / H) * 100}%`;
+      // підказка не виходить за край графіка і не накриває курсор біля верхнього краю
+      tip.style.left = `${Math.max(11, Math.min(89, (px / W) * 100))}%`;
+      tip.style.top = `${(py / H) * 100}%`;
+      tip.classList.toggle('is-below', py < T + 40);
       tip.textContent = `${fmt(km, 2)} ${t('км', 'km')} · ${fmt(db, 2)} ${t('дБ', 'dB')}`;
+      setLive(km, db);
     };
+    const leave = () => { hov.setAttribute('visibility', 'hidden'); tip.hidden = true; setLive(null); };
     svg.addEventListener('pointermove', move);
-    svg.addEventListener('pointerleave', () => { hov.hidden = true; tip.hidden = true; });
+    svg.addEventListener('pointerdown', move);
+    svg.addEventListener('pointerleave', leave);
+    svg.addEventListener('pointercancel', leave);
   }
   otdr.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('[data-wl]'); if (b) draw(Number(b.dataset.wl)); });
   draw(cur);
