@@ -41,6 +41,10 @@ server {
         return 301 /main;
     }
 
+    location = /catalog {
+        return 301 /main;
+    }
+
     location = /main {
         expires -1;
         try_files /index.html =404;
