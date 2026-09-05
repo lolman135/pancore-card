@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Асортимент — PANCORE</title>
-<meta name="description" content="Асортимент PANCORE: власне виробництво (безшпульні звої G.657.A2, пропелери) та компоненти для БпЛА у 20 категоріях — з технічними специфікаціями, порівнянням і запитом на позицію.">
+<title>Асортимент — PANCORE GROUP</title>
+<meta name="description" content="Асортимент PANCORE GROUP: власні вироби (оптоволоконні котушки, оптичний канал, пропелери, карбон, SMT) та компоненти для БпЛА перевірених марок — назви позицій і марки за категоріями; специфікації на запит.">
 <meta name="theme-color" content="#07080b">
 <!-- База API. Порожньо = той самий origin (бекенд роздає фронт або стоїть за одним проксі).
      Окремий домен API: content="https://api.pancore.example" -->
@@ -13,8 +13,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260903c">
-<link rel="stylesheet" href="css/pages.css?v=20260903c">
+<link rel="stylesheet" href="css/style.css?v=20260905a">
+<link rel="stylesheet" href="css/pages.css?v=20260905c">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -28,7 +28,7 @@
 <script defer src="https://stats.pancore.eu/script.js" data-website-id="670ea9c6-207d-4c48-9eb3-26bb5b644a6b"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js" } }</script>
 </head>
-<body data-page="catalog">
+<body data-page="products">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -62,7 +62,7 @@
       <nav class="nav" aria-label="Основна навігація">
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
-        <a href="catalog.html" data-nav="catalog">Асортимент</a>
+        <a href="products.html" data-nav="products">Асортимент</a>
       </nav>
       <div class="head__cta">
         <a class="btn btn--primary btn--sm" href="#request">Зв’язатися</a>
@@ -73,43 +73,35 @@
   <nav class="mnav" id="mnav" aria-label="Мобільна навігація">
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
-    <a href="catalog.html" data-nav="catalog">Асортимент</a>
+    <a href="products.html" data-nav="products">Асортимент</a>
     <a href="#request" data-nav="contact">Зв’язатися</a>
     <p class="mnav__foot">PANCORE · MADE IN EU</p>
   </nav>
 
   <main>
 
-    <section class="cat-top">
+    <!-- ════════ СМУГА-ГЕРОЙ: те саме поле граней, що на інших сторінках (монтує site.js по canvas#mesh) ════════ -->
+    <section class="band band--assort">
+      <div class="mesh-stage is-band" aria-hidden="true">
+        <canvas id="mesh"></canvas>
+        <div class="mesh-fog"></div>
+        <div class="mesh-vignette"></div>
+      </div>
       <div class="wrap">
-        <p class="eyebrow">Асортимент</p>
-        <h1 class="h-display">Власні вироби та компоненти</h1>
-        <p class="lead">Натисніть на позицію — відкриється картка з характеристиками, документами та запитом. «Порівняти» ставить до трьох позицій поруч.</p>
+        <p class="eyebrow rise">Асортимент</p>
+        <h1 class="h-display h1 rise" data-delay="1"><b>Власні вироби</b><br><b class="metal">та компоненти</b></h1>
+        <p class="lead rise" data-delay="2">Назви позицій і марки за категоріями — без технічних таблиць. Докладно про власне виробництво: котушки, оптичний канал, пропелери, композити, електроніку — на сторінці <a href="production.html">«Виробництво»</a>. Специфікації, документи та зразки — на запит.</p>
+        <p class="eyebrow rise" data-delay="2" id="total" style="margin-top:18px"></p>
+        <div class="chips rise" id="toc" data-delay="3" aria-label="Категорії"></div>
       </div>
     </section>
 
-    <!-- ════════ ПАНЕЛЬ: ПОШУК + КАТЕГОРІЇ ════════ -->
-    <div class="toolbar toolbar--cat">
-      <div class="wrap toolbar__in">
-        <div class="toolbar__row">
-          <label class="search" aria-label="Пошук по асортименту">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-            <input id="q" type="search" placeholder="Пошук: 3115, H743, IP67, UAVCAN, 60 км…" autocomplete="off">
-          </label>
-          <span class="toolbar__count" id="count"></span>
-        </div>
-        <div class="chips chips--scroll" id="chips" aria-label="Категорії"></div>
+    <!-- ════════ АСОРТИМЕНТ (js/data/products.js → ASSORTMENT) ════════ -->
+    <section class="sec sec--assort" id="assortment">
+      <div class="wrap">
+        <div id="assortment-items"></div>
       </div>
-    </div>
-
-    <!-- ════════ СПИСОК ════════ -->
-    <div class="wrap cat-layout">
-      <nav class="cat-nav" id="cat-nav" aria-label="Категорії"></nav>
-      <div class="cat-main">
-        <div class="cat-filters" id="filters" hidden></div>
-        <div id="catalog-list" aria-live="polite"></div>
-      </div>
-    </div>
+    </section>
 
     <!-- ════════ ЗАПИТ ════════ -->
     <section class="sec sec--line" id="request">
@@ -118,7 +110,7 @@
           <div>
             <p class="eyebrow rise">Запит</p>
             <h2 class="h-display h2 rise" data-delay="1">Пропозиція на позицію</h2>
-            <p class="lead rise" data-delay="2">Натисніть «Запит» біля потрібної позиції або опишіть задачу своїми словами. Підбираємо аналоги, якщо конкретна модель недоступна, і надсилаємо документацію разом із пропозицією.</p>
+            <p class="lead rise" data-delay="2">Натисніть «Запит» біля потрібної позиції або опишіть задачу своїми словами. Підберемо, порахуємо і надішлемо специфікацію протягом робочого дня.</p>
           </div>
           <div class="contact__lines rise" data-delay="3">
             <div><small>Пошта</small><a href="mailto:office@pankor.eu">office@pankor.eu</a></div>
@@ -127,9 +119,8 @@
           </div>
         </div>
         <form class="form rise" data-delay="2" data-lead>
-          <!-- name="position", а не "item": form.elements.item — це метод колекції, а не поле -->
-          <div class="field"><label for="f-cat-contact">Контакт</label><input id="f-cat-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
-          <div class="field"><label for="f-cat-msg">Повідомлення</label><textarea id="f-cat-msg" name="message" required minlength="5" maxlength="2000" placeholder="Кількість, терміни, вимоги до документації"></textarea></div>
+          <div class="field"><label for="f-pr-contact">Контакт</label><input id="f-pr-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
+          <div class="field"><label for="f-pr-msg">Повідомлення</label><textarea id="f-pr-msg" name="message" required minlength="5" maxlength="2000" placeholder="Позиція, кількість, терміни, платформа"></textarea></div>
           <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
           <div class="form__foot">
             <button class="btn btn--primary" type="submit">Надіслати запит</button>
@@ -161,6 +152,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
   <span>Зв’язатися</span>
 </a>
-<script type="module" src="js/catalog.js?v=20260903c"></script>
+<script type="module" src="js/products.js?v=20260905d"></script>
 </body>
 </html>
