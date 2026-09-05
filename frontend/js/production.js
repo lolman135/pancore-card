@@ -235,7 +235,8 @@ if (propBox) {
       q('[data-p="title"]').textContent = `${t('Пропелер PANCORE GROUP', 'PANCORE GROUP propeller')} ${p.name}`;
       ['d', 'pitch', 'ang', 'hub', 'chord', 'force'].forEach((k) => { q(`[data-p="${k}"]`).textContent = p[k]; });
       propBox.querySelectorAll('[data-c]').forEach((td, i) => { td.textContent = p.chords[i]; });
-      q('[data-p="link"]').href = `catalog.html#item-${p.item}`;
+      const link = q('[data-p="link"]');   // посилання на специфікацію може бути прибране з розмітки
+      if (link) link.href = `catalog.html#item-${p.item}`;
     }
     propBox.querySelectorAll('.toggle button').forEach((b) => b.classList.toggle('is-on', b.dataset.inch === String(key)));
     swapIn(q('[data-sketch="prop"]')); swapIn(q('.propdeck__spec'));
