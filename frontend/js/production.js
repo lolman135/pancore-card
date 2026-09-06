@@ -1,6 +1,6 @@
 /* ============================================================
    PANCORE — сторінка «Виробництво» (UA та EN: тексти за <html lang>)
-   ескізи виробів · паспорт котушки (повзунок довжини) · графік OTDR ·
+   ескізи виробів · паспорт звою (повзунок довжини) · графік OTDR ·
    пропелери 10″/15″ (креслення, масштаб, матеріал, завантаження SVG/PNG) ·
    точки-навігація по блоках
    ============================================================ */
@@ -44,7 +44,7 @@ boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createR
   let done = false;
   const boot = () => {
     if (done) return; done = true;
-    import('./link2d.js?v=20260905a').then((m) => m.createLinkScene(host, { static: reducedMotion }))
+    import('./link2d.js?v=20260904e').then((m) => m.createLinkScene(host, { static: reducedMotion }))
       .catch((e) => { console.warn('link2d:', e); host.innerHTML = hookupSketch(); });
   };
   if ('IntersectionObserver' in window) {
@@ -54,15 +54,15 @@ boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createR
   } else boot();
 })();
 
-/* ---------- паспорт котушки: лінійка 5–60 км за специфікацією SRT-SFC-30-K/2026 і КП від 03.09.2026 ----------
-   Маса kg — котушка без корпусу та модулів, kgc — у корпусі без модулів (40/60 км: корпус під замовлення).
+/* ---------- паспорт звою: лінійка 5–60 км за КП SFC від 03.09.2026 ----------
+   Маса kg — звій без корпусу та модулів, kgc — у корпусі без модулів (40/60 км: корпус під замовлення).
    Еталон SFC-30: 30,212 км за OTDR, 2 245 г. */
 const RANGE = {
   km:  [5, 10, 20, 30, 40, 60],
   od:  [110, 110, 100.2, 121, 128, 150],
   id:  [53, 53, 53, 53, 64, 64],
   h:   [51, 102, 213.8, 213.8, 241, 241],
-  kg:  [0.365, 0.70, 1.459, 2.245, 2.96, 4.20],
+  kg:  [0.38, 0.70, 1.459, 2.245, 2.96, 4.20],
   kgc: [0.605, 1.094, 1.853, 2.795, null, null],
   std: [false, false, true, true, false, false],
   ref: 3,
@@ -95,7 +95,7 @@ if (pass) {
     const p = `${(i / last) * 100}%`;
     fill.style.width = p; thumb.style.left = p;
     stops.forEach((s, k) => { s.classList.toggle('is-on', k === i); s.classList.toggle('is-past', k < i); });
-    // силует котушки в масштабі: ширина = зовнішній Ø, висота = H, сердечник = внутрішній Ø
+    // силует звою в масштабі: ширина = зовнішній Ø, висота = H, сердечник = внутрішній Ø
     const w = od * K, hh = h * K, iw = id * K, top = BASE - hh;
     const body = svg.querySelector('[data-el="body"]'), core = svg.querySelector('[data-el="core"]');
     [['x', CX - w / 2], ['y', top], ['width', w], ['height', hh]].forEach(([a, v]) => body.setAttribute(a, v.toFixed(1)));
@@ -136,7 +136,7 @@ if (otdr) {
     for (let km = 0; km <= xMax; km += stepX) xt.push(km);
     for (let db = 0; db >= yMin + 2; db -= 4) yt.push(db);
     plot.innerHTML = `
-      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('Рефлектограма OTDR', 'OTDR trace')}, ${wl} ${t('нм', 'nm')}" style="touch-action:pan-y">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('Рефлектограма OTDR', 'OTDR trace')}, ${wl} ${t('нм', 'nm')}">
         <defs><linearGradient id="otdr-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,61,79,0.28)"/><stop offset="1" stop-color="rgba(255,61,79,0)"/></linearGradient></defs>
         <g class="grid">${yt.map((db) => `<line x1="${L}" x2="${W - R}" y1="${sy(db).toFixed(1)}" y2="${sy(db).toFixed(1)}"/>`).join('')}${xt.map((km) => `<line y1="${T}" y2="${H - B}" x1="${sx(km).toFixed(1)}" x2="${sx(km).toFixed(1)}"/>`).join('')}</g>
         <path class="area" d="${area}"/>
@@ -150,9 +150,8 @@ if (otdr) {
           ${yt.map((db) => `<text x="${L - 6}" y="${(sy(db) + 3).toFixed(1)}" text-anchor="end">${db}</text>`).join('')}
           <text x="${L - 6}" y="${T - 2}" text-anchor="end">${t('дБ', 'dB')}</text>
         </g>
-        <g class="hover" visibility="hidden"><line class="cross" y1="${T}" y2="${H - B}"/><circle class="dot" r="4"/></g>
+        <g class="hover" hidden><line class="cross" y1="${T}" y2="${H - B}"/><circle class="dot" r="4"/></g>
       </svg>`;
-    plot.appendChild(tip);   // innerHTML вище зніс підказку з DOM — повертаємо той самий вузол
     const stats = otdr.querySelector('.otdr__stats');
     stats.innerHTML = [
       [fmt(d.km, 3) + `<small> ${t('км', 'km')}</small>`, t('довжина волокна', 'fibre length')],
@@ -167,53 +166,22 @@ if (otdr) {
     otdr.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('is-on', Number(b.dataset.wl) === wl));
     swapIn(plot); swapIn(stats);
 
-    // живі показання: значення беруться з самої кривої (кусково-лінійна інтерполяція між точками траси)
-    const live = otdr.querySelector('.otdr__live');
-    const perKm = d.loss / d.km;
-    const idleText = t('наведіть курсор на криву — покажемо загасання у точці', 'hover over the trace to read the attenuation at a point');
-    const setLive = (km, db) => {
-      if (km == null) { live.innerHTML = `<span class="otdr__hint">${idleText}</span>`; return; }
-      const zone = km < 0.3 ? t('імпульс запуску', 'launch pulse') : km > d.km ? t('за торцем · відбиття та шум', 'beyond the end · reflection and noise') : t('лінійна ділянка', 'linear section');
-      live.innerHTML = [
-        [fmt(km, 2), t('км', 'km'), t('відстань', 'distance')],
-        [fmt(db, 2), t('дБ', 'dB'), t('загасання у точці', 'attenuation at point')],
-        [fmt(perKm, 3), t('дБ/км', 'dB/km'), t('питоме загасання', 'attenuation per km')],
-      ].map(([v, u, k]) => `<div><b>${v}<small> ${u}</small></b><span>${k}</span></div>`).join('') + `<div class="otdr__zone"><b>${zone}</b><span>${t('ділянка траси', 'trace section')}</span></div>`;
-    };
-    const traceDb = (km) => {
-      for (let i = 1; i < pts.length; i++) {
-        const [k0, v0] = pts[i - 1], [k1, v1] = pts[i];
-        if (km <= k1) return k1 === k0 ? v1 : v0 + ((km - k0) / (k1 - k0)) * (v1 - v0);
-      }
-      return pts[pts.length - 1][1];
-    };
-    setLive(null);
-
-    // наведення: перехрестя + підказка біля курсора + рядок показань
+    // наведення: перехрестя + підказка (значення на лінійній ділянці)
     const svg = plot.querySelector('svg'), hov = svg.querySelector('.hover');
-    const cross = hov.querySelector('.cross'), dot = hov.querySelector('.dot');
     const move = (e) => {
       const r = svg.getBoundingClientRect();
       const x = ((e.clientX - r.left) / r.width) * W;
-      const km = Math.max(0, Math.min(xMax, ((x - L) / (W - L - R)) * xMax));
-      const db = traceDb(km);
-      const px = sx(km), py = sy(db);
-      hov.setAttribute('visibility', 'visible');
-      cross.setAttribute('x1', px.toFixed(1)); cross.setAttribute('x2', px.toFixed(1));
-      dot.setAttribute('cx', px.toFixed(1)); dot.setAttribute('cy', py.toFixed(1));
+      const km = Math.max(0, Math.min(d.km, ((x - L) / (W - L - R)) * xMax));
+      const db = -(km * d.loss / d.km);
+      hov.hidden = false;
+      hov.querySelector('.cross').setAttribute('x1', sx(km)); hov.querySelector('.cross').setAttribute('x2', sx(km));
+      hov.querySelector('.dot').setAttribute('cx', sx(km)); hov.querySelector('.dot').setAttribute('cy', sy(db));
       tip.hidden = false;
-      // підказка не виходить за край графіка і не накриває курсор біля верхнього краю
-      tip.style.left = `${Math.max(11, Math.min(89, (px / W) * 100))}%`;
-      tip.style.top = `${(py / H) * 100}%`;
-      tip.classList.toggle('is-below', py < T + 40);
+      tip.style.left = `${(sx(km) / W) * 100}%`; tip.style.top = `${(sy(db) / H) * 100}%`;
       tip.textContent = `${fmt(km, 2)} ${t('км', 'km')} · ${fmt(db, 2)} ${t('дБ', 'dB')}`;
-      setLive(km, db);
     };
-    const leave = () => { hov.setAttribute('visibility', 'hidden'); tip.hidden = true; setLive(null); };
     svg.addEventListener('pointermove', move);
-    svg.addEventListener('pointerdown', move);
-    svg.addEventListener('pointerleave', leave);
-    svg.addEventListener('pointercancel', leave);
+    svg.addEventListener('pointerleave', () => { hov.hidden = true; tip.hidden = true; });
   }
   otdr.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('[data-wl]'); if (b) draw(Number(b.dataset.wl)); });
   draw(cur);
@@ -267,7 +235,7 @@ if (propBox) {
       q('[data-p="title"]').textContent = `${t('Пропелер PANCORE GROUP', 'PANCORE GROUP propeller')} ${p.name}`;
       ['d', 'pitch', 'ang', 'hub', 'chord', 'force'].forEach((k) => { q(`[data-p="${k}"]`).textContent = p[k]; });
       propBox.querySelectorAll('[data-c]').forEach((td, i) => { td.textContent = p.chords[i]; });
-      q('[data-p="link"]').href = 'products.html#props';
+      q('[data-p="link"]').href = `catalog.html#item-${p.item}`;
     }
     propBox.querySelectorAll('.toggle button').forEach((b) => b.classList.toggle('is-on', b.dataset.inch === String(key)));
     swapIn(q('[data-sketch="prop"]')); swapIn(q('.propdeck__spec'));
