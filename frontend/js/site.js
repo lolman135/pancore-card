@@ -13,8 +13,6 @@ clearTimeout(window.__riseGuard);
    Динамічний із фолбеком лишає сторінку робочою: порожня база = той самий origin. */
 const { API_BASE: ENV_API_BASE = '', API_KEY = '' } = await import('./env.js').catch(() => ({}));
 
-import { initConsent } from './consent.js';
-
 export const reducedMotion =
   matchMedia('(prefers-reduced-motion: reduce)').matches ||
   new URLSearchParams(location.search).has('static');
@@ -101,9 +99,6 @@ if (fabDesk) {
   addEventListener('scroll', updFab, { passive: true });
   updFab();
 }
-
-/* ---------- сповіщення про обробку персональних даних: показується, поки немає cookie (js/consent.js) ---------- */
-initConsent();
 
 /* ---------- активний пункт меню ---------- */
 const page = document.body.dataset.page || 'home';
