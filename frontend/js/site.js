@@ -13,8 +13,6 @@ clearTimeout(window.__riseGuard);
    Динамічний із фолбеком лишає сторінку робочою: порожня база = той самий origin. */
 const { API_BASE: ENV_API_BASE = '', API_KEY = '' } = await import('./env.js').catch(() => ({}));
 
-import { initConsent } from './consent.js';
-
 export const reducedMotion =
   matchMedia('(prefers-reduced-motion: reduce)').matches ||
   new URLSearchParams(location.search).has('static');
@@ -101,9 +99,6 @@ if (fabDesk) {
   addEventListener('scroll', updFab, { passive: true });
   updFab();
 }
-
-/* ---------- сповіщення про обробку персональних даних: показується, поки немає cookie (js/consent.js) ---------- */
-initConsent();
 
 /* ---------- активний пункт меню ---------- */
 const page = document.body.dataset.page || 'home';
@@ -265,6 +260,20 @@ function animateCounters() {
   els.forEach((el) => io.observe(el));
 }
 animateCounters();
+
+/* ---------- чипи категорій на головній ---------- */
+const chipsHost = document.getElementById('cat-chips');
+if (chipsHost) {
+  import('./data/catalog.js').then(({ CATEGORIES, ITEMS }) => {
+    const counts = {};
+    ITEMS.forEach((it) => { counts[it.cat] = (counts[it.cat] || 0) + 1; });
+    chipsHost.innerHTML = CATEGORIES.map(
+      (c) => `<a class="chip" href="catalog.html#${c.id}">${c.name} <b>${counts[c.id] || 0}</b></a>`,
+    ).join('');
+    const total = document.getElementById('cat-total');
+    if (total) total.textContent = ITEMS.length;
+  });
+}
 
 /* ---------- форма запиту → POST {API_BASE}/api/v1/contact ----------
    Контракт бекенда (backend/app/dto/contact.py):
