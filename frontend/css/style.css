@@ -632,11 +632,6 @@ body.menu-open .mnav { display: flex; }
 @media (max-width: 880px) { .progress { display: none; } }
 
 /* ---------- плаваюча кнопка «Зв’язатися» на десктопі (після прокрутки); на телефоні є .fab-bar ---------- */
-.fab-desk { position: fixed; right: 22px; bottom: 22px; z-index: 45; display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px 12px 14px; border-radius: var(--pill); background: var(--accent); color: #fff; font-size: 12.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 14px 40px var(--accent-glow); opacity: 0; transform: translateY(16px); pointer-events: none; transition: opacity 0.3s, transform 0.35s var(--ease), background 0.2s; }
-.fab-desk svg { width: 18px; height: 18px; }
-.fab-desk.is-on { opacity: 1; transform: none; pointer-events: auto; }
-.fab-desk:hover { background: #ff5566; }
-@media (max-width: 880px) { .fab-desk { display: none; } }
 
 /* ---------- плавна заміна вмісту (swapIn у site.js): коротка поява після перемикання ---------- */
 .swap-in { animation: swap-in 0.32s var(--ease) both; }
