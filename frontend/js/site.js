@@ -64,6 +64,30 @@ if (loader) {
   }
 }
 
+/* ---------- повідомлення про cookie: з'являється через 1 с після load, поки не натиснуто «Зрозуміло».
+   Згода зберігається в localStorage і cookie pancore-cookies (рік) — як і вибір мови. ---------- */
+const COOKIES_KEY = 'pancore-cookies';
+(function initCookieNotice() {
+  let agreed = /(?:^|;\s*)pancore-cookies=1/.test(document.cookie);
+  try { agreed = agreed || localStorage.getItem(COOKIES_KEY) === '1'; } catch (e) { /* приватний режим */ }
+  if (agreed) return;
+  const box = document.createElement('aside');
+  box.className = 'cookies';
+  box.setAttribute('role', 'region');
+  box.setAttribute('aria-label', t('Використання cookie'));
+  box.innerHTML = `
+    <p class="cookies__text">${t('Сайт використовує cookie лише для запам’ятовування вибраної мови. Жодної реклами та стороннього відстеження.')}</p>
+    <button class="btn btn--primary btn--sm cookies__ok" type="button">${t('Зрозуміло')}</button>`;
+  box.querySelector('.cookies__ok').addEventListener('click', () => {
+    try { localStorage.setItem(COOKIES_KEY, '1'); } catch (e) { /* приватний режим */ }
+    document.cookie = `${COOKIES_KEY}=1; path=/; max-age=31536000; SameSite=Lax`;
+    box.classList.remove('is-in');
+    setTimeout(() => box.remove(), reducedMotion ? 0 : 400);
+  });
+  const show = () => setTimeout(() => { document.body.appendChild(box); requestAnimationFrame(() => box.classList.add('is-in')); }, 1000);
+  if (document.readyState === 'complete') show(); else addEventListener('load', show, { once: true });
+})();
+
 /* ---------- пошук у шапці → каталог; «/» ставить курсор у пошук ---------- */
 document.querySelectorAll('form.hsearch').forEach((f) => f.addEventListener('submit', (e) => {
   if (!f.querySelector('input').value.trim()) e.preventDefault();
