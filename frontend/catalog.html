@@ -63,9 +63,10 @@
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
         <a href="catalog.html" data-nav="catalog">Асортимент</a>
+        <a href="about.html" data-nav="about">Про нас</a>
       </nav>
       <div class="head__cta">
-        <a class="btn btn--primary btn--sm" href="#request">Зв’язатися</a>
+        <a class="btn btn--primary btn--sm" href="about.html#contact">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
     </div>
@@ -74,7 +75,8 @@
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
-    <a href="#request" data-nav="contact">Зв’язатися</a>
+    <a href="about.html" data-nav="about">Про нас</a>
+    <a href="about.html#contact" data-nav="contact">Зв’язатися</a>
     <p class="mnav__foot">PANCORE · MADE IN EU</p>
   </nav>
 
@@ -115,35 +117,6 @@
       </div>
     </div>
 
-    <!-- ════════ ЗАПИТ ════════ -->
-    <section class="sec sec--line" id="request">
-      <div class="wrap contact">
-        <div class="contact__info">
-          <div>
-            <p class="eyebrow rise">Запит</p>
-            <h2 class="h-display h2 rise" data-delay="1">Пропозиція на позицію</h2>
-            <p class="lead rise" data-delay="2">Натисніть «Запит» біля потрібної позиції або опишіть задачу своїми словами. Підбираємо аналоги, якщо конкретна модель недоступна, і надсилаємо документацію разом із пропозицією.</p>
-          </div>
-          <div class="contact__lines rise" data-delay="3">
-            <div><small>Пошта</small><a href="mailto:office@pancore.eu">office@pancore.eu</a></div>
-            <div><small>Telegram</small><a href="https://t.me/pancore_manager" target="_blank" rel="noopener">Написати в Telegram</a></div>
-            <div><small>Відповідь</small><span>протягом робочого дня</span></div>
-          </div>
-        </div>
-        <form class="form rise" data-delay="2" data-lead>
-          <!-- name="position", а не "item": form.elements.item — це метод колекції, а не поле -->
-          <div class="field"><label for="f-cat-contact">Контакт</label><input id="f-cat-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
-          <div class="field"><label for="f-cat-msg">Повідомлення</label><textarea id="f-cat-msg" name="message" required minlength="5" maxlength="2000" placeholder="Кількість, терміни, вимоги до документації"></textarea></div>
-          <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
-          <div class="form__foot">
-            <button class="btn btn--primary" type="submit">Надіслати запит</button>
-            <p class="form__status" role="status" aria-live="polite"></p>
-          </div>
-          <p class="form__note">Надсилаючи форму, ви погоджуєтесь на обробку контактних даних для відповіді на запит.</p>
-        </form>
-      </div>
-    </section>
-
   </main>
 
   <footer class="foot">
@@ -155,7 +128,7 @@
 </div>
 
 <div class="fab-bar" aria-label="Швидкий зв’язок">
-  <a class="btn btn--primary btn--sm" href="#request">Запит</a>
+  <a class="btn btn--primary btn--sm" href="about.html#contact">Запит</a>
   <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_manager" target="_blank" rel="noopener">Telegram</a>
 </div>
 <div class="cmp-bar" id="cmp-bar" hidden></div>

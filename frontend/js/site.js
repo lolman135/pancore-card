@@ -394,10 +394,12 @@ export function initLeadForm(form) {
 }
 document.querySelectorAll('form[data-lead]').forEach(initLeadForm);
 
-/* ---------- утиліта: підставити позицію у форму ---------- */
-export function prefillRequest(text) {
-  const form = document.querySelector('form[data-lead]');
-  if (!form) return;
+/* ---------- утиліта: підставити позицію у форму ----------
+   Форма тепер лише на сторінці «Про нас»: з інших вкладок позиція
+   зберігається у sessionStorage і відкривається about.html#contact,
+   де форма підхоплює її при завантаженні. */
+const LEAD_KEY = 'pancore-lead';
+function fillLead(form, text) {
   const pos = field(form, 'position');
   if (pos) pos.value = text;
   // окремого поля «Позиція» у формі може не бути — тоді позиція йде в повідомлення,
@@ -409,9 +411,25 @@ export function prefillRequest(text) {
       ? `${msg.value.replace(/\s+$/, '')}\n${line}`
       : `${line}\n${EN ? 'Quantity: ' : 'Кількість: '}`;
   }
+}
+export function prefillRequest(text) {
+  const form = document.querySelector('form[data-lead]');
+  if (!form) {
+    try { sessionStorage.setItem(LEAD_KEY, text); } catch (e) { /* приватний режим — просто перейдемо */ }
+    location.href = 'about.html#contact';
+    return;
+  }
+  fillLead(form, text);
   scrollToEl(form, 24);
   setTimeout(() => {
     const c = field(form, 'contact');
     c && c.focus({ preventScroll: true });
   }, reducedMotion ? 0 : 500);
+}
+/* позиція, передана з іншої вкладки */
+{
+  const form = document.querySelector('form[data-lead]');
+  let pending = null;
+  try { pending = sessionStorage.getItem(LEAD_KEY); if (pending) sessionStorage.removeItem(LEAD_KEY); } catch (e) { /* ігноруємо */ }
+  if (form && pending) fillLead(form, pending);
 }

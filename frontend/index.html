@@ -103,13 +103,14 @@
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
         <a href="catalog.html" data-nav="catalog">Асортимент</a>
+        <a href="about.html" data-nav="about">Про нас</a>
       </nav>
       <div class="head__cta">
         <form class="hsearch" action="catalog.html" method="get" role="search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
           <input name="q" type="search" placeholder="Пошук у каталозі" aria-label="Пошук у каталозі" autocomplete="off">
         </form>
-        <a class="btn btn--primary btn--sm" href="#contact">Зв’язатися</a>
+        <a class="btn btn--primary btn--sm" href="about.html#contact">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
     </div>
@@ -118,7 +119,8 @@
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
-    <a href="#contact" data-nav="contact">Зв’язатися</a>
+    <a href="about.html" data-nav="about">Про нас</a>
+    <a href="about.html#contact" data-nav="contact">Зв’язатися</a>
     <p class="mnav__foot">PANCORE GROUP · MADE IN EU</p>
   </nav>
 
@@ -232,25 +234,6 @@
       </div>
     </section>
 
-    <!-- ════════ ГЕОГРАФІЯ ════════ -->
-    <section class="sec sec--line" id="geo">
-      <div class="wrap">
-        <div class="sec__head">
-          <p class="eyebrow rise">Група компаній</p>
-          <h2 class="h-display h2 rise" data-delay="1">Єдина група що обєднує шість локацій: ЄС, Китай, Гонконг, ОАЕ, Туреччина та Україна.</h2>
-          <p class="lead rise" data-delay="2">Розробка, виробництво, компоненти, сировина. Логістика та постачання — усі ланки всередині однієї групи, під одним брендом.</p>
-        </div>
-        <div class="wm-stats rise" data-delay="2">
-          <div class="wm-stat"><b>6</b><span>регіонів присутності</span></div>
-          <div class="wm-stat"><b>3</b><span>континенти · Європа, Азія, Близький Схід</span></div>
-          <div class="wm-stat"><b>20 000 м²</b><span>виробнича площадка в ЄС</span></div>
-        </div>
-        <div class="wm-wrap rise" data-delay="2">
-          <div id="worldmap" class="wm-host"></div>
-        </div>
-      </div>
-    </section>
-
     <!-- ════════ АСОРТИМЕНТ (тизер) ════════ -->
     <section class="sec sec--line" id="catalog">
       <div class="wrap">
@@ -266,35 +249,6 @@
       </div>
     </section>
 
-    <!-- ════════ КОНТАКТИ ════════ -->
-    <section class="sec sec--line" id="contact">
-      <div class="wrap contact">
-        <div class="contact__info">
-          <div>
-            <p class="eyebrow rise">Контакти</p>
-            <h2 class="h-display h2 rise" data-delay="1">Обговоримо ваше ТЗ</h2>
-            <p class="lead rise" data-delay="2">Надішліть запит — відповімо протягом робочого дня комерційною пропозицією або уточнюючими питаннями. Працюємо з юридичними особами в Україні та ЄС.</p>
-          </div>
-          <div class="contact__lines rise" data-delay="3">
-            <div><small>Пошта</small><a href="mailto:office@pancore.eu">office@pancore.eu</a></div>
-            <div><small>Telegram</small><a href="https://t.me/pancore_manager" target="_blank" rel="noopener">Написати в Telegram</a></div>
-            <div><small>Виробництво та склад</small><span>Європейський Союз</span></div>
-            <div><small>Мови спілкування</small><span>UA · EN</span></div>
-          </div>
-        </div>
-        <form class="form rise" data-delay="2" data-lead>
-          <div class="field"><label for="f-contact">Контакт</label><input id="f-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
-          <div class="field"><label for="f-msg">Повідомлення</label><textarea id="f-msg" name="message" required minlength="5" maxlength="2000" placeholder="Коротко опишіть задачу, позиції та орієнтовні обсяги"></textarea></div>
-          <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
-          <div class="form__foot">
-            <button class="btn btn--primary" type="submit">Надіслати запит</button>
-            <p class="form__status" role="status" aria-live="polite"></p>
-          </div>
-          <p class="form__note">Надсилаючи форму, ви погоджуєтесь на обробку контактних даних для відповіді на запит.</p>
-        </form>
-      </div>
-    </section>
-
   </main>
 
   <footer class="foot">
@@ -306,10 +260,10 @@
 </div>
 
 <div class="fab-bar" aria-label="Швидкий зв’язок">
-  <a class="btn btn--primary btn--sm" href="#contact">Зв’язатися</a>
+  <a class="btn btn--primary btn--sm" href="about.html#contact">Зв’язатися</a>
   <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_manager" target="_blank" rel="noopener">Telegram</a>
 </div>
 
-<script type="module" src="js/site.js?v=20260906a"></script>
+<script type="module" src="js/site.js?v=20260907a"></script>
 </body>
 </html>
