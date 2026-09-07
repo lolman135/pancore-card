@@ -92,13 +92,6 @@ if (progress) {
   upd();
 }
 
-/* ---------- плаваюча кнопка «Зв’язатися» на десктопі: з’являється після прокрутки ---------- */
-const fabDesk = document.querySelector('.fab-desk');
-if (fabDesk) {
-  const updFab = () => fabDesk.classList.toggle('is-on', scrollY > 360);
-  addEventListener('scroll', updFab, { passive: true });
-  updFab();
-}
 
 /* ---------- активний пункт меню ---------- */
 const page = document.body.dataset.page || 'home';

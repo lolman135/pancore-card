@@ -1,6 +1,6 @@
 /* ============================================================
    PANCORE — сторінка «Виробництво» (UA та EN: тексти за <html lang>)
-   ескізи виробів · паспорт звою (повзунок довжини) · графік OTDR ·
+   ескізи виробів · паспорт котушки (повзунок довжини) · графік OTDR ·
    пропелери 10″/15″ (креслення, масштаб, матеріал, завантаження SVG/PNG) ·
    точки-навігація по блоках
    ============================================================ */
@@ -44,7 +44,7 @@ boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createR
   let done = false;
   const boot = () => {
     if (done) return; done = true;
-    import('./link2d.js?v=20260904e').then((m) => m.createLinkScene(host, { static: reducedMotion }))
+    import('./link2d.js?v=20260906a').then((m) => m.createLinkScene(host, { static: reducedMotion }))
       .catch((e) => { console.warn('link2d:', e); host.innerHTML = hookupSketch(); });
   };
   if ('IntersectionObserver' in window) {
@@ -54,8 +54,8 @@ boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createR
   } else boot();
 })();
 
-/* ---------- паспорт звою: лінійка 5–60 км за КП SFC від 03.09.2026 ----------
-   Маса kg — звій без корпусу та модулів, kgc — у корпусі без модулів (40/60 км: корпус під замовлення).
+/* ---------- паспорт котушки: лінійка 5–60 км за КП SFC від 03.09.2026 ----------
+   Маса kg — котушка без корпусу та модулів, kgc — у корпусі без модулів (40/60 км: корпус під замовлення).
    Еталон SFC-30: 30,212 км за OTDR, 2 245 г. */
 const RANGE = {
   km:  [5, 10, 20, 30, 40, 60],
@@ -95,7 +95,7 @@ if (pass) {
     const p = `${(i / last) * 100}%`;
     fill.style.width = p; thumb.style.left = p;
     stops.forEach((s, k) => { s.classList.toggle('is-on', k === i); s.classList.toggle('is-past', k < i); });
-    // силует звою в масштабі: ширина = зовнішній Ø, висота = H, сердечник = внутрішній Ø
+    // силует котушки в масштабі: ширина = зовнішній Ø, висота = H, сердечник = внутрішній Ø
     const w = od * K, hh = h * K, iw = id * K, top = BASE - hh;
     const body = svg.querySelector('[data-el="body"]'), core = svg.querySelector('[data-el="core"]');
     [['x', CX - w / 2], ['y', top], ['width', w], ['height', hh]].forEach(([a, v]) => body.setAttribute(a, v.toFixed(1)));

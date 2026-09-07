@@ -1,7 +1,7 @@
 /* ============================================================
    PANCORE — векторні ескізи виробів, креслярський стиль
    (як у Megaptera: тонкі лінії, штрихові розмірні, моно-підписи).
-   Пропорції — з паспортів: звій 25 км Ø103,8 × H215,56, сердечник Ø53;
+   Пропорції — з паспортів: котушка 25 км Ø103,8 × H215,56, сердечник Ø53;
    sky station 42 × 42 × 15; ground station 95 × 62 × 48.
    Підписи двомовні: tx(uk, en) обирає за <html lang>.
    Стилі: .sketch .ln / .ln2 / .hair / .dim / .fillDim / text — у pages.css.
@@ -14,14 +14,14 @@ const ARROW = `<marker id="sk-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidt
 const wrap = (label, body, vb = '0 0 230 205') =>
   `<svg class="sketch" viewBox="${vb}" role="img" aria-label="${label}"><defs>${ARROW}</defs>${body}</svg>`;
 
-/** Безшпульний звій — переріз А–А з шарами намотки та розмірами еталона SFC-30 (30 км). */
+/** Безшпульна котушка — переріз А–А з шарами намотки та розмірами еталона SFC-30 (30 км). */
 export function coilSketch() {
   // масштаб ~1,2 px/мм: Ø121 → 145, Ø53 → 64, H 213,8 → 150
   const x0 = 42, x1 = 187, ix0 = 83, ix1 = 146, y0 = 28, y1 = 178;
   let hatch = '';
   for (let x = x0 + 5; x < ix0; x += 5) hatch += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y1}"/>`;
   for (let x = ix1 + 5; x < x1; x += 5) hatch += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y1}"/>`;
-  return wrap(tx('Переріз безшпульного звою', 'Spool-less coil section'), `
+  return wrap(tx('Переріз безшпульної котушки', 'Spool-less coil section'), `
   <line class="dim" x1="114" y1="10" x2="114" y2="196"/>
   <rect class="ln2 fillDim" x="${x0}" y="${y0}" width="${x1 - x0}" height="${y1 - y0}"/>
   <rect class="ln" x="${ix0}" y="${y0}" width="${ix1 - ix0}" height="${y1 - y0}"/>
@@ -41,7 +41,7 @@ export function coilSketch() {
 
 /** Польовий корпус — фронтальний силует із кришкою twist-lock і кріпленням. */
 export function casingSketch() {
-  return wrap(tx('Польовий корпус звою', 'Field casing'), `
+  return wrap(tx('Польовий корпус котушки', 'Field casing'), `
   <line class="dim" x1="120" y1="8" x2="120" y2="198"/>
   <rect class="ln2 fillDim" x="106" y="14" width="28" height="18" rx="2"/>
   <path class="hair" d="M112,23 h16 M116,18 l4,5 -4,5"/>
@@ -247,11 +247,11 @@ export function smtSketch() {
   <text x="34" y="36">${tx('лінія поверхневого монтажу', 'surface-mount line')}</text>`);
 }
 
-/** Оптичний лінк: борт + звій + sky → одне волокно → ground station → оператор. */
+/** Оптичний лінк: борт + котушка + sky → одне волокно → ground station → оператор. */
 export function linkSketch() {
   return wrap(tx('Схема оптичного каналу', 'Optical link diagram'), `
   <g class="ln2 fillDim"><rect x="14" y="44" width="78" height="42" rx="4"/></g>
-  <text x="53" y="60" text-anchor="middle">${tx('БОРТ БпЛА', 'UAV ONBOARD')}</text><text x="53" y="72" text-anchor="middle">${tx('звій + S-T', 'coil + S-T')}</text>
+  <text x="53" y="60" text-anchor="middle">${tx('БОРТ БпЛА', 'UAV ONBOARD')}</text><text x="53" y="72" text-anchor="middle">${tx('котушка + S-T', 'coil + S-T')}</text>
   <circle class="ln" cx="30" cy="100" r="9"/><circle class="hair" cx="30" cy="100" r="4"/>
   <path class="ln2" d="M92,66 C150,66 170,66 230,66 C300,66 320,66 372,66"/>
   <path class="hair" d="M92,62 C150,62 300,62 372,62"/>
@@ -263,18 +263,18 @@ export function linkSketch() {
   <text x="472" y="46">${tx('окуляри', 'goggles')}</text><text x="472" y="69">${tx('монітор', 'monitor')}</text><text x="472" y="92">${tx('пульт RC', 'RC transmitter')}</text>`, '0 0 520 120');
 }
 
-/** Схема підключення наземної станції (за польовою інструкцією): борт зі звоєм → конектор →
+/** Схема підключення наземної станції (за польовою інструкцією): борт із котушкою → конектор →
     оптична розетка S-R · АКБ у XT60 · монітор/ПК · пульт RC. */
 export function hookupSketch() {
   const osd = (x, y, t) => `<text class="osd" x="${x}" y="${y}">${t}</text>`;
   return wrap(tx('Схема підключення наземної станції', 'Ground station hook-up'), `
   <g class="hair"><path d="M22,22 l16,16 M38,22 l-16,16"/><circle cx="22" cy="22" r="3"/><circle cx="38" cy="22" r="3"/><circle cx="22" cy="38" r="3"/><circle cx="38" cy="38" r="3"/></g>
   <rect class="ln" x="25" y="25" width="10" height="10" rx="2"/>
-  <text x="46" y="26">${tx('БпЛА · sky S-T', 'UAV · sky S-T')}</text><text x="46" y="36">${tx('звій на борту', 'coil on board')}</text>
+  <text x="46" y="26">${tx('БпЛА · sky S-T', 'UAV · sky S-T')}</text><text x="46" y="36">${tx('котушка на борту', 'coil on board')}</text>
   <path class="ln2 fillDim" d="M14,58 h50 a4,4 0 0 1 4,4 v10 l10,4 v8 l-10,4 v10 a4,4 0 0 1 -4,4 h-50 a4,4 0 0 1 -4,-4 v-36 a4,4 0 0 1 4,-4 z"/>
   <path class="hair" d="M18,66 h42 M18,72 h42 M18,78 h42 M18,84 h42 M18,90 h42"/>
   <rect class="ln" x="80" y="74" width="12" height="10" rx="1"/><path class="hair" d="M83,74 v10 M86,74 v10 M89,74 v10"/>
-  <text x="12" y="112">${tx('звій у корпусі', 'coil in casing')}</text><text x="12" y="121">${tx('twist-lock · PETG', 'twist-lock · PETG')}</text>
+  <text x="12" y="112">${tx('котушка у корпусі', 'coil in casing')}</text><text x="12" y="121">${tx('twist-lock · PETG', 'twist-lock · PETG')}</text>
   <path class="fiber" d="M92,79 C120,79 140,79 168,79"/>
   <text x="98" y="70">${tx('конектор', 'connector')}</text>
   <text class="warn" x="98" y="112">${tx('співвісність паза та виїмки', 'align key and notch')}</text>

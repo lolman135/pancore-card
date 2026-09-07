@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Асортимент — PANCORE</title>
-<meta name="description" content="Асортимент PANCORE: власне виробництво (безшпульні звої G.657.A2, пропелери) та компоненти для БпЛА у 20 категоріях — з технічними специфікаціями, порівнянням і запитом на позицію.">
+<meta name="description" content="Асортимент PANCORE: власне виробництво (безшпульні котушки G.657.A2, пропелери) та компоненти для БпЛА у 20 категоріях — з технічними специфікаціями, порівнянням і запитом на позицію.">
 <meta name="theme-color" content="#07080b">
 <!-- База API. Порожньо = той самий origin (бекенд роздає фронт або стоїть за одним проксі).
      Окремий домен API: content="https://api.pancore.example" -->
@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20260903c">
-<link rel="stylesheet" href="css/pages.css?v=20260903c">
+<link rel="stylesheet" href="css/pages.css?v=20260906a">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -80,11 +80,16 @@
 
   <main>
 
-    <section class="cat-top">
+    <section class="band band--cat">
+      <div class="mesh-stage is-band" aria-hidden="true">
+        <canvas id="mesh"></canvas>
+        <div class="mesh-fog"></div>
+        <div class="mesh-vignette"></div>
+      </div>
       <div class="wrap">
-        <p class="eyebrow">Асортимент</p>
-        <h1 class="h-display">Власні вироби та компоненти</h1>
-        <p class="lead">Натисніть на позицію — відкриється картка з характеристиками, документами та запитом. «Порівняти» ставить до трьох позицій поруч.</p>
+        <p class="eyebrow rise">Асортимент</p>
+        <h1 class="h-display h1 rise" data-delay="1"><b>Власні вироби</b><br><b class="metal">та компоненти</b></h1>
+        <p class="lead rise" data-delay="2" style="margin-top:24px">Натисніть на позицію — відкриється картка з характеристиками, документами та запитом. «Порівняти» ставить до трьох позицій поруч.</p>
       </div>
     </section>
 
@@ -121,7 +126,7 @@
             <p class="lead rise" data-delay="2">Натисніть «Запит» біля потрібної позиції або опишіть задачу своїми словами. Підбираємо аналоги, якщо конкретна модель недоступна, і надсилаємо документацію разом із пропозицією.</p>
           </div>
           <div class="contact__lines rise" data-delay="3">
-            <div><small>Пошта</small><a href="mailto:info@pancore.tech">info@pancore.tech</a></div>
+            <div><small>Пошта</small><a href="mailto:office@pancore.eu">office@pancore.eu</a></div>
             <div><small>Telegram</small><a href="https://t.me/pancore_tech" target="_blank" rel="noopener">Написати в Telegram</a></div>
             <div><small>Відповідь</small><span>протягом робочого дня</span></div>
           </div>
@@ -157,10 +162,6 @@
 <div class="cmp-bar" id="cmp-bar" hidden></div>
 <div class="drawer" id="drawer" hidden></div>
 
-<a class="fab-desk" href="#request" aria-label="Зв’язатися">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
-  <span>Зв’язатися</span>
-</a>
-<script type="module" src="js/catalog.js?v=20260903c"></script>
+<script type="module" src="js/catalog.js?v=20260906a"></script>
 </body>
 </html>

@@ -65,7 +65,7 @@
 .hud span { padding: 5px 9px; border-radius: 6px; background: rgba(7, 8, 11, 0.78); backdrop-filter: blur(6px); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); white-space: nowrap; }
 .hud--left { flex-direction: row-reverse; }
 
-/* паспорт: повзунок довжини з силуетом звою в масштабі */
+/* паспорт: повзунок довжини з силуетом котушки в масштабі */
 .passport { position: relative; padding: 22px; border: 1px solid var(--line); border-radius: var(--r); background: linear-gradient(160deg, rgba(255, 61, 79, 0.07), var(--panel) 45%); display: grid; gap: 18px; overflow: hidden; }
 .passport::before { content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 61, 79, 0.16), transparent); pointer-events: none; }
 .passport__top { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
@@ -280,6 +280,8 @@
 
 /* ═══════════════════ АСОРТИМЕНТ ═══════════════════ */
 .cat-top { padding: calc(var(--head-h) + 40px) 0 22px; }
+/* шапка каталогу з полем граней, як на сторінці виробництва, але нижча — під нею липка панель пошуку */
+.band--cat { min-height: 46svh; }
 .cat-top .lead { margin-top: 12px; }
 .cat-top h1 { font-size: clamp(28px, 3.6vw, 44px); }
 .toolbar--cat { top: var(--head-h); }
@@ -483,7 +485,7 @@
   body.is-printing .spec, body.is-printing .cmp-table td, body.is-printing .cmp-table th { border-color: #ddd; }
   body.is-printing .own-badge { background: #000; color: #fff; }
   body.is-printing .drawer__body { overflow: visible; padding: 10px 0; }
-  body.is-printing .drawer__body::after { content: "PANCORE · info@pancore.tech · Made in EU"; display: block; margin-top: 18px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; color: #444; }
+  body.is-printing .drawer__body::after { content: "PANCORE · office@pancore.eu · Made in EU"; display: block; margin-top: 18px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; color: #444; }
 }
 
 /* ---------- 3D-сцена «Волокно на складному маршруті» (js/route3d.js) ---------- */
