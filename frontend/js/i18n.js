@@ -2,8 +2,8 @@
    PANCORE GROUP — мультимовність поверх однієї розмітки.
    Джерело — українська. Словник js/i18n/dict.js: текст → [en, pl].
    Мову задає <html lang> (виставляється синхронним скриптом у <head>
-   з ?lang= або localStorage — до запуску модулів, щоб EN/PL бачили
-   всі скрипти). Тут: підміна текстових вузлів і атрибутів, спостерігач
+   з ?lang=, localStorage/cookie або мови системи: uk/ru → uk, pl → pl,
+   інші → en — до запуску модулів, щоб EN/PL бачили всі скрипти). Тут: підміна текстових вузлів і атрибутів, спостерігач
    за динамічним вмістом (каталог, віджети) і перемикач у шапці.
    ============================================================ */
 
@@ -97,6 +97,7 @@ export function initLangSwitcher() {
       const next = b.dataset.lang;
       if (next === lang) return;
       try { localStorage.setItem(STORAGE_KEY, next); } catch (e) { /* приватний режим */ }
+      document.cookie = `${STORAGE_KEY}=${next}; path=/; max-age=31536000; SameSite=Lax`;
       const url = new URL(location.href);
       url.searchParams.set('lang', next);
       location.href = url.toString();
