@@ -64,6 +64,30 @@ if (loader) {
   }
 }
 
+/* ---------- повідомлення про cookie: з'являється через 1 с після load, поки не натиснуто «Зрозуміло».
+   Згода зберігається в localStorage і cookie pancore-cookies (рік) — як і вибір мови. ---------- */
+const COOKIES_KEY = 'pancore-cookies';
+(function initCookieNotice() {
+  let agreed = /(?:^|;\s*)pancore-cookies=1/.test(document.cookie);
+  try { agreed = agreed || localStorage.getItem(COOKIES_KEY) === '1'; } catch (e) { /* приватний режим */ }
+  if (agreed) return;
+  const box = document.createElement('aside');
+  box.className = 'cookies';
+  box.setAttribute('role', 'region');
+  box.setAttribute('aria-label', t('Використання cookie'));
+  box.innerHTML = `
+    <p class="cookies__text">${t('Сайт використовує cookie лише для запам’ятовування вибраної мови. Жодної реклами та стороннього відстеження.')}</p>
+    <button class="btn btn--primary btn--sm cookies__ok" type="button">${t('Зрозуміло')}</button>`;
+  box.querySelector('.cookies__ok').addEventListener('click', () => {
+    try { localStorage.setItem(COOKIES_KEY, '1'); } catch (e) { /* приватний режим */ }
+    document.cookie = `${COOKIES_KEY}=1; path=/; max-age=31536000; SameSite=Lax`;
+    box.classList.remove('is-in');
+    setTimeout(() => box.remove(), reducedMotion ? 0 : 400);
+  });
+  const show = () => setTimeout(() => { document.body.appendChild(box); requestAnimationFrame(() => box.classList.add('is-in')); }, 1000);
+  if (document.readyState === 'complete') show(); else addEventListener('load', show, { once: true });
+})();
+
 /* ---------- пошук у шапці → каталог; «/» ставить курсор у пошук ---------- */
 document.querySelectorAll('form.hsearch').forEach((f) => f.addEventListener('submit', (e) => {
   if (!f.querySelector('input').value.trim()) e.preventDefault();
@@ -176,6 +200,36 @@ addEventListener('load', () => setTimeout(revealVisible, 50));
 addEventListener('hashchange', () => setTimeout(revealVisible, 60));
 addEventListener('resize', revealVisible, { passive: true });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(revealVisible, 60); });
+
+/* ---------- телефон: довгі описи в картках напрямів згорнуті до 4 рядків, кнопка розгортає (текст не змінюється) ---------- */
+(() => {
+  const mq = matchMedia('(max-width: 700px)');
+  const cards = [...document.querySelectorAll('.card--link p')];
+  if (!cards.length) return;
+  const apply = () => {
+    cards.forEach((p) => {
+      const more = p.nextElementSibling && p.nextElementSibling.classList.contains('card__more') ? p.nextElementSibling : null;
+      if (!mq.matches) { p.classList.remove('is-clamp'); more && more.remove(); return; }
+      if (more) return;
+      p.classList.add('is-clamp');
+      if (p.scrollHeight <= p.clientHeight + 2) { p.classList.remove('is-clamp'); return; }
+      const b = document.createElement('span');
+      b.className = 'card__more'; b.setAttribute('role', 'button'); b.tabIndex = 0;
+      b.textContent = t('Розгорнути', 'Expand', 'Rozwiń');
+      const toggle = (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const open = p.classList.toggle('is-clamp') === false;
+        b.classList.toggle('is-open', open);
+        b.textContent = open ? t('Згорнути', 'Collapse', 'Zwiń') : t('Розгорнути', 'Expand', 'Rozwiń');
+      };
+      b.addEventListener('click', toggle);
+      b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') toggle(e); });
+      p.after(b);
+    });
+  };
+  apply();
+  mq.addEventListener('change', apply);
+})();
 
 /* ---------- підсвітка карток за курсором ---------- */
 export function bindCardGlow(root = document) {

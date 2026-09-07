@@ -52,6 +52,52 @@ boot3d('route3d', () => import('./route3d.js?v=20260907b').then((m) => m.createR
   } else boot();
 })();
 
+/* ---------- «на весь екран»: схема каналу (#link2d) і 3D-сцена маршруту (#route3d) відкриваються
+   у попапі всередині сайту. Блок фізично переноситься в оверлей і назад — живі сцени не перезапускаються,
+   3D підлаштовує розмір через свій ResizeObserver, SVG масштабується стилями. ---------- */
+(() => {
+  const ICON_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+  const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  let overlay = null, current = null;
+  const close = () => {
+    if (!current) return;
+    const { wrap, holder } = current;
+    holder.replaceWith(wrap);
+    wrap.classList.remove('is-fs');
+    overlay.remove(); overlay = null; current = null;
+    document.body.classList.remove('fs-open');
+    document.removeEventListener('keydown', onKey);
+  };
+  const onKey = (e) => { if (e.key === 'Escape') close(); };
+  const open = (wrap) => {
+    if (current) close();
+    const holder = document.createElement('div'); holder.className = 'fs-holder';
+    wrap.replaceWith(holder);
+    overlay = document.createElement('div'); overlay.className = 'fs-overlay';
+    overlay.innerHTML = `<div class="fs-panel"></div><button class="fs-close" type="button" aria-label="${t('Закрити', 'Close', 'Zamknij')}">${ICON_CLOSE}</button>`;
+    overlay.querySelector('.fs-panel').appendChild(wrap);
+    wrap.classList.add('is-fs');
+    document.body.appendChild(overlay);
+    document.body.classList.add('fs-open');
+    overlay.querySelector('.fs-close').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', onKey);
+    current = { wrap, holder };
+    dispatchEvent(new Event('resize'));
+  };
+  document.querySelectorAll('#link2d, #route3d').forEach((host) => {
+    const wrap = document.createElement('div'); wrap.className = 'fs-wrap';
+    host.replaceWith(wrap); wrap.appendChild(host);
+    const b = document.createElement('button');
+    b.className = 'fs-btn'; b.type = 'button';
+    b.setAttribute('aria-label', t('На весь екран', 'Full screen', 'Pełny ekran'));
+    b.title = b.getAttribute('aria-label');
+    b.innerHTML = ICON_OPEN;
+    b.addEventListener('click', () => (wrap.classList.contains('is-fs') ? close() : open(wrap)));
+    wrap.appendChild(b);
+  });
+})();
+
 /* ---------- паспорт котушки: лінійка 5–60 км за КП SFC від 03.09.2026 ----------
    Маса kg — котушка без корпусу та модулів, kgc — у корпусі без модулів (40/60 км: корпус під замовлення).
    Еталон SFC-30: 30,212 км за OTDR, 2 245 г. */
@@ -115,7 +161,7 @@ const OTDR = {
 const otdr = document.getElementById('otdr');
 if (otdr) {
   const plot = otdr.querySelector('.otdr__plot');
-  const tip = otdr.querySelector('.otdr__tip');
+  const tip = otdr.querySelector('.otdr__tip') || Object.assign(document.createElement('div'), { className: 'otdr__tip', hidden: true });
   const W = 640, H = 300, L = 46, R = 14, T = 14, B = 34;
   let cur = 1550;
 
@@ -150,6 +196,7 @@ if (otdr) {
         </g>
         <g class="hover" hidden><line class="cross" y1="${T}" y2="${H - B}"/><circle class="dot" r="4"/></g>
       </svg>`;
+    plot.appendChild(tip);   // підказка лежить усередині .otdr__plot — innerHTML її стирає, повертаємо на місце
     const stats = otdr.querySelector('.otdr__stats');
     stats.innerHTML = [
       [fmt(d.km, 3) + `<small> ${t('км', 'km')}</small>`, t('довжина волокна', 'fibre length')],
@@ -164,22 +211,50 @@ if (otdr) {
     otdr.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('is-on', Number(b.dataset.wl) === wl));
     swapIn(plot); swapIn(stats);
 
-    // наведення: перехрестя + підказка (значення на лінійній ділянці)
+    // курсор: вертикальна лінія, яку тягнуть мишею або пальцем, — показання на будь-якому відрізку траси
+    // (імпульс запуску, лінійна ділянка, відбиття від торця, шум за торцем); значення беруться з самої кривої
     const svg = plot.querySelector('svg'), hov = svg.querySelector('.hover');
-    const move = (e) => {
-      const r = svg.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width) * W;
-      const km = Math.max(0, Math.min(d.km, ((x - L) / (W - L - R)) * xMax));
-      const db = -(km * d.loss / d.km);
-      hov.hidden = false;
-      hov.querySelector('.cross').setAttribute('x1', sx(km)); hov.querySelector('.cross').setAttribute('x2', sx(km));
-      hov.querySelector('.dot').setAttribute('cx', sx(km)); hov.querySelector('.dot').setAttribute('cy', sy(db));
-      tip.hidden = false;
-      tip.style.left = `${(sx(km) / W) * 100}%`; tip.style.top = `${(sy(db) / H) * 100}%`;
-      tip.textContent = `${fmt(km, 2)} ${t('км', 'km')} · ${fmt(db, 2)} ${t('дБ', 'dB')}`;
+    const cross = hov.querySelector('.cross'), dot = hov.querySelector('.dot');
+    const live = otdr.querySelector('.otdr__live');
+    const traceDb = (km) => {
+      for (let i = 1; i < pts.length; i++) {
+        const [k0, v0] = pts[i - 1], [k1, v1] = pts[i];
+        if (km <= k1) return k1 === k0 ? v1 : v0 + ((km - k0) / (k1 - k0)) * (v1 - v0);
+      }
+      return pts[pts.length - 1][1];
     };
-    svg.addEventListener('pointermove', move);
-    svg.addEventListener('pointerleave', () => { hov.hidden = true; tip.hidden = true; });
+    const zone = (km) => km < 0.3 ? t('імпульс запуску', 'launch pulse', 'impuls startowy')
+      : km <= d.km ? t('лінійна ділянка', 'linear section', 'odcinek liniowy')
+      : km <= d.km + 0.25 ? t('торець · відбиття', 'fibre end · reflection', 'koniec · odbicie')
+      : t('за торцем · шум', 'beyond the end · noise', 'za końcem · szum');
+    const setCursor = (km) => {
+      km = Math.max(0, Math.min(xMax, km));
+      const db = traceDb(km), x = sx(km), y = sy(db);
+      hov.hidden = false;
+      cross.setAttribute('x1', x.toFixed(1)); cross.setAttribute('x2', x.toFixed(1));
+      dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1));
+      tip.hidden = false;
+      tip.style.left = `${(x / W) * 100}%`; tip.style.top = `${(y / H) * 100}%`;
+      tip.style.transform = x > W * 0.72 ? 'translate(-100%, -120%)' : x < W * 0.28 ? 'translate(0, -120%)' : '';   // біля країв — не вилазить за графік (на телефоні розтягувало сторінку)
+      tip.textContent = `${fmt(km, 2)} ${t('км', 'km')} · ${fmt(db, 2)} ${t('дБ', 'dB')}`;
+      if (live) {
+        const kl = Math.min(km, d.km);
+        const perKm = km > 0.3 ? fmt(-traceDb(kl) / kl, 3) : '—';
+        live.innerHTML = [
+          [fmt(km, 2), t('км', 'km'), t('відстань', 'distance', 'odległość')],
+          [fmt(db, 2), t('дБ', 'dB'), t('загасання у точці', 'attenuation at point', 'tłumienie w punkcie')],
+          [perKm, t('дБ/км', 'dB/km'), t('питоме загасання', 'attenuation per km', 'tłumienie na km')],
+        ].map(([v, u, k]) => `<div><b>${v}<small> ${u}</small></b><span>${k}</span></div>`).join('')
+          + `<div class="otdr__zone"><b>${zone(km)}</b><span>${t('ділянка траси', 'trace section', 'odcinek trasy')}</span></div>`;
+      }
+    };
+    const kmAt = (e) => { const r = svg.getBoundingClientRect(); return (((e.clientX - r.left) / r.width * W) - L) / (W - L - R) * xMax; };
+    let drag = false;
+    svg.addEventListener('pointerdown', (e) => { drag = true; svg.setPointerCapture(e.pointerId); setCursor(kmAt(e)); e.preventDefault(); });
+    svg.addEventListener('pointermove', (e) => { if (drag || e.pointerType === 'mouse') setCursor(kmAt(e)); });
+    const stop = () => { drag = false; };
+    svg.addEventListener('pointerup', stop); svg.addEventListener('pointercancel', stop);
+    setCursor(d.km);   // стартова позиція — торець волокна
   }
   otdr.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('[data-wl]'); if (b) draw(Number(b.dataset.wl)); });
   draw(cur);
