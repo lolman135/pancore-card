@@ -20,9 +20,9 @@ const ROUTES = [
   ['eu', 'tr'],
   ['eu', 'ae'],
   ['ae', 'tr'],
-  ['eu', 'cn'],
-  ['eu', 'hk'],
-  ['cn', 'hk'],
+  ['cn', 'eu'],          // напрям = напрям руху «пакетів»: з Китаю/Гонконгу, не в них
+  ['hk', 'eu'],
+  ['cn', 'hk', true],    // третій елемент — без пакета (обидва кінці — Китай/Гонконг)
   ['hk', 'ae'],
 ];
 
@@ -73,12 +73,12 @@ export function mountWorldMap(host, { reduced = false } = {}) {
 
   // зв’язки групи
   const routes = el('g', { class: 'wm__routes' }, svg);
-  ROUTES.forEach(([from, to], i) => {
+  ROUTES.forEach(([from, to, noPkt], i) => {
     const d = arcPath(NODES[from], NODES[to]);
     const g = el('g', { class: 'wm__route', style: `--i:${i}` }, routes);
     el('path', { class: 'wm__base', d }, g);
     const flow = el('path', { class: 'wm__flow', d }, g);
-    if (!reduced) {
+    if (!reduced && !noPkt) {
       const pkt = el('circle', { class: 'wm__pkt', r: 3.2 }, g);
       const am = el('animateMotion', { dur: `${(4.5 + (i % 3) * 0.9).toFixed(1)}s`, repeatCount: 'indefinite', begin: `${(i * 0.7).toFixed(1)}s`, path: d, rotate: 'auto' }, pkt);
       am.setAttribute('calcMode', 'linear');
