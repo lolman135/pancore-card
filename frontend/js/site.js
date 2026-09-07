@@ -17,7 +17,12 @@ export const reducedMotion =
   matchMedia('(prefers-reduced-motion: reduce)').matches ||
   new URLSearchParams(location.search).has('static');
 /* мова сторінки: тексти, що генеруються скриптом, беруться за <html lang> */
-export const EN = /^en/i.test(document.documentElement.lang || '');
+import { applyI18n, observeI18n, initLangSwitcher, t, EN as LANG_EN } from './i18n.js';
+export const EN = LANG_EN;
+/* переклад розмітки за словником (uk → en/pl) до появи блоків; динамічний вміст — через спостерігач */
+applyI18n(document);
+observeI18n();
+initLangSwitcher();
 
 /* ---------- плавна заміна вмісту: перезапуск короткої анімації появи на контейнері (.swap-in у style.css) ---------- */
 export function swapIn(el) {
@@ -285,28 +290,17 @@ const CONTACT_URL = `${API_BASE}/api/v1/contact`;
 
 /* Як назвати канал зв'язку у відповіді: бекенд віддає contact_type,
    але «phone» користувачеві показуємо словами. */
-const CONTACT_LABEL = EN
-  ? { email: 'e-mail', phone: 'phone', telegram: 'Telegram' }
-  : { email: 'email', phone: 'мобільний телефон', telegram: 'telegram' };
+const CONTACT_LABEL = { email: 'email', phone: t('мобільний телефон', 'phone'), telegram: 'telegram' };
 
-const MSG = EN ? {
-  sending: 'Sending…',
-  ok: 'Your enquiry has been sent. We reply within one business day.',
-  okTyped: (label) => `Your enquiry via ${label} has been sent. We reply within one business day.`,
-  paused: 'Submissions through this form are temporarily suspended. Please e-mail us — the address is next to the form.',
-  invalid: 'Please check the form fields.',
-  contact: 'Enter an e-mail, phone number or @telegram.',
-  limit: 'Too many requests from your address. Try again later or write to us by e-mail.',
-  fail: 'Could not send. Please e-mail us — the address is next to the form.',
-} : {
-  sending: 'Надсилаємо…',
-  ok: 'Заявку надіслано. Відповімо протягом робочого дня.',
-  okTyped: (label) => `Ваш запит на ${label} надіслано. Відповімо протягом робочого дня.`,
-  paused: 'Прийом запитів через форму тимчасово призупинено. Напишіть нам на пошту — адреса поруч із формою.',
-  invalid: 'Перевірте поля форми.',
-  contact: 'Вкажіть email, телефон або @telegram.',
-  limit: 'Забагато запитів із вашої адреси. Спробуйте пізніше або напишіть на пошту.',
-  fail: 'Не вдалося надіслати. Напишіть нам на пошту — адреса поруч із формою.',
+const MSG = {
+  sending: t('Надсилаємо…', 'Sending…'),
+  ok: t('Заявку надіслано. Відповімо протягом робочого дня.', 'Your enquiry has been sent. We reply within one business day.'),
+  okTyped: (label) => `${t('Ваш запит на', 'Your enquiry via')} ${label} ${t('надіслано. Відповімо протягом робочого дня.', 'has been sent. We reply within one business day.')}`,
+  paused: t('Прийом запитів через форму тимчасово призупинено. Напишіть нам на пошту — адреса поруч із формою.', 'Submissions through this form are temporarily suspended. Please e-mail us — the address is next to the form.'),
+  invalid: t('Перевірте поля форми.', 'Please check the form fields.'),
+  contact: t('Вкажіть email, телефон або @telegram.', 'Enter an e-mail, phone number or @telegram.'),
+  limit: t('Забагато запитів із вашої адреси. Спробуйте пізніше або напишіть на пошту.', 'Too many requests from your address. Try again later or write to us by e-mail.'),
+  fail: t('Не вдалося надіслати. Напишіть нам на пошту — адреса поруч із формою.', 'Could not send. Please e-mail us — the address is next to the form.'),
 };
 
 /* Бекенд приймає лише contact і comment, тому все, що є у формі понад це
@@ -406,10 +400,10 @@ function fillLead(form, text) {
   // причому дописується, а не затирає вже набраний текст
   const msg = field(form, 'message');
   if (msg) {
-    const line = EN ? `Please quote the following item: ${text}.` : `Прошу комерційну пропозицію на позицію: ${text}.`;
+    const line = `${t('Прошу комерційну пропозицію на позицію:', 'Please quote the following item:')} ${text}.`;
     msg.value = msg.value.trim()
       ? `${msg.value.replace(/\s+$/, '')}\n${line}`
-      : `${line}\n${EN ? 'Quantity: ' : 'Кількість: '}`;
+      : `${line}\n${t('Кількість:', 'Quantity:')} `;
   }
 }
 export function prefillRequest(text) {

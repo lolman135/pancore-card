@@ -11,7 +11,7 @@
 import { VIEW, NODES, DOTS, DOTS_HI } from './data/worldmap.js';
 
 const NS = 'http://www.w3.org/2000/svg';
-const EN = /^en/i.test(document.documentElement.lang || '');
+import { lang } from './i18n.js';
 
 /* зв’язки групи: [вузол, вузол]. ЄС — хаб, від нього промінь до кожної компанії;
    поперечні дуги показують, що регіони зв’язані й між собою, а не лише з майданчиком у ЄС */
@@ -30,6 +30,7 @@ const ROUTES = [
 const LABELS = {
   uk: { eu: 'ЄС · виробництво', ua: 'Україна', tr: 'Туреччина', ae: 'ОАЕ', cn: 'Китай', hk: 'Гонконг' },
   en: { eu: 'EU · production', ua: 'Ukraine', tr: 'Türkiye', ae: 'UAE', cn: 'China', hk: 'Hong Kong' },
+  pl: { eu: 'UE · produkcja', ua: 'Ukraina', tr: 'Turcja', ae: 'ZEA', cn: 'Chiny', hk: 'Hongkong' },
 };
 const PLACE = { eu: ['l', 0], ua: ['r', -14], tr: ['r', 12], ae: ['r', 0], cn: ['r', -10], hk: ['r', 12] };
 /* на обрізаній карті ЄС стоїть біля лівого краю — підпис іде під точку, Туреччина нижче;
@@ -62,7 +63,7 @@ function arcPath(a, b) {
 }
 
 export function mountWorldMap(host, { reduced = false } = {}) {
-  const L = LABELS[EN ? 'en' : 'uk'];
+  const L = LABELS[lang] || LABELS.uk;
   const svg = el('svg', { viewBox: `0 0 ${VIEW.w} ${VIEW.h}`, class: 'wm', 'aria-hidden': 'true' });
 
   // суходіл + країни-учасниці яскравіше

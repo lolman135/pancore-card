@@ -2,6 +2,18 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<script>
+  /* Мова сторінки: ?lang=uk|en|pl (зберігається) або збережений вибір → <html lang>
+     синхронно, до запуску модулів: усі скрипти й словник i18n читають саме його. */
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search).get('lang');
+      if (q) localStorage.setItem('pancore-lang', q);
+      var l = q || localStorage.getItem('pancore-lang');
+      if (/^(uk|en|pl)$/.test(l)) document.documentElement.lang = l;
+    } catch (e) { /* без localStorage — мова за замовчуванням */ }
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Виробництво — PANCORE GROUP</title>
 <meta name="description" content="Власне виробництво PANCORE GROUP в ЄС: безшпульна котушка оптоволокна у польовому корпусі, пропелери 10″ і 15″ литтям під тиском, композити, SMT. Паспорт виробу, OTDR-контроль, креслення, документи для замовника.">
@@ -75,6 +87,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
           <input name="q" type="search" placeholder="Пошук у каталозі" aria-label="Пошук у каталозі" autocomplete="off">
         </form>
+        <div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div>
         <a class="btn btn--primary btn--sm" href="about.html#contact">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
@@ -86,6 +99,7 @@
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
     <a href="about.html" data-nav="about">Про нас</a>
     <a href="about.html#contact" data-nav="contact">Зв’язатися</a>
+    <div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div>
     <p class="mnav__foot">PANCORE GROUP · MADE IN EU</p>
   </nav>
 
@@ -515,6 +529,6 @@
   <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_manager" target="_blank" rel="noopener">Telegram</a>
 </div>
 
-<script type="module" src="js/production.js?v=20260906a"></script>
+<script type="module" src="js/production.js?v=20260907b"></script>
 </body>
 </html>

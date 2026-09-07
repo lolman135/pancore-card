@@ -2,6 +2,18 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<script>
+  /* Мова сторінки: ?lang=uk|en|pl (зберігається) або збережений вибір → <html lang>
+     синхронно, до запуску модулів: усі скрипти й словник i18n читають саме його. */
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search).get('lang');
+      if (q) localStorage.setItem('pancore-lang', q);
+      var l = q || localStorage.getItem('pancore-lang');
+      if (/^(uk|en|pl)$/.test(l)) document.documentElement.lang = l;
+    } catch (e) { /* без localStorage — мова за замовчуванням */ }
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Асортимент — PANCORE</title>
 <meta name="description" content="Асортимент PANCORE: власне виробництво (безшпульні котушки G.657.A2, пропелери) та компоненти для БпЛА у 20 категоріях — з технічними специфікаціями, порівнянням і запитом на позицію.">
@@ -66,6 +78,7 @@
         <a href="about.html" data-nav="about">Про нас</a>
       </nav>
       <div class="head__cta">
+        <div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div>
         <a class="btn btn--primary btn--sm" href="about.html#contact">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
@@ -77,6 +90,7 @@
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
     <a href="about.html" data-nav="about">Про нас</a>
     <a href="about.html#contact" data-nav="contact">Зв’язатися</a>
+    <div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div>
     <p class="mnav__foot">PANCORE · MADE IN EU</p>
   </nav>
 
@@ -134,6 +148,6 @@
 <div class="cmp-bar" id="cmp-bar" hidden></div>
 <div class="drawer" id="drawer" hidden></div>
 
-<script type="module" src="js/catalog.js?v=20260906a"></script>
+<script type="module" src="js/catalog.js?v=20260907c"></script>
 </body>
 </html>

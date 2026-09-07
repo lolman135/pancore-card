@@ -2,6 +2,18 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<script>
+  /* Мова сторінки: ?lang=uk|en|pl (зберігається) або збережений вибір → <html lang>
+     синхронно, до запуску модулів: усі скрипти й словник i18n читають саме його. */
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search).get('lang');
+      if (q) localStorage.setItem('pancore-lang', q);
+      var l = q || localStorage.getItem('pancore-lang');
+      if (/^(uk|en|pl)$/.test(l)) document.documentElement.lang = l;
+    } catch (e) { /* без localStorage — мова за замовчуванням */ }
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Сторінку не знайдено — PANCORE</title>
 <meta name="robots" content="noindex">
@@ -31,7 +43,7 @@
     <div class="wrap head__in">
       <a class="brand" href="index.html" aria-label="PANCORE — на головну"><svg class="brand__mark" viewBox="0 0 200 200" aria-hidden="true"><use href="#pc-logo"/></svg><span class="brand__word">Pancore</span></a>
       <nav class="nav" aria-label="Основна навігація"><a href="index.html">Головна</a><a href="production.html">Виробництво</a><a href="catalog.html">Асортимент</a><a href="about.html">Про нас</a></nav>
-      <div class="head__cta"><a class="btn btn--primary btn--sm" href="about.html#contact">Запит</a></div>
+      <div class="head__cta"><div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div><a class="btn btn--primary btn--sm" href="about.html#contact">Запит</a></div>
     </div>
   </header>
   <main class="nf">
@@ -47,5 +59,6 @@
     </div>
   </main>
 </div>
+<script type="module" src="js/site.js?v=20260907b"></script>
 </body>
 </html>
