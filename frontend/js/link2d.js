@@ -18,8 +18,7 @@
      sc.destroy();
    ============================================================ */
 
-const EN = /^en/i.test(document.documentElement.lang || '');
-const t = (uk, en) => (EN ? en : uk);
+import { EN, t } from './i18n.js';
 const n1 = (v) => Math.round(v * 10) / 10;
 
 /* точки з'єднань: котушка → розетка станції, АКБ → станція, станція → монітор, пульт → монітор */

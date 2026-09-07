@@ -2,13 +2,38 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<script>
+  /* Мова сторінки → <html lang> синхронно, до запуску модулів (усі скрипти й словник i18n
+     читають саме його). Пріоритет: ?lang=uk|en|pl (зберігається) → збережений вибір
+     (localStorage + cookie pancore-lang) → мова системи: uk/ru → uk, pl → pl, інші → en. */
+  (function () {
+    var OK = /^(uk|en|pl)$/, l = null;
+    try {
+      var q = new URLSearchParams(location.search).get('lang');
+      var c = (document.cookie.match(/(?:^|;\s*)pancore-lang=(\w+)/) || [])[1];
+      var s = null;
+      try { s = localStorage.getItem('pancore-lang'); } catch (e) { /* приватний режим */ }
+      l = OK.test(q) ? q : OK.test(s) ? s : OK.test(c) ? c : null;
+      if (l && (q || !s || !c)) {
+        try { localStorage.setItem('pancore-lang', l); } catch (e) { /* приватний режим */ }
+        document.cookie = 'pancore-lang=' + l + '; path=/; max-age=31536000; SameSite=Lax';
+      }
+    } catch (e) { /* без сховища — визначаємо за системою */ }
+    if (!l) {
+      var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+      var sys = String(langs[0] || '').slice(0, 2).toLowerCase();
+      l = (sys === 'uk' || sys === 'ru') ? 'uk' : sys === 'pl' ? 'pl' : 'en';
+    }
+    document.documentElement.lang = l;
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Сторінку не знайдено — PANCORE</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#07080b">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260903b">
+<link rel="stylesheet" href="css/style.css?v=20260907a">
 <script defer src="https://stats.pancore.eu/script.js" data-website-id="670ea9c6-207d-4c48-9eb3-26bb5b644a6b"></script>
 <style>
   .nf { min-height: 100svh; display: grid; place-items: center; text-align: center; padding: calc(var(--head-h) + 40px) var(--gutter) 60px; }
@@ -30,8 +55,8 @@
   <header class="head" id="head">
     <div class="wrap head__in">
       <a class="brand" href="index.html" aria-label="PANCORE — на головну"><svg class="brand__mark" viewBox="0 0 200 200" aria-hidden="true"><use href="#pc-logo"/></svg><span class="brand__word">Pancore</span></a>
-      <nav class="nav" aria-label="Основна навігація"><a href="index.html">Головна</a><a href="production.html">Виробництво</a><a href="catalog.html">Асортимент</a></nav>
-      <div class="head__cta"><a class="btn btn--primary btn--sm" href="index.html#contact">Запит</a></div>
+      <nav class="nav" aria-label="Основна навігація"><a href="index.html">Головна</a><a href="production.html">Виробництво</a><a href="catalog.html">Асортимент</a><a href="about.html">Про нас</a></nav>
+      <div class="head__cta"><div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div><a class="btn btn--primary btn--sm" href="about.html#contact">Запит</a></div>
     </div>
   </header>
   <main class="nf">
@@ -47,5 +72,6 @@
     </div>
   </main>
 </div>
+<script type="module" src="js/site.js?v=20260907b"></script>
 </body>
 </html>

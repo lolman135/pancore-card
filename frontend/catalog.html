@@ -2,6 +2,31 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<script>
+  /* Мова сторінки → <html lang> синхронно, до запуску модулів (усі скрипти й словник i18n
+     читають саме його). Пріоритет: ?lang=uk|en|pl (зберігається) → збережений вибір
+     (localStorage + cookie pancore-lang) → мова системи: uk/ru → uk, pl → pl, інші → en. */
+  (function () {
+    var OK = /^(uk|en|pl)$/, l = null;
+    try {
+      var q = new URLSearchParams(location.search).get('lang');
+      var c = (document.cookie.match(/(?:^|;\s*)pancore-lang=(\w+)/) || [])[1];
+      var s = null;
+      try { s = localStorage.getItem('pancore-lang'); } catch (e) { /* приватний режим */ }
+      l = OK.test(q) ? q : OK.test(s) ? s : OK.test(c) ? c : null;
+      if (l && (q || !s || !c)) {
+        try { localStorage.setItem('pancore-lang', l); } catch (e) { /* приватний режим */ }
+        document.cookie = 'pancore-lang=' + l + '; path=/; max-age=31536000; SameSite=Lax';
+      }
+    } catch (e) { /* без сховища — визначаємо за системою */ }
+    if (!l) {
+      var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+      var sys = String(langs[0] || '').slice(0, 2).toLowerCase();
+      l = (sys === 'uk' || sys === 'ru') ? 'uk' : sys === 'pl' ? 'pl' : 'en';
+    }
+    document.documentElement.lang = l;
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Асортимент — PANCORE</title>
 <meta name="description" content="Асортимент PANCORE: власне виробництво (безшпульні котушки G.657.A2, пропелери) та компоненти для БпЛА у 20 категоріях — з технічними специфікаціями, порівнянням і запитом на позицію.">
@@ -13,8 +38,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260903c">
-<link rel="stylesheet" href="css/pages.css?v=20260906a">
+<link rel="stylesheet" href="css/style.css?v=20260907a">
+<link rel="stylesheet" href="css/pages.css?v=20260907a">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -63,9 +88,11 @@
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
         <a href="catalog.html" data-nav="catalog">Асортимент</a>
+        <a href="about.html" data-nav="about">Про нас</a>
       </nav>
       <div class="head__cta">
-        <a class="btn btn--primary btn--sm" href="#request">Зв’язатися</a>
+        <div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div>
+        <a class="btn btn--primary btn--sm" href="about.html#contact">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
     </div>
@@ -74,7 +101,9 @@
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
-    <a href="#request" data-nav="contact">Зв’язатися</a>
+    <a href="about.html" data-nav="about">Про нас</a>
+    <a href="about.html#contact" data-nav="contact">Зв’язатися</a>
+    <div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div>
     <p class="mnav__foot">PANCORE · MADE IN EU</p>
   </nav>
 
@@ -88,8 +117,7 @@
       </div>
       <div class="wrap">
         <p class="eyebrow rise">Асортимент</p>
-        <h1 class="h-display h1 rise" data-delay="1"><b>Власні вироби</b><br><b class="metal">та компоненти</b></h1>
-        <p class="lead rise" data-delay="2" style="margin-top:24px">Натисніть на позицію — відкриється картка з характеристиками, документами та запитом. «Порівняти» ставить до трьох позицій поруч.</p>
+        <h1 class="h-display h1 rise" data-delay="1"><b>Власні вироби та компоненти</b><br><b class="metal">на складі в ЄС</b></h1>
       </div>
     </section>
 
@@ -116,35 +144,6 @@
       </div>
     </div>
 
-    <!-- ════════ ЗАПИТ ════════ -->
-    <section class="sec sec--line" id="request">
-      <div class="wrap contact">
-        <div class="contact__info">
-          <div>
-            <p class="eyebrow rise">Запит</p>
-            <h2 class="h-display h2 rise" data-delay="1">Пропозиція на позицію</h2>
-            <p class="lead rise" data-delay="2">Натисніть «Запит» біля потрібної позиції або опишіть задачу своїми словами. Підбираємо аналоги, якщо конкретна модель недоступна, і надсилаємо документацію разом із пропозицією.</p>
-          </div>
-          <div class="contact__lines rise" data-delay="3">
-            <div><small>Пошта</small><a href="mailto:office@pancore.eu">office@pancore.eu</a></div>
-            <div><small>Telegram</small><a href="https://t.me/pancore_tech" target="_blank" rel="noopener">Написати в Telegram</a></div>
-            <div><small>Відповідь</small><span>протягом робочого дня</span></div>
-          </div>
-        </div>
-        <form class="form rise" data-delay="2" data-lead>
-          <!-- name="position", а не "item": form.elements.item — це метод колекції, а не поле -->
-          <div class="field"><label for="f-cat-contact">Контакт</label><input id="f-cat-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
-          <div class="field"><label for="f-cat-msg">Повідомлення</label><textarea id="f-cat-msg" name="message" required minlength="5" maxlength="2000" placeholder="Кількість, терміни, вимоги до документації"></textarea></div>
-          <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
-          <div class="form__foot">
-            <button class="btn btn--primary" type="submit">Надіслати запит</button>
-            <p class="form__status" role="status" aria-live="polite"></p>
-          </div>
-          <p class="form__note">Надсилаючи форму, ви погоджуєтесь на обробку контактних даних для відповіді на запит.</p>
-        </form>
-      </div>
-    </section>
-
   </main>
 
   <footer class="foot">
@@ -156,12 +155,12 @@
 </div>
 
 <div class="fab-bar" aria-label="Швидкий зв’язок">
-  <a class="btn btn--primary btn--sm" href="#request">Запит</a>
-  <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_tech" target="_blank" rel="noopener">Telegram</a>
+  <a class="btn btn--primary btn--sm" href="about.html#contact">Запит</a>
+  <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_manager" target="_blank" rel="noopener">Telegram</a>
 </div>
 <div class="cmp-bar" id="cmp-bar" hidden></div>
 <div class="drawer" id="drawer" hidden></div>
 
-<script type="module" src="js/catalog.js?v=20260906a"></script>
+<script type="module" src="js/catalog.js?v=20260907c"></script>
 </body>
 </html>

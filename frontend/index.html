@@ -2,13 +2,38 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<script>
+  /* Мова сторінки → <html lang> синхронно, до запуску модулів (усі скрипти й словник i18n
+     читають саме його). Пріоритет: ?lang=uk|en|pl (зберігається) → збережений вибір
+     (localStorage + cookie pancore-lang) → мова системи: uk/ru → uk, pl → pl, інші → en. */
+  (function () {
+    var OK = /^(uk|en|pl)$/, l = null;
+    try {
+      var q = new URLSearchParams(location.search).get('lang');
+      var c = (document.cookie.match(/(?:^|;\s*)pancore-lang=(\w+)/) || [])[1];
+      var s = null;
+      try { s = localStorage.getItem('pancore-lang'); } catch (e) { /* приватний режим */ }
+      l = OK.test(q) ? q : OK.test(s) ? s : OK.test(c) ? c : null;
+      if (l && (q || !s || !c)) {
+        try { localStorage.setItem('pancore-lang', l); } catch (e) { /* приватний режим */ }
+        document.cookie = 'pancore-lang=' + l + '; path=/; max-age=31536000; SameSite=Lax';
+      }
+    } catch (e) { /* без сховища — визначаємо за системою */ }
+    if (!l) {
+      var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+      var sys = String(langs[0] || '').slice(0, 2).toLowerCase();
+      l = (sys === 'uk' || sys === 'ru') ? 'uk' : sys === 'pl' ? 'pl' : 'en';
+    }
+    document.documentElement.lang = l;
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PANCORE GROUP — виробництво та компоненти для безпілотних систем</title>
 <meta name="description" content="PANCORE GROUP — міжнародна група компаній: розробка, виробництво в ЄС і постачання компонентів для безпілотних систем. Оптоволоконні системи зв’язку, композити, полімерне лиття та понад 160 позицій комплектуючих для БпЛА.">
 <meta name="theme-color" content="#07080b">
 <meta name="api-base" content="">
 <meta property="og:title" content="PANCORE GROUP — виробництво та компоненти для безпілотних систем">
-<meta property="og:description" content="Безшпульна котушка оптоволокна G.657.A2, пропелери 10″/15″, карбон, електроніка. Виробництво в ЄС, постачання в Україну.">
+<meta property="og:description" content="Безшпульна котушка оптоволокна, пропелери 10″/15″, карбон, електроніка. Виробництво в ЄС, постачання в Україну.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="uk_UA">
 <meta property="og:image" content="https://lolman135.github.io/pancore-card/frontend/assets/og.png">
@@ -19,7 +44,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260903c">
+<link rel="stylesheet" href="css/style.css?v=20260907a">
 <script>
   /* Анімація появи вмикається лише коли JS живий (див. .js-anim у style.css).
      Сторож знімає клас, якщо site.js не запустився, — тоді при будь-якій аварії
@@ -103,13 +128,15 @@
         <a href="index.html" data-nav="home">Головна</a>
         <a href="production.html" data-nav="production">Виробництво</a>
         <a href="catalog.html" data-nav="catalog">Асортимент</a>
+        <a href="about.html" data-nav="about">Про нас</a>
       </nav>
       <div class="head__cta">
         <form class="hsearch" action="catalog.html" method="get" role="search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
           <input name="q" type="search" placeholder="Пошук у каталозі" aria-label="Пошук у каталозі" autocomplete="off">
         </form>
-        <a class="btn btn--primary btn--sm" href="#contact">Зв’язатися</a>
+        <div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div>
+        <a class="btn btn--primary btn--sm" href="about.html#contact">Зв’язатися</a>
         <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
       </div>
     </div>
@@ -118,7 +145,9 @@
     <a href="index.html" data-nav="home">Головна</a>
     <a href="production.html" data-nav="production">Виробництво</a>
     <a href="catalog.html" data-nav="catalog">Асортимент</a>
-    <a href="#contact" data-nav="contact">Зв’язатися</a>
+    <a href="about.html" data-nav="about">Про нас</a>
+    <a href="about.html#contact" data-nav="contact">Зв’язатися</a>
+    <div class="langs" role="group" aria-label="Мова"><button class="lang" type="button" data-lang="uk">UA</button><button class="lang" type="button" data-lang="en">EN</button><button class="lang" type="button" data-lang="pl">PL</button></div>
     <p class="mnav__foot">PANCORE GROUP · MADE IN EU</p>
   </nav>
 
@@ -177,7 +206,7 @@
         <div class="sec__head sec__head--row">
           <div>
             <p class="eyebrow rise">Напрями</p>
-            <h2 class="h-display h2 rise" data-delay="1">Чотири напрями — одне виробництво</h2>
+            <h2 class="h-display h2 rise" data-delay="1">Чотири напрями — одне виробництво на власних лініях в ЄС</h2>
           </div>
           <a class="btn btn--ghost rise" data-delay="2" href="production.html">Про виробництво</a>
         </div>
@@ -186,52 +215,30 @@
             <span class="card__code">01</span>
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><circle cx="20" cy="20" r="6"/><path d="M26 20a6 6 0 0 1-6 6"/><path d="M20 7V3M33 20h4"/><path d="M20 33c0 3 2 4 5 4"/></svg></span>
             <h3 class="h3">Оптоволоконні системи</h3>
-            <p>Безшпульні котушки G.657.A2 від 5 до 60 км у польовому корпусі, бортові та наземні оптичні термінали. Канал, невидимий для радіорозвідки та РЕБ.</p>
+            <p>Безшпульні котушки від 5 до 60 км у корпусі, бортові та наземні оптичні термінали. Канал, невидимий для радіорозвідки та РЕБ.</p>
             <span class="card__go">Докладніше</span>
           </a>
           <a class="card card--link rise" data-delay="1" href="production.html#composites">
             <span class="card__code">02</span>
-            <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M6 14l14-7 14 7-14 7z"/><path d="M6 20l14 7 14-7"/><path d="M6 26l14 7 14-7"/></svg></span>
+            <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><g transform="rotate(180 20 20)"><path d="M6 14l14-7 14 7-14 7z"/><path d="M6 20l14 7 14-7"/><path d="M6 26l14 7 14-7"/></g></svg></span>
             <h3 class="h3">Композитні матеріали</h3>
-            <p>Карбонові листи 2–8 мм, труби та рами БпЛА. Власна лінія: розкрій, намотування, обмотка з ЧПУ, термообробка, шліфування.</p>
+            <p>Карбонові листи 2–8 мм, труби та рами БпЛА. Власна лінія високотехнологычного автоматизованого процесу створення надміцих і легких композитних виробів, циліндричної або сферичної форми шляхом намотування безперервної вуглецевої стрічки на обертову основу за заданою компьютерною програмою(обмотка з ЧПУ), термообробка, шліфування.</p>
             <span class="card__go">Докладніше</span>
           </a>
           <a class="card card--link rise" data-delay="2" href="production.html#injection">
             <span class="card__code">03</span>
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M7 11h26v7H7z"/><path d="M11 18v10h18V18"/><path d="M20 28v7M20 4v7"/><path d="M15 32h10"/></svg></span>
             <h3 class="h3">Полімерне лиття</h3>
-            <p>Пропелери 10″ та 15″, корпуси й деталі з армованих поліамідів на термопластавтоматах 3200 / 3800 kN із роботизованим зніманням.</p>
+            <p>Пропелери 10″ та 15″, рами БпЛА, корпуси й деталі з армованих поліамідів на термопластавтоматах.</p>
             <span class="card__go">Докладніше</span>
           </a>
           <a class="card card--link rise" data-delay="3" href="catalog.html">
             <span class="card__code">04</span>
             <span class="card__icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="11" y="11" width="18" height="18" rx="2"/><rect x="16" y="16" width="8" height="8"/><path d="M15 11V6M20 11V6M25 11V6M15 34v-5M20 34v-5M25 34v-5M11 15H6M11 20H6M11 25H6M34 15h-5M34 20h-5M34 25h-5"/></svg></span>
             <h3 class="h3">Електроніка та компоненти</h3>
-            <p>Двигуни, регулятори, польотні контролери, відеозв’язок, камери й тепловізори, автопілоти — 20 категорій під один контракт.</p>
+            <p>Електромотори для БпЛА, регулятори, польотні контролери, медіаковертори, камери й тепловізори, автопілоти.</p>
             <span class="card__go">До асортименту</span>
           </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════ ВИРОБНИЦТВО (тизер) ════════ -->
-    <section class="sec sec--line" id="production">
-      <div class="wrap split">
-        <div>
-          <p class="eyebrow rise">Виробництво</p>
-          <h2 class="h-display h2 rise" data-delay="1">Власні лінії в ЄС</h2>
-          <p class="lead rise" data-delay="2">
-            Забезпечення стабільності оптоволокна шляхом контрольованого перемотування,
-            3D-проєктування, Лиття під тиском, Виготовлення та обробка композитних матеріалів.
-            Кожна партія проходить ретельний контроль якості.
-          </p>
-          <a class="btn btn--primary rise" data-delay="3" href="production.html">Про виробництво</a>
-        </div>
-        <div class="proc rise" data-delay="2">
-          <a class="proc__row" href="production.html#coil"><span class="proc__n">01</span><span><b>Оптоволокно</b><small>повний цикл переробки та збірки</small></span></a>
-          <a class="proc__row" href="production.html#composites"><span class="proc__n">02</span><span><b>Композити</b><small>виробництво, механічна та термічна обробка.</small></span></a>
-          <a class="proc__row" href="production.html#injection"><span class="proc__n">03</span><span><b>Полімерне лиття</b><small>лиття пластикових та полимерних деталей під тиском, 3Д проєктування</small></span></a>
-          <a class="proc__row" href="production.html#smt"><span class="proc__n">04</span><span><b>Електроніка</b><small>лінії електроних компонентів.</small></span></a>
         </div>
       </div>
     </section>
@@ -241,34 +248,15 @@
       <div class="wrap">
         <div class="sec__head">
           <p class="eyebrow rise">Чому PANCORE GROUP</p>
-          <h2 class="h-display h2 rise" data-delay="1">Зроблено так, щоб не було питань</h2>
+          <h2 class="h-display h2 rise" data-delay="1">Проектування та виготовлення готових рішень під потреби клієнта</h2>
         </div>
         <div class="grid grid--3">
-          <article class="card card--num rise"><span class="card__n">01</span><h3 class="h3">Виробництво в ЄС</h3><p>Продукція Made in EU: сертифікат походження, EUR.1 для України, декларація виробника.</p></article>
-          <article class="card card--num rise" data-delay="1"><span class="card__n">02</span><h3 class="h3">Контроль кожної партії</h3><p>Рефлектометрія OTDR, зважування, вимірювання розмірів. Протокол на кожну котушку, кожну партію виробів.</p></article>
-          <article class="card card--num rise" data-delay="2"><span class="card__n">03</span><h3 class="h3">Документи без сюрпризів</h3><p>TDS, протоколи випробувань, паспорти виробів, інструкції — комплект, який проходить митницю і технічне приймання.</p></article>
-          <article class="card card--num rise" data-delay="3"><span class="card__n">04</span><h3 class="h3">Один контракт</h3><p>Власні вироби та компоненти 20 категорій постачаються під одним договором з єдиною відповідальністю.</p></article>
-          <article class="card card--num rise" data-delay="4"><span class="card__n">05</span><h3 class="h3">Склад у ЄС</h3><p>Виробництво та склад в Європейському Союзі: швидкі партії, консолідація вантажів, доставка по Європі та в Україну.</p></article>
-          <article class="card card--num rise" data-delay="5"><span class="card__n">06</span><h3 class="h3">Інженерна адаптація</h3><p>Довжина котушки, геометрія та крок пропелера, компонування рами — під платформу замовника, а не навпаки.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════ ГЕОГРАФІЯ ════════ -->
-    <section class="sec sec--line" id="geo">
-      <div class="wrap">
-        <div class="sec__head">
-          <p class="eyebrow rise">Група компаній</p>
-          <h2 class="h-display h2 rise" data-delay="1">Одна група — шість регіонів</h2>
-          <p class="lead rise" data-delay="2">PANCORE GROUP об’єднує компанії в Європейському Союзі, Китаї, Гонконзі, ОАЕ, Туреччині та Україні. Розробка, сировина й компоненти, виробництво, логістика та постачання — усі ланки всередині однієї групи, під одним брендом.</p>
-        </div>
-        <div class="wm-stats rise" data-delay="2">
-          <div class="wm-stat"><b>6</b><span>регіонів присутності</span></div>
-          <div class="wm-stat"><b>3</b><span>континенти · Європа, Азія, Близький Схід</span></div>
-          <div class="wm-stat"><b>20 000 м²</b><span>виробнича площадка в ЄС</span></div>
-        </div>
-        <div class="wm-wrap rise" data-delay="2">
-          <div id="worldmap" class="wm-host"></div>
+          <article class="card card--num rise"><span class="card__n">01</span><h3 class="h3">Виробництво в ЄС</h3><p>Продукція Made in EU з сертифікатом походження, EUR.1 для України, декларація виробника.</p></article>
+          <article class="card card--num rise" data-delay="1"><span class="card__n">02</span><h3 class="h3">Контроль кожної партії</h3><p>Контроль та перевірка котушок оптоволокна за домогою OTDR-сканерів..</p></article>
+          <article class="card card--num rise" data-delay="2"><span class="card__n">03</span><h3 class="h3">Документи</h3><p>Протоколи випробувань, паспорти виробів, інструкції та інші документи для проходження митниці і технічного приймання.</p></article>
+          <article class="card card--num rise" data-delay="3"><span class="card__n">04</span><h3 class="h3">Один контракт</h3><p>Власні вироби та компоненти 20-ти категорій постачаються під одним договором з єдиною відповідальністю.</p></article>
+          <article class="card card--num rise" data-delay="4"><span class="card__n">05</span><h3 class="h3">Склад у ЄС</h3><p>Розатшування запасів на складі в ЄС дозволяє скласти та відправити оперативні партії по країнах ЄС та в Уркаїну.</p></article>
+          <article class="card card--num rise" data-delay="5"><span class="card__n">06</span><h3 class="h3">Інженерна адаптація</h3><p>Компонування рами, корпуса котушок, довжину котушок оптоволокна, геометрію котушок, корупусу під ТЗ замовника, а не навпаки.</p></article>
         </div>
       </div>
     </section>
@@ -279,41 +267,12 @@
         <div class="sec__head sec__head--row">
           <div>
             <p class="eyebrow rise">Асортимент</p>
-            <h2 class="h-display h2 rise" data-delay="1">163 позиції у 20 категоріях</h2>
-            <p class="lead rise" data-delay="2">Власні вироби та компоненти перевірених виробників: від оптоволокна і карбону до двигунів, камер і автопілотів. Документація — на кожну позицію з позначкою, решта надається за запитом.</p>
+            <h2 class="h-display h2 rise" data-delay="1">Більше 160 позицій у 20-ти категоріях</h2>
+            <p class="lead rise" data-delay="2">Власні вироби та компоненти перевірених виробників: від карбону до електромоторів, камер, автопілотів та оптоволокна.</p>
           </div>
           <a class="btn btn--primary rise" data-delay="2" href="catalog.html">Відкрити асортимент</a>
         </div>
         <div class="chips rise" id="cat-chips" data-delay="1"></div>
-      </div>
-    </section>
-
-    <!-- ════════ КОНТАКТИ ════════ -->
-    <section class="sec sec--line" id="contact">
-      <div class="wrap contact">
-        <div class="contact__info">
-          <div>
-            <p class="eyebrow rise">Контакти</p>
-            <h2 class="h-display h2 rise" data-delay="1">Обговоримо вашу задачу</h2>
-            <p class="lead rise" data-delay="2">Надішліть запит — відповімо протягом робочого дня комерційною пропозицією або уточнюючими питаннями. Працюємо з юридичними особами в Україні та ЄС.</p>
-          </div>
-          <div class="contact__lines rise" data-delay="3">
-            <div><small>Пошта</small><a href="mailto:office@pancore.eu">office@pancore.eu</a></div>
-            <div><small>Telegram</small><a href="https://t.me/pancore_tech" target="_blank" rel="noopener">Написати в Telegram</a></div>
-            <div><small>Виробництво та склад</small><span>Європейський Союз</span></div>
-            <div><small>Мови спілкування</small><span>UA · EN</span></div>
-          </div>
-        </div>
-        <form class="form rise" data-delay="2" data-lead>
-          <div class="field"><label for="f-contact">Контакт</label><input id="f-contact" name="contact" type="text" required maxlength="254" autocomplete="email" placeholder="email, телефон або @telegram"></div>
-          <div class="field"><label for="f-msg">Повідомлення</label><textarea id="f-msg" name="message" required minlength="5" maxlength="2000" placeholder="Коротко опишіть задачу, позиції та орієнтовні обсяги"></textarea></div>
-          <div class="hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
-          <div class="form__foot">
-            <button class="btn btn--primary" type="submit">Надіслати запит</button>
-            <p class="form__status" role="status" aria-live="polite"></p>
-          </div>
-          <p class="form__note">Надсилаючи форму, ви погоджуєтесь на обробку контактних даних для відповіді на запит.</p>
-        </form>
       </div>
     </section>
 
@@ -328,10 +287,10 @@
 </div>
 
 <div class="fab-bar" aria-label="Швидкий зв’язок">
-  <a class="btn btn--primary btn--sm" href="#contact">Зв’язатися</a>
-  <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_tech" target="_blank" rel="noopener">Telegram</a>
+  <a class="btn btn--primary btn--sm" href="about.html#contact">Зв’язатися</a>
+  <a class="btn btn--ghost btn--sm" href="https://t.me/pancore_manager" target="_blank" rel="noopener">Telegram</a>
 </div>
 
-<script type="module" src="js/site.js?v=20260906a"></script>
+<script type="module" src="js/site.js?v=20260907b"></script>
 </body>
 </html>

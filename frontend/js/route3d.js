@@ -19,8 +19,7 @@
 import * as THREE from 'three';
 
 export const ACCENT = 0xff3d4f;
-const EN = /^en/i.test(document.documentElement.lang || '');
-const t = (uk, en) => (EN ? en : uk);
+import { EN, t } from './i18n.js';
 
 /* ---------- рельєф: висота у точці (x, z), плита 60 × 40 ---------- */
 const W = 60, D = 40;

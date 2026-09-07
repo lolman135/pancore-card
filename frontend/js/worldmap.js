@@ -11,7 +11,7 @@
 import { VIEW, NODES, DOTS, DOTS_HI } from './data/worldmap.js';
 
 const NS = 'http://www.w3.org/2000/svg';
-const EN = /^en/i.test(document.documentElement.lang || '');
+import { lang } from './i18n.js';
 
 /* зв’язки групи: [вузол, вузол]. ЄС — хаб, від нього промінь до кожної компанії;
    поперечні дуги показують, що регіони зв’язані й між собою, а не лише з майданчиком у ЄС */
@@ -20,9 +20,9 @@ const ROUTES = [
   ['eu', 'tr'],
   ['eu', 'ae'],
   ['ae', 'tr'],
-  ['eu', 'cn'],
-  ['eu', 'hk'],
-  ['cn', 'hk'],
+  ['cn', 'eu'],          // напрям = напрям руху «пакетів»: з Китаю/Гонконгу, не в них
+  ['hk', 'eu'],
+  ['cn', 'hk', true],    // третій елемент — без пакета (обидва кінці — Китай/Гонконг)
   ['hk', 'ae'],
 ];
 
@@ -30,6 +30,7 @@ const ROUTES = [
 const LABELS = {
   uk: { eu: 'ЄС · виробництво', ua: 'Україна', tr: 'Туреччина', ae: 'ОАЕ', cn: 'Китай', hk: 'Гонконг' },
   en: { eu: 'EU · production', ua: 'Ukraine', tr: 'Türkiye', ae: 'UAE', cn: 'China', hk: 'Hong Kong' },
+  pl: { eu: 'UE · produkcja', ua: 'Ukraina', tr: 'Turcja', ae: 'ZEA', cn: 'Chiny', hk: 'Hongkong' },
 };
 const PLACE = { eu: ['l', 0], ua: ['r', -14], tr: ['r', 12], ae: ['r', 0], cn: ['r', -10], hk: ['r', 12] };
 /* на обрізаній карті ЄС стоїть біля лівого краю — підпис іде під точку, Туреччина нижче;
@@ -62,7 +63,7 @@ function arcPath(a, b) {
 }
 
 export function mountWorldMap(host, { reduced = false } = {}) {
-  const L = LABELS[EN ? 'en' : 'uk'];
+  const L = LABELS[lang] || LABELS.uk;
   const svg = el('svg', { viewBox: `0 0 ${VIEW.w} ${VIEW.h}`, class: 'wm', 'aria-hidden': 'true' });
 
   // суходіл + країни-учасниці яскравіше
@@ -72,12 +73,12 @@ export function mountWorldMap(host, { reduced = false } = {}) {
 
   // зв’язки групи
   const routes = el('g', { class: 'wm__routes' }, svg);
-  ROUTES.forEach(([from, to], i) => {
+  ROUTES.forEach(([from, to, noPkt], i) => {
     const d = arcPath(NODES[from], NODES[to]);
     const g = el('g', { class: 'wm__route', style: `--i:${i}` }, routes);
     el('path', { class: 'wm__base', d }, g);
     const flow = el('path', { class: 'wm__flow', d }, g);
-    if (!reduced) {
+    if (!reduced && !noPkt) {
       const pkt = el('circle', { class: 'wm__pkt', r: 3.2 }, g);
       const am = el('animateMotion', { dur: `${(4.5 + (i % 3) * 0.9).toFixed(1)}s`, repeatCount: 'indefinite', begin: `${(i * 0.7).toFixed(1)}s`, path: d, rotate: 'auto' }, pkt);
       am.setAttribute('calcMode', 'linear');

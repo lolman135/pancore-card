@@ -8,6 +8,7 @@
    ============================================================ */
 
 import { prefillRequest, observeRise, reducedMotion, swapIn, headHeight } from './site.js';
+import { t as i18nT, tr } from './i18n.js';   // t зайнято таймером пошуку
 import { CATEGORIES, ITEMS } from './data/catalog.js';
 import { SPECS } from './data/specs.js';
 import { OWN_CATEGORY, OWN_ITEMS, OWN_SPECS } from './data/own.js';
@@ -100,11 +101,11 @@ function keyParams(it) {
 const short = (v, n = 34) => (v.length > n ? v.slice(0, n - 1).replace(/[\s·,;:]+\S*$/, '') + '…' : v);
 /* стисле значення для картки і плиток фактів: перший фрагмент до « · », без дужок — «900 KV», «20 і 30 км» */
 const brief = (v, n = 28) => short(v.split(' · ')[0].replace(/\s*\([^)]*\)/g, '').trim(), n);
-const DOC = { yes: 'Документація виробника', analog: 'Аналог за запитом' };
+const DOC = { yes: i18nT('Документація виробника', 'Manufacturer documentation'), analog: i18nT('Аналог за запитом', 'Equivalent on request') };
 
 /* ---------- коротка назва на картці: повна лишається у вікні позиції ---------- */
-const NAMES = { 901: 'Безшпульна котушка SFC-K · 5–60 км', 902: 'Пропелер 10 дюймів', 903: 'Пропелер 15 дюймів' };
-const METAS = { 901: 'PANCORE · еталон SFC-30 · 30,212 км', 902: 'PANCORE · 10 × 5,0 × 3', 903: 'PANCORE · 15 × 10 × 3' };
+const NAMES = { 901: i18nT('Безшпульна котушка SFC-K · 5–60 км', 'Spool-less coil SFC-K · 5–60 km'), 902: i18nT('Пропелер 10 дюймів', '10-inch propeller'), 903: i18nT('Пропелер 15 дюймів', '15-inch propeller') };
+const METAS = { 901: i18nT('PANCORE · еталон SFC-30 · 30,212 км', 'PANCORE · reference SFC-30 · 30.212 km'), 902: 'PANCORE · 10 × 5,0 × 3', 903: 'PANCORE · 15 × 10 × 3' };
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
 const INCH = /^(Пропелер|Рама)\s+(\d{1,2})["″]\s*([^—(]*)/;
@@ -112,7 +113,7 @@ function shortName(it) {
   if (NAMES[it.id]) return NAMES[it.id];
   let n = it.name.replace(/\s*\([^)]*\)/g, '').replace(/\s*:\s+/g, ' ');
   const inch = INCH.exec(n);
-  if (inch) return `${inch[1]} ${inch[2]} дюймів`;
+  if (inch) return `${tr(inch[1])} ${inch[2]} ${i18nT('дюймів', 'inch')}`;
   let [head, tail] = n.split(/\s+—\s+/);
   if (it.brand && tail && head.trim().toLowerCase() === it.brand.toLowerCase()) head = tail;   // «Opticallink — медіаконвертер…»
   if (it.brand) head = head.replace(new RegExp(`\\s+${reEsc(it.brand)}$`, 'i'), '');              // бренд у кінці → у мета-рядок
@@ -157,9 +158,9 @@ const openCats = new Set(['own']);
 /* ---------- бічна навігація та чипи ---------- */
 function renderNav() {
   const row = (id, name, n, own) => `<button type="button" data-cat="${id}" class="${state.cat === id ? 'is-on' : ''} ${own ? 'is-own' : ''}"><span>${name}</span><b>${n}</b></button>`;
-  navHost.innerHTML = row('all', 'Усі позиції', ALL.length) + CATS.map((c) => row(c.id, c.name, counts[c.id] || 0, c.id === 'own')).join('');
-  chipsHost.innerHTML = `<button class="chip ${state.cat === 'all' ? 'is-on' : ''}" data-cat="all" type="button">Усі <b>${ALL.length}</b></button>` +
-    CATS.map((c) => `<button class="chip ${state.cat === c.id ? 'is-on' : ''}" data-cat="${c.id}" type="button">${c.name} <b>${counts[c.id] || 0}</b></button>`).join('');
+  navHost.innerHTML = row('all', i18nT('Усі позиції', 'All items'), ALL.length) + CATS.map((c) => row(c.id, tr(c.name), counts[c.id] || 0, c.id === 'own')).join('');
+  chipsHost.innerHTML = `<button class="chip ${state.cat === 'all' ? 'is-on' : ''}" data-cat="all" type="button">${i18nT('Усі', 'All')} <b>${ALL.length}</b></button>` +
+    CATS.map((c) => `<button class="chip ${state.cat === c.id ? 'is-on' : ''}" data-cat="${c.id}" type="button">${tr(c.name)} <b>${counts[c.id] || 0}</b></button>`).join('');
 }
 function setCat(id) {
   state.cat = id; state.brand = ''; state.s = ''; state.band = '';
@@ -191,7 +192,7 @@ function renderFilters() {
   const sVals = [...new Set(items.flatMap((it) => [...tokens(it, 's')]))].sort((a, b) => parseInt(a) - parseInt(b));
   const bands = BAND_CATS.has(state.cat) ? [...new Set(items.flatMap((it) => [...tokens(it, 'band')]))].sort((a, b) => parseFloat(a.replace(',', '.')) - parseFloat(b.replace(',', '.'))) : [];
   const group = (lab, key, vals) => vals.length < 2 ? '' : `<span class="lab">${lab}</span><span class="chips">${vals.map((v) => `<button type="button" class="chip ${state[key] === v ? 'is-on' : ''}" data-f="${key}" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</span>`;
-  const html = group('Бренд', 'brand', brands) + group('Акумулятор', 's', sVals) + group('Діапазон', 'band', bands);
+  const html = group(i18nT('Бренд', 'Brand'), 'brand', brands) + group(i18nT('Акумулятор', 'Battery'), 's', sVals) + group(i18nT('Діапазон', 'Band'), 'band', bands);
   filtersHost.innerHTML = html;
   filtersHost.hidden = !html;
 }
@@ -240,7 +241,7 @@ function summary(cat, items) {
       parts.push(`<b>${esc(found[0].k.toLowerCase())}</b> ${f(Math.min(...nums))}…${f(Math.max(...nums))} ${unit}`);
     }
   }
-  if (brands.length) parts.push(`<b>бренди</b> ${brands.slice(0, 4).map(esc).join(', ')}${brands.length > 4 ? ' та ін.' : ''}`);
+  if (brands.length) parts.push(`<b>${i18nT('бренди', 'brands')}</b> ${brands.slice(0, 4).map(esc).join(', ')}${brands.length > 4 ? ' ' + i18nT('та ін.', 'and others') : ''}`);
   return parts.join(' · ');
 }
 
@@ -267,12 +268,12 @@ function itemCard(it) {
 function render(animate = false) {
   if (animate) swapIn(host);
   const list = filtered();
-  countEl.textContent = `${list.length} із ${ALL.length}`;
+  countEl.textContent = `${list.length} ${i18nT('із', 'of')} ${ALL.length}`;
   if (!list.length) {
     const near = state.q ? CATS.find((c) => norm(c.name).includes(state.q.split(' ')[0])) : null;
-    host.innerHTML = `<div class="empty"><p>Нічого не знайдено за «${esc(search.value)}».</p>
-      ${near ? `<p style="margin-top:8px">Спробуйте категорію <button class="chip" type="button" data-cat="${near.id}">${near.name}</button></p>` : ''}
-      <button class="btn btn--ghost btn--sm" type="button" data-req-q="1">Запит на «${esc(search.value)}» →</button></div>`;
+    host.innerHTML = `<div class="empty"><p>${i18nT('Нічого не знайдено за', 'Nothing found for')} «${esc(search.value)}».</p>
+      ${near ? `<p style="margin-top:8px">${i18nT('Спробуйте категорію', 'Try the category')} <button class="chip" type="button" data-cat="${near.id}">${tr(near.name)}</button></p>` : ''}
+      <button class="btn btn--ghost btn--sm" type="button" data-req-q="1">${i18nT('Запит на', 'Enquiry about')} «${esc(search.value)}» →</button></div>`;
     return;
   }
   const single = state.cat !== 'all' || Boolean(state.q);
@@ -287,12 +288,12 @@ function render(animate = false) {
     return `
     <section class="cat-group ${c.id === 'own' ? 'cat-group--own' : ''} ${isOpen ? 'is-open' : ''} rise" id="${c.id}">
       <div class="cat-group__head">
-        <h2 class="h-display"><button type="button" class="cat-group__btn" aria-expanded="${isOpen}" aria-controls="cat-${c.id}">${c.name}<span class="cnt">${all.length} поз.</span><span class="cat-group__chev" aria-hidden="true">${CHEV_DOWN}</span></button></h2>
+        <h2 class="h-display"><button type="button" class="cat-group__btn" aria-expanded="${isOpen}" aria-controls="cat-${c.id}">${tr(c.name)}<span class="cnt">${all.length} ${i18nT('поз.', 'items')}</span><span class="cat-group__chev" aria-hidden="true">${CHEV_DOWN}</span></button></h2>
         <p class="cat-sum">${summary(c.id, all)}</p>
       </div>
       <div class="cat-group__body" id="cat-${c.id}"><div>
         <div class="items">${show.map(itemCard).join('')}</div>
-        ${rest > 0 ? `<button class="more" type="button" data-more="${c.id}">Показати ще ${rest}</button>` : ''}
+        ${rest > 0 ? `<button class="more" type="button" data-more="${c.id}">${i18nT('Показати ще', 'Show more')} ${rest}</button>` : ''}
       </div></div>
     </section>`;
   }).join('');
@@ -329,7 +330,7 @@ function requestItem(id) {
 /* ---------- вікно позиції ---------- */
 function specRows(sp, keys) {
   if (!sp || !sp.specs.length) return '<p class="item__empty">Параметри уточнюємо за запитом.</p>';
-  return `<div class="specs-tbl">${sp.specs.map((s) => `<dl class="spec ${keys.includes(s) ? 'is-key' : ''}"><dt>${esc(s.k)}</dt><dd>${esc(s.v)}</dd></dl>`).join('')}</div>`;
+  return `<div class="specs-tbl">${sp.specs.map((s) => `<dl class="spec ${keys.includes(s) ? 'is-key' : ''}"><dt>${esc(tr(s.k))}</dt><dd>${esc(s.v)}</dd></dl>`).join('')}</div>`;
 }
 /* ескіз для власних виробів, велика іконка категорії для решти */
 function heroArt(it) {
@@ -360,17 +361,17 @@ function openItem(id) {
           <button class="drawer__x" type="button" data-close aria-label="Закрити">${X}</button>
         </div>
         ${heroArt(it)}
-        <div class="drawer__meta">${it.own ? '<span class="own-badge">PANCORE</span>' : `<span>${esc(catName[it.cat])}</span>`}${it.brand && !it.own ? `<span>${esc(it.brand)}</span>` : ''}<span class="mono">${pad(id)}</span></div>
+        <div class="drawer__meta">${it.own ? '<span class="own-badge">PANCORE</span>' : `<span>${esc(tr(catName[it.cat]))}</span>`}${it.brand && !it.own ? `<span>${esc(it.brand)}</span>` : ''}<span class="mono">${pad(id)}</span></div>
         <h2 id="dr-title">${esc(it.name)}</h2>
         <div class="drawer__chips">${DOC[it.doc] ? `<span class="chip chip--doc">${DOC[it.doc]}</span>` : ''}${it.own ? '<span class="chip">Made in EU</span>' : ''}</div>
       </div>
       <div class="drawer__body">
-        ${keys.length ? `<div class="facts">${keys.slice(0, 3).map((s) => `<div class="fact"><b>${esc(brief(s.v, 34))}</b><span>${esc(s.k)}</span></div>`).join('')}</div>` : ''}
+        ${keys.length ? `<div class="facts">${keys.slice(0, 3).map((s) => `<div class="fact"><b>${esc(brief(s.v, 34))}</b><span>${esc(tr(s.k))}</span></div>`).join('')}</div>` : ''}
         ${sp && sp.desc ? `<p class="item__desc">${esc(sp.desc)}</p>` : ''}
         <p class="drawer__h">Характеристики</p>
         ${specRows(sp, keys)}
         ${sp && sp.note ? `<p class="item__note">${esc(sp.note)}</p>` : ''}
-        <p class="item__src">${sp && sp.from === 'doc' && sp.src ? 'За технічною документацією: ' + esc(sp.src) : 'Повна специфікація та документація — за запитом'}</p>
+        <p class="item__src">${sp && sp.from === 'doc' && sp.src ? i18nT('За технічною документацією:', 'According to technical documentation:') + ' ' + esc(sp.src) : i18nT('Повна специфікація та документація — за запитом', 'Full specification and documentation on request')}</p>
       </div>
       <div class="drawer__foot">
         <button class="btn btn--primary btn--sm" type="button" data-req="${id}">Запит на позицію</button>
@@ -427,7 +428,7 @@ addEventListener('keydown', (e) => {
 /* ---------- порівняння ---------- */
 function toggleCompare(id) {
   if (state.compare.has(id)) state.compare.delete(id);
-  else if (state.compare.size >= CMP_MAX) { flashBar(`Максимум ${CMP_MAX} позиції`); return; }
+  else if (state.compare.size >= CMP_MAX) { flashBar(`${i18nT('Максимум', 'Maximum')} ${CMP_MAX} ${i18nT('позиції', 'items')}`); return; }
   else state.compare.add(id);
   renderBar(); render();
 }
@@ -437,7 +438,7 @@ function renderBar(msg) {
   const n = state.compare.size;
   cmpBar.hidden = n === 0;
   if (!n) return;
-  cmpBar.innerHTML = msg ? `<span>${esc(msg)}</span>` : `<span>Обрано ${n} із ${CMP_MAX}</span>
+  cmpBar.innerHTML = msg ? `<span>${esc(msg)}</span>` : `<span>${i18nT('Обрано', 'Selected')} ${n} ${i18nT('із', 'of')} ${CMP_MAX}</span>
     <button class="btn btn--primary btn--sm" type="button" data-cmp-open ${n < 2 ? 'disabled' : ''}>Порівняти</button>
     <button class="x" type="button" data-cmp-clear aria-label="Очистити">${X}</button>`;
 }
@@ -461,14 +462,14 @@ function openCompare() {
     <div class="drawer__back" data-close></div>
     <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Порівняння">
       <div class="drawer__hero drawer__hero--cmp">
-        <div class="drawer__bar"><span class="drawer__meta"><span>Порівняння</span><span class="mono">${items.length} поз.</span></span><button class="drawer__x" type="button" data-close aria-label="Закрити">${X}</button></div>
+        <div class="drawer__bar"><span class="drawer__meta"><span>Порівняння</span><span class="mono">${items.length} ${i18nT('поз.', 'items')}</span></span><button class="drawer__x" type="button" data-close aria-label="Закрити">${X}</button></div>
         <h2>Параметри поруч</h2>
       </div>
       <div class="drawer__body"><div class="cmp-wrap"><table class="cmp-table">
         <thead><tr><th></th>${items.map((it) => `<th>${esc(it.name)}<br><span class="muted mono" style="font-size:10px">${pad(it.id)}</span></th>`).join('')}</tr></thead>
         <tbody>${rows}</tbody></table></div>
         <p class="item__src">Підсвічено рядки, де значення відрізняються.</p></div>
-      <div class="drawer__foot">${items.map((it) => `<button class="btn btn--ghost btn--sm" type="button" data-req="${it.id}">Запит ${pad(it.id)}</button>`).join('')}</div>
+      <div class="drawer__foot">${items.map((it) => `<button class="btn btn--ghost btn--sm" type="button" data-req="${it.id}">${i18nT('Запит', 'Enquiry')} ${pad(it.id)}</button>`).join('')}</div>
     </div>`;
   drawer.hidden = false; document.body.style.overflow = 'hidden';
   history.replaceState(null, '', `${location.pathname}${location.search}#compare`);

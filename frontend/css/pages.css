@@ -512,3 +512,4 @@
   .scene3d__cap { top: 10px; } .scene3d__ok { bottom: 10px; }
   .scene3d__hint { display: none; }
 }
+@media (max-width: 700px) { .dots { display: none; } }   /* на телефоні точки-навігація налазять на текст */

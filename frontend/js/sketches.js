@@ -7,8 +7,7 @@
    Стилі: .sketch .ln / .ln2 / .hair / .dim / .fillDim / text — у pages.css.
    ============================================================ */
 
-const EN = /^en/i.test(document.documentElement.lang || '');
-const tx = (uk, en) => (EN ? en : uk);
+import { EN, t as tx } from './i18n.js';
 
 const ARROW = `<marker id="sk-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1 L7,4 L0,7 Z" fill="rgba(255,255,255,0.35)"/></marker>`;
 const wrap = (label, body, vb = '0 0 230 205') =>

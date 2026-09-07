@@ -8,9 +8,7 @@
 import { reducedMotion, swapIn, scrollToEl } from './site.js';
 import { mountSketches, propSketch, propScaleSketch, terrainSketch, hookupSketch } from './sketches.js';
 
-const EN = /^en/i.test(document.documentElement.lang || '');
-const LOC = EN ? 'en-GB' : 'uk-UA';
-const t = (uk, en) => (EN ? en : uk);
+import { EN, LOC, t } from './i18n.js';
 
 mountSketches();
 
@@ -35,7 +33,7 @@ function boot3d(id, load, sketch) {
     setTimeout(() => { const r = host.getBoundingClientRect(); if (!innerHeight || r.top < innerHeight + 1200) { io.disconnect(); boot(); } }, 1500);
   } else boot();
 }
-boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createRouteScene), terrainSketch);
+boot3d('route3d', () => import('./route3d.js?v=20260907b').then((m) => m.createRouteScene), terrainSketch);
 /* 2D-схема роботи каналу: звичайний SVG, тому без перевірки WebGL — вантажимо одразу,
    коли блок наближається до кадру; prefers-reduced-motion → статичний кадр */
 (() => {
@@ -44,7 +42,7 @@ boot3d('route3d', () => import('./route3d.js?v=20260904e').then((m) => m.createR
   let done = false;
   const boot = () => {
     if (done) return; done = true;
-    import('./link2d.js?v=20260906a').then((m) => m.createLinkScene(host, { static: reducedMotion }))
+    import('./link2d.js?v=20260907b').then((m) => m.createLinkScene(host, { static: reducedMotion }))
       .catch((e) => { console.warn('link2d:', e); host.innerHTML = hookupSketch(); });
   };
   if ('IntersectionObserver' in window) {
