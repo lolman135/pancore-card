@@ -3,15 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <script>
-  /* Мова сторінки: ?lang=uk|en|pl (зберігається) або збережений вибір → <html lang>
-     синхронно, до запуску модулів: усі скрипти й словник i18n читають саме його. */
+  /* Мова сторінки → <html lang> синхронно, до запуску модулів (усі скрипти й словник i18n
+     читають саме його). Пріоритет: ?lang=uk|en|pl (зберігається) → збережений вибір
+     (localStorage + cookie pancore-lang) → мова системи: uk/ru → uk, pl → pl, інші → en. */
   (function () {
+    var OK = /^(uk|en|pl)$/, l = null;
     try {
       var q = new URLSearchParams(location.search).get('lang');
-      if (q) localStorage.setItem('pancore-lang', q);
-      var l = q || localStorage.getItem('pancore-lang');
-      if (/^(uk|en|pl)$/.test(l)) document.documentElement.lang = l;
-    } catch (e) { /* без localStorage — мова за замовчуванням */ }
+      var c = (document.cookie.match(/(?:^|;\s*)pancore-lang=(\w+)/) || [])[1];
+      var s = null;
+      try { s = localStorage.getItem('pancore-lang'); } catch (e) { /* приватний режим */ }
+      l = OK.test(q) ? q : OK.test(s) ? s : OK.test(c) ? c : null;
+      if (l && (q || !s || !c)) {
+        try { localStorage.setItem('pancore-lang', l); } catch (e) { /* приватний режим */ }
+        document.cookie = 'pancore-lang=' + l + '; path=/; max-age=31536000; SameSite=Lax';
+      }
+    } catch (e) { /* без сховища — визначаємо за системою */ }
+    if (!l) {
+      var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+      var sys = String(langs[0] || '').slice(0, 2).toLowerCase();
+      l = (sys === 'uk' || sys === 'ru') ? 'uk' : sys === 'pl' ? 'pl' : 'en';
+    }
+    document.documentElement.lang = l;
   })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
