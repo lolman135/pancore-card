@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends
 
 from app.api.deps import ContactServiceDep, require_api_key
 from app.dto.contact import ContactRequest, ContactResponse
@@ -23,5 +23,9 @@ router = APIRouter(prefix="/contact", tags=["contact"], dependencies=[Depends(re
         }
     },
 )
-def create_contact(request: ContactRequest, service: ContactServiceDep) -> ContactResponse:
-    return service.submit(request)
+def create_contact(
+    request: ContactRequest,
+    service: ContactServiceDep,
+    background_tasks: BackgroundTasks,
+) -> ContactResponse:
+    return service.submit(request, background_tasks)

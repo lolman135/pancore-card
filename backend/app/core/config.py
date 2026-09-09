@@ -12,6 +12,9 @@ DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8080
 DEFAULT_SMTP_HOST = "smtp.gmail.com"
 DEFAULT_SMTP_PORT = 465
+DEFAULT_SMTP_TIMEOUT = 10.0
+DEFAULT_MAIL_PROVIDER = "smtp"
+DEFAULT_RESEND_API_URL = "https://api.resend.com/emails"
 
 
 load_dotenv(DEFAULT_ENV_PATH)
@@ -28,6 +31,10 @@ class Settings:
     problem_base_url: str = DEFAULT_PROBLEM_BASE_URL
     smtp_host: str = DEFAULT_SMTP_HOST
     smtp_port: int = DEFAULT_SMTP_PORT
+    smtp_timeout: float = DEFAULT_SMTP_TIMEOUT
+    mail_provider: str = DEFAULT_MAIL_PROVIDER
+    resend_api_key: str = ""
+    resend_api_url: str = DEFAULT_RESEND_API_URL
     mail_from: str = ""
     mail_from_password: str = ""
     mail_to: str = ""
@@ -45,6 +52,10 @@ def get_settings() -> Settings:
         host=os.getenv("BACKEND_HOST", DEFAULT_HOST),
         smtp_host=os.getenv("SMTP_HOST", DEFAULT_SMTP_HOST),
         smtp_port=int(os.getenv("SMTP_PORT", DEFAULT_SMTP_PORT)),
+        smtp_timeout=float(os.getenv("SMTP_TIMEOUT", DEFAULT_SMTP_TIMEOUT)),
+        mail_provider=os.getenv("MAIL_PROVIDER", DEFAULT_MAIL_PROVIDER).strip().lower(),
+        resend_api_key=os.getenv("RESEND_API_KEY", ""),
+        resend_api_url=os.getenv("RESEND_API_URL", DEFAULT_RESEND_API_URL),
         mail_from=os.getenv("MAIL_FROM", ""),
         mail_from_password=os.getenv("MAIL_FROM_PASSWORD", ""),
         mail_to=os.getenv("MAIL_TO", ""),
