@@ -102,7 +102,8 @@ jobs:
             API_KEY=${{ secrets.API_KEY }}
             MAIL_FROM=${{ secrets.MAIL_FROM }}
             MAIL_TO=${{ secrets.MAIL_TO }}
-            MAIL_FROM_PASSWORD=${{ secrets.MAIL_FROM_PASSWORD }}
+            MAIL_PROVIDER=${{ secrets.MAIL_PROVIDER }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
             PROD_FLAG=${{ vars.PROD_FLAG }}
             UMAMI_DB_PASSWORD=${{ secrets.UMAMI_DB_PASSWORD }}
             UMAMI_APP_SECRET=${{ secrets.UMAMI_APP_SECRET }}
